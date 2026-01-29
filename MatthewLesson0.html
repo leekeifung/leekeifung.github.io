@@ -1,327 +1,400 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  BookOpen,
-  Compass,
-  Flame,
-  HandHeart,
-  Sparkles,
-  Globe2,
-  Anchor,
-  Layers,
-  ArrowRight,
-  CheckCircle2,
-} from "lucide-react";
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NT317 · Matthew · Lesson 0</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg2: #111827;
+      --card: #1f2937;
+      --card2: #111827cc;
+      --border: #243047;
+      --text: #e5e7eb;
+      --muted: #cbd5e1;
+      --teal: #14b8a6;
+      --sky: #38bdf8;
+      --amber: #fbbf24;
+      --rose: #fb7185;
+      --emerald: #34d399;
+      --indigo: #a5b4fc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 20% 20%, #1e293b 0, #0f172a 40%), #0f172a;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #134e4a33;
+      color: #5eead4;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 10px 0 6px;
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
+    }
+    .lead {
+      max-width: 720px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+    /* Tabs */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 18px;
+    }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #0b1220;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover { border-color: #22d3ee; color: #e0f2fe; }
+    .tab-btn.active {
+      border-color: #2dd4bf;
+      background: #0d948833;
+      color: #ecfeff;
+      box-shadow: inset 0 1px 0 #2dd4bf33;
+    }
+    /* Cards */
+    .card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    ul.clean {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+    .point {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #cffafe;
+      background: #0f172acc;
+      border: 1px solid #1f2937;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .muted { color: var(--muted); }
+    footer {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (min-width: 640px) {
+      .card { padding: 20px; }
+    }
+    /* Simple icon sizing */
+    .icon { width: 18px; height: 18px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="badge">✨ NT317 · Matthew · Lesson 0</div>
+      <h1>馬太福音導論：大使命視角的全書概覽</h1>
+      <p class="lead">
+        從「使萬民作門徒」的核心命令，串連古代傳記的寫作目的、五大講論結構，
+        以及門徒代價與恩典，為後續課程奠定神學與使命的基礎。
+      </p>
+    </header>
 
-const sections = [
-  {
-    id: "nature",
-    title: "性質與寫作目的",
-    icon: BookOpen,
-    iconColor: "text-teal-600",
-    points: [
-      "古代傳記：不僅歷史，更有道德、神學、政治意涵。",
-      "對象：主要猶太信徒；日期：多數認為主後 70 年後。",
-      "背景：猶太信徒面臨身分張力與會堂衝突。",
-    ],
-  },
-  {
-    id: "commission",
-    title: "大使命：全書鑰匙 (28:18-20)",
-    icon: Compass,
-    iconColor: "text-sky-600",
-    points: [
-      "核心命令：使萬民作門徒。",
-      "三個分詞：去、施洗、教導。",
-      "權柄與同在：天上地下權柄；以馬內利的應許。",
-    ],
-  },
-  {
-    id: "structure",
-    title: "五大講論結構",
-    icon: Layers,
-    iconColor: "text-amber-600",
-    points: [
-      "5-7 登山寶訓：天國倫理。",
-      "10 差遣門徒：宣教與逼迫預備。",
-      "13 比喻：天國奧祕（已然未然）。",
-      "18 教會生活：謙卑、饒恕、紀律。",
-      "23-25 末世：審判與警醒。",
-    ],
-  },
-  {
-    id: "discipleship",
-    title: "門徒代價與恩典",
-    icon: Flame,
-    iconColor: "text-rose-600",
-    points: [
-      "代價：職業、居所、經濟、社會義務、甚至生命。",
-      "門徒屢顯小信，主仍託付使命。",
-      "恩典成全：主的同在使不完美的人能被用。",
-    ],
-  },
-  {
-    id: "application",
-    title: "生活應用",
-    icon: HandHeart,
-    iconColor: "text-emerald-600",
-    points: [
-      "Going：跨文化跨界線去愛「萬民」。",
-      "Discipling：放下安全感，跟隨與教導。",
-      "Presence：操練意識主的同在，面對孤單與無力。",
-    ],
-  },
-];
+    <div class="tabs" id="tabs"></div>
+    <div id="active-card"></div>
 
-const commissionSteps = [
-  {
-    label: "去 (Going)",
-    desc: "跨越文化與界線，萬民在心中從起初就出現。",
-  },
-  {
-    label: "施洗 (Baptizing)",
-    desc: "奉父、子、聖靈的名，使人歸入三一神。",
-  },
-  {
-    label: "教導 (Teaching)",
-    desc: "教導遵守主一切吩咐，形成門徒群體。",
-  },
-];
+    <!-- Great Commission -->
+    <div class="card">
+      <h3>🌍 大使命語法結構：1 個命令，3 個分詞</h3>
+      <p class="muted" style="margin-bottom:12px;">
+        核心命令：<strong style="color:#5eead4;">使萬民作門徒</strong>。三個分詞說明如何執行：去、施洗、教導。
+      </p>
+      <div class="grid-3" id="steps"></div>
+    </div>
 
-const discourses = [
-  { title: "5-7 登山寶訓", theme: "天國倫理" },
-  { title: "10 差遣門徒", theme: "宣教與逼迫" },
-  { title: "13 天國比喻", theme: "已然未然" },
-  { title: "18 教會生活", theme: "謙卑饒恕" },
-  { title: "23-25 末世", theme: "審判警醒" },
-];
-
-export default function MatthewLesson0Intro() {
-  const [active, setActive] = useState("nature");
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100">
-      <div className="max-w-6xl mx-auto px-4 py-10 sm:py-12">
-        <header className="flex flex-col gap-3 sm:gap-4 mb-8 sm:mb-10">
-          <div className="flex items-center gap-2 text-teal-200 uppercase tracking-wide text-xs sm:text-sm">
-            <Sparkles className="h-4 w-4" />
-            NT317 · Matthew · Lesson 0
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
-            馬太福音導論：大使命視角的全書概覽
-          </h1>
-          <p className="text-slate-200 text-sm sm:text-base max-w-3xl leading-relaxed">
-            從「使萬民作門徒」的核心命令，串連古代傳記的寫作目的、五大講論結構，
-            以及門徒代價與恩典，為後續課程奠定神學與使命的基礎。
-          </p>
-        </header>
-
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {sections.map((sec) => {
-            const activeTab = active === sec.id;
-            return (
-              <button
-                key={sec.id}
-                onClick={() => setActive(sec.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-medium transition
-                  ${
-                    activeTab
-                      ? "border-teal-400 bg-teal-500/20 text-teal-50 shadow-inner"
-                      : "border-slate-600 bg-slate-800/70 text-slate-200 hover:border-teal-300 hover:text-teal-50"
-                  }`}
-              >
-                <sec.icon className={`h-5 w-5 ${sec.iconColor}`} />
-                {sec.title}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Active card */}
-        <AnimatePresence mode="wait">
-          {sections
-            .filter((s) => s.id === active)
-            .map((s) => (
-              <motion.div
-                key={s.id}
-                initial={{ opacity: 0, y: 12, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                transition={{ duration: 0.22, ease: "easeOut" }}
-                className="rounded-2xl border border-slate-700 bg-slate-800/70 p-5 sm:p-6 shadow-xl"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-full bg-slate-900/70 border border-slate-700">
-                    <s.icon className={`h-5 w-5 ${s.iconColor}`} />
-                  </div>
-                  <h2 className="text-xl sm:text-2xl font-semibold text-white">
-                    {s.title}
-                  </h2>
-                </div>
-                <ul className="space-y-3 text-slate-100">
-                  {s.points.map((pt, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-400 mt-0.5 shrink-0" />
-                      <span className="leading-relaxed">{pt}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-        </AnimatePresence>
-
-        {/* Great Commission Section */}
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          <div className="lg:col-span-2 rounded-2xl border border-slate-700 bg-slate-800/70 p-5 sm:p-6 shadow-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <Globe2 className="h-5 w-5 text-sky-400" />
-              <h3 className="text-lg sm:text-xl font-semibold text-white">
-                大使命語法結構：1 個命令，3 個分詞
-              </h3>
-            </div>
-            <div className="text-slate-200 mb-4 text-sm sm:text-base leading-relaxed">
-              核心命令：<span className="text-teal-300 font-semibold">使萬民作門徒</span>
-              。三個分詞說明如何執行：去、施洗、教導。
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {commissionSteps.map((step, idx) => (
-                <motion.div
-                  key={step.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05, duration: 0.25 }}
-                  viewport={{ once: true }}
-                  className="rounded-xl border border-slate-700 bg-slate-900/60 p-4"
-                >
-                  <div className="text-sm uppercase tracking-wide text-teal-200 mb-1">
-                    Step {idx + 1}
-                  </div>
-                  <div className="text-base font-semibold text-white">
-                    {step.label}
-                  </div>
-                  <p className="text-sm text-slate-300 mt-2 leading-relaxed">
-                    {step.desc}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-slate-700 bg-slate-800/70 p-5 sm:p-6 shadow-lg">
-            <div className="flex items-center gap-2 mb-3">
-              <Anchor className="h-5 w-5 text-indigo-300" />
-              <h3 className="text-lg font-semibold text-white">核心應許</h3>
-            </div>
-            <p className="text-sm sm:text-base text-slate-200 leading-relaxed">
-              「我就常與你們同在，直到世界的末了。」（28:20）
-              <br />
-              以馬內利主題首尾呼應（1:23 ↔ 28:20），顯明耶穌的神性與持續同在。
-            </p>
-            <div className="mt-4 rounded-lg border border-slate-700 bg-slate-900/70 p-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
-              只有神能無所不在；耶穌的應許肯定祂與父、聖靈同等的權柄與同在。
-            </div>
-          </div>
-        </div>
-
-        {/* Five Discourses */}
-        <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-800/70 p-5 sm:p-6 shadow-lg">
-          <div className="flex items-center gap-2 mb-4">
-            <Layers className="h-5 w-5 text-amber-400" />
-            <h3 className="text-lg sm:text-xl font-semibold text-white">五大講論一覽</h3>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {discourses.map((d, idx) => (
-              <motion.div
-                key={d.title}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.04, duration: 0.22 }}
-                viewport={{ once: true }}
-                className="rounded-xl border border-slate-700 bg-slate-900/60 p-4"
-              >
-                <div className="text-sm text-amber-200 mb-1">Disc. {idx + 1}</div>
-                <div className="text-white font-semibold">{d.title}</div>
-                <div className="text-sm text-slate-300 mt-1">{d.theme}</div>
-              </motion.div>
-            ))}
-          </div>
-          <div className="mt-4 text-sm text-slate-200 leading-relaxed">
-            結構可能對應摩西五經，呈現耶穌為更大的先知與立法者。
-          </div>
-        </div>
-
-        {/* Discipleship */}
-        <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-800/70 p-5 sm:p-6 shadow-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <Flame className="h-5 w-5 text-rose-400" />
-            <h3 className="text-lg sm:text-xl font-semibold text-white">門徒：代價與恩典</h3>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
-              <div className="text-sm uppercase tracking-wide text-rose-200 mb-2">
-                代價
-              </div>
-              <ul className="space-y-2 text-sm text-slate-200">
-                <li>職業：捨網跟從。</li>
-                <li>居所：人子無枕頭之地。</li>
-                <li>經濟：財主被要求變賣所有。</li>
-                <li>社會義務：任憑死人埋葬死人。</li>
-                <li>生命：背起十字架。</li>
-              </ul>
-            </div>
-            <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
-              <div className="text-sm uppercase tracking-wide text-emerald-200 mb-2">
-                恩典
-              </div>
-              <ul className="space-y-2 text-sm text-slate-200">
-                <li>門徒多有小信，主仍託付使命。</li>
-                <li>主的權柄與同在，成全不完美的人。</li>
-                <li>恩典驅動的順服，而非完美表現。</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Application */}
-        <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-800/70 p-5 sm:p-6 shadow-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <HandHeart className="h-5 w-5 text-emerald-300" />
-            <h3 className="text-lg sm:text-xl font-semibold text-white">生活應用</h3>
-          </div>
-          <div className="space-y-3 text-sm sm:text-base text-slate-200 leading-relaxed">
-            <div className="flex items-start gap-2">
-              <ArrowRight className="h-4 w-4 text-emerald-300 mt-1 shrink-0" />
-              <span>
-                <strong>跨界的愛 (Going)：</strong> 思考你身邊的「萬民」與界線，採取一個具體行動去接近與祝福。
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <ArrowRight className="h-4 w-4 text-emerald-300 mt-1 shrink-0" />
-              <span>
-                <strong>作門徒的代價 (Discipling)：</strong> 辨識你仍緊握的安全感，求主恩典帶領你放下、跟隨、並教導人。
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <ArrowRight className="h-4 w-4 text-emerald-300 mt-1 shrink-0" />
-              <span>
-                <strong>以馬內利的操練 (Presence)：</strong> 在孤單或無力時，刻意思念主與你同在，靠祂的權柄繼續前行。
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <footer className="mt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-slate-300">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-teal-300" />
-            NT317 · Matthew · Lesson 0 · Introduction
-          </div>
-          <div className="flex items-center gap-2 text-teal-200 font-semibold">
-            下一步：Lesson 1
-            <ArrowRight className="h-4 w-4" />
-          </div>
-        </footer>
+    <div class="card">
+      <h3>⚓ 核心應許</h3>
+      <p class="muted">
+        「我就常與你們同在，直到世界的末了。」（28:20）<br />
+        以馬內利主題首尾呼應（1:23 ↔ 28:20），顯明耶穌的神性與持續同在。
+      </p>
+      <div style="margin-top:10px; padding:10px; border:1px solid var(--border); border-radius:10px; background:#0b1220;">
+        <small class="muted">
+          只有神能無所不在；耶穌的應許肯定祂與父、聖靈同等的權柄與同在。
+        </small>
       </div>
     </div>
-  );
-}
+
+    <!-- Five Discourses -->
+    <div class="card">
+      <h3>📚 五大講論一覽</h3>
+      <div class="grid-3" id="discourses"></div>
+      <p class="muted" style="margin-top:10px;">
+        結構可能對應摩西五經，呈現耶穌為更大的先知與立法者。
+      </p>
+    </div>
+
+    <!-- Discipleship -->
+    <div class="card">
+      <h3>🔥 門徒：代價與恩典</h3>
+      <div class="grid-2">
+        <div style="border:1px solid var(--border); border-radius:12px; padding:12px; background:#0b1220;">
+          <div class="tag" style="color:#fecdd3; border-color:#fecdd333; background:#0f172acc;">代價</div>
+          <ul class="clean">
+            <li class="point">職業：捨網跟從。</li>
+            <li class="point">居所：人子無枕頭之地。</li>
+            <li class="point">經濟：財主被要求變賣所有。</li>
+            <li class="point">社會義務：任憑死人埋葬死人。</li>
+            <li class="point">生命：背起十字架。</li>
+          </ul>
+        </div>
+        <div style="border:1px solid var(--border); border-radius:12px; padding:12px; background:#0b1220;">
+          <div class="tag" style="color:#bbf7d0; border-color:#bbf7d033; background:#0f172acc;">恩典</div>
+          <ul class="clean">
+            <li class="point">門徒多有小信，主仍託付使命。</li>
+            <li class="point">主的權柄與同在，成全不完美的人。</li>
+            <li class="point">恩典驅動的順服，而非完美表現。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application -->
+    <div class="card">
+      <h3>💚 生活應用</h3>
+      <ul class="clean">
+        <li class="point">
+          <strong>跨界的愛 (Going)：</strong>
+          思考你身邊的「萬民」與界線，採取一個具體行動去接近與祝福。
+        </li>
+        <li class="point">
+          <strong>作門徒的代價 (Discipling)：</strong>
+          辨識你仍緊握的安全感，求主恩典帶領你放下、跟隨、並教導人。
+        </li>
+        <li class="point">
+          <strong>以馬內利的操練 (Presence)：</strong>
+          在孤單或無力時，刻意思念主與你同在，靠祂的權柄繼續前行。
+        </li>
+      </ul>
+    </div>
+
+    <footer>
+      <div>✨ NT317 · Matthew · Lesson 0 · Introduction</div>
+      <div style="color:#67e8f9; font-weight:600; display:flex; align-items:center; gap:6px;">
+        下一步：Lesson 1 →
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const sections = [
+      {
+        id: "nature",
+        title: "性質與寫作目的",
+        color: "#14b8a6",
+        points: [
+          "古代傳記：不僅歷史，更有道德、神學、政治意涵。",
+          "對象：主要猶太信徒；日期：多數認為主後 70 年後。",
+          "背景：猶太信徒面臨身分張力與會堂衝突。",
+        ],
+      },
+      {
+        id: "commission",
+        title: "大使命：全書鑰匙 (28:18-20)",
+        color: "#38bdf8",
+        points: [
+          "核心命令：使萬民作門徒。",
+          "三個分詞：去、施洗、教導。",
+          "權柄與同在：天上地下權柄；以馬內利的應許。",
+        ],
+      },
+      {
+        id: "structure",
+        title: "五大講論結構",
+        color: "#fbbf24",
+        points: [
+          "5-7 登山寶訓：天國倫理。",
+          "10 差遣門徒：宣教與逼迫預備。",
+          "13 比喻：天國奧祕（已然未然）。",
+          "18 教會生活：謙卑、饒恕、紀律。",
+          "23-25 末世：審判與警醒。",
+        ],
+      },
+      {
+        id: "discipleship",
+        title: "門徒代價與恩典",
+        color: "#fb7185",
+        points: [
+          "代價：職業、居所、經濟、社會義務、甚至生命。",
+          "門徒屢顯小信，主仍託付使命。",
+          "恩典成全：主的同在使不完美的人能被用。",
+        ],
+      },
+      {
+        id: "application",
+        title: "生活應用",
+        color: "#34d399",
+        points: [
+          "Going：跨文化跨界線去愛「萬民」。",
+          "Discipling：放下安全感，跟隨與教導。",
+          "Presence：操練意識主的同在，面對孤單與無力。",
+        ],
+      },
+    ];
+
+    const commissionSteps = [
+      { label: "去 (Going)", desc: "跨越文化與界線，萬民在心中從起初就出現。" },
+      { label: "施洗 (Baptizing)", desc: "奉父、子、聖靈的名，使人歸入三一神。" },
+      { label: "教導 (Teaching)", desc: "教導遵守主一切吩咐，形成門徒群體。" },
+    ];
+
+    const discourses = [
+      { title: "5-7 登山寶訓", theme: "天國倫理" },
+      { title: "10 差遣門徒", theme: "宣教與逼迫" },
+      { title: "13 天國比喻", theme: "已然未然" },
+      { title: "18 教會生活", theme: "謙卑饒恕" },
+      { title: "23-25 末世", theme: "審判警醒" },
+    ];
+
+    const tabsEl = document.getElementById("tabs");
+    const activeCardEl = document.getElementById("active-card");
+    const stepsEl = document.getElementById("steps");
+    const discoursesEl = document.getElementById("discourses");
+
+    let activeId = "nature";
+
+    function renderTabs() {
+      tabsEl.innerHTML = "";
+      sections.forEach((sec) => {
+        const btn = document.createElement("button");
+        btn.className = "tab-btn" + (sec.id === activeId ? " active" : "");
+        btn.innerHTML = `${sec.title}`;
+        btn.onclick = () => { activeId = sec.id; renderTabs(); renderActive(); };
+        tabsEl.appendChild(btn);
+      });
+    }
+
+    function renderActive() {
+      const sec = sections.find((s) => s.id === activeId);
+      if (!sec) return;
+      activeCardEl.innerHTML = `
+        <div class="card">
+          <h3>${sec.title}</h3>
+          <ul class="clean">
+            ${sec.points.map(pt => `
+              <li class="point">
+                <span style="color:#5eead4;">✔</span>
+                <span>${pt}</span>
+              </li>
+            `).join("")}
+          </ul>
+        </div>
+      `;
+    }
+
+    function renderSteps() {
+      stepsEl.innerHTML = commissionSteps.map((s, i) => `
+        <div style="
+          border:1px solid var(--border);
+          border-radius:12px;
+          padding:12px;
+          background:#0b1220;
+        ">
+          <div class="tag">Step ${i + 1}</div>
+          <div style="font-weight:700; color:#fff;">${s.label}</div>
+          <div class="muted" style="margin-top:6px;">${s.desc}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderDiscourses() {
+      discoursesEl.innerHTML = discourses.map((d, i) => `
+        <div style="
+          border:1px solid var(--border);
+          border-radius:12px;
+          padding:12px;
+          background:#0b1220;
+        ">
+          <div class="tag">Disc. ${i + 1}</div>
+          <div style="font-weight:700; color:#fff;">${d.title}</div>
+          <div class="muted" style="margin-top:4px;">${d.theme}</div>
+        </div>
+      `).join("");
+    }
+
+    renderTabs();
+    renderActive();
+    renderSteps();
+    renderDiscourses();
+  </script>
+</body>
+</html>
