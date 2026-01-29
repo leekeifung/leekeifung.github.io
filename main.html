@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>leekeifung | Teaching Resources</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent-2: #0ea5e9;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    main {
+      width: min(960px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+    h1 { margin: 0 0 6px 0; font-size: 1.4rem; }
+    p { margin: 4px 0; color: var(--muted); }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+    h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    a.card {
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #f8fafc;
+      color: var(--text);
+      transition: transform 0.06s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      display: block;
+    }
+    a.card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
+      border-color: #bfdbfe;
+    }
+    .title { font-weight: 700; margin-bottom: 6px; }
+    .desc { color: var(--muted); font-size: 0.95rem; margin: 0; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 8px 0 16px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>leekeifung | Teaching Resources</h1>
+    <p>Quick links to course visualizations and tools.</p>
+  </header>
+
+  <section>
+    <h2><span class="badge">AMA3707</span> Complex Variables</h2>
+    <div class="links">
+      <a class="card" href="./AMA3730-nth-roots.html">
+        <div class="title">n-th Roots on the Complex Plane</div>
+        <p class="desc">Visualize n-th roots, polygon of roots, and list of values.</p>
+      </a>
+      <a class="card" href="./AMA3730-branches.html">
+        <div class="title">Branches & Cuts</div>
+        <p class="desc">Explore branch cuts for Log, √z, and z^{1/n}; interactive z-plane and w-plane.</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="badge">Christian Theology</span> (placeholder)</h2>
+    <div class="links">
+      <a class="card" href="#" aria-disabled="true">
+        <div class="title">Coming soon</div>
+        <p class="desc">Add your resources here when ready.</p>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    Hosted on GitHub Pages — <a href="https://leekeifung.github.io/" style="color:var(--accent);text-decoration:none;">leekeifung.github.io</a>
+  </footer>
+</main>
+</body>
+</html>
