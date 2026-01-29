@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AMA3730 · Complex Operations · Camera Overlay AR</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b1120;
+    --panel: rgba(15,23,42,0.78);
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --orange: #f97316;
+    --violet: #a855f7;
+    --grid: rgba(148,163,184,0.35);
+    --axis: rgba(148,163,184,0.6);
+  }
+  * { box-sizing: border-box; }
+  body, html {
+    margin: 0; width: 100%; height: 100%;
+    overflow: hidden; background: #000;
+    color: var(--text);
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  #video {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    background: #000;
+    z-index: 0;
+  }
+  #canvas {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    touch-action: none;
+  }
+  #ui {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px;
+    z-index: 2;
+  }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    pointer-events: auto;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 600;
+  }
+  .panel {
+    pointer-events: auto;
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 10px 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    max-width: 520px;
+    width: min(520px, 100%);
+  }
+  .btn {
+    pointer-events: auto;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #0ea5e9;
+    color: #0b1120;
+    box-shadow: 0 10px 24px rgba(14,165,233,0.35);
+    transition: transform 0.08s ease, box-shadow 0.12s ease;
+  }
+  .btn:active { transform: translateY(1px); box-shadow: 0 6px 16px rgba(14,165,233,0.35); }
+  .vals { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+  .valbox { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 8px 10px; }
+  .valbox .label { color: var(--muted); font-size: 0.9rem; }
+  .valbox .value { font-family: "SFMono-Regular", ui-monospace, monospace; font-weight: 700; }
+  #unsupported {
+    position: fixed; inset: 0; display: grid; place-items: center;
+    background: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.08), transparent 35%), #0b1120;
+    z-index: 3; padding: 20px; text-align: center;
+  }
+  #unsupported .card {
+    max-width: 460px;
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+  }
+  #errMsg { color: var(--muted); margin: 6px 0 0; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<video id="video" playsinline muted autoplay></video>
+<canvas id="canvas"></canvas>
+
+<div id="ui">
+  <div class="row">
+    <div class="pill">AMA3730 · Complex Ops · Camera Overlay</div>
+    <button class="btn" id="startBtn">Start camera</button>
+    <button class="btn" id="retryBtn" style="display:none;">Retry camera</button>
+  </div>
+  <div class="row" style="align-items:flex-end; gap:10px; flex-wrap:wrap;">
+    <div class="panel" style="flex:1 1 320px;">
+      <div style="font-weight:700; margin-bottom:6px;">Instructions</div>
+      <div style="color:var(--muted); font-size:0.95rem; line-height:1.5;">
+        • Tap anywhere to place the complex plane.<br>
+        • Drag blue/orange arrow tips to change \(z_1\), \(z_2\). Violet is \(z_1+z_2\).<br>
+        • Pinch to zoom the scale. Works on iOS Safari/Chrome (camera overlay; no WebXR).<br>
+      </div>
+    </div>
+    <div class="panel" style="flex:1 1 220px;">
+      <div class="vals">
+        <div class="valbox"><div class="label">z₁</div><div class="value" id="v1">1.00 + 0.00i</div></div>
+        <div class="valbox"><div class="label">z₂</div><div class="value" id="v2">0.00 + 1.00i</div></div>
+        <div class="valbox"><div class="label">z₁+z₂</div><div class="value" id="v3">1.00 + 1.00i</div></div>
+      </div>
+    </div>
+    <div class="row" style="gap:8px;">
+      <button class="btn" id="resetBtn">Reset</button>
+      <button class="btn" id="randBtn">Random z₁,z₂</button>
+    </div>
+  </div>
+</div>
+
+<div id="unsupported" hidden>
+  <div class="card">
+    <h2 style="margin:0 0 8px;">Camera not available</h2>
+    <p style="color:var(--muted); margin:4px 0 10px;">We couldn’t access the camera. Please allow camera permission and ensure you’re on HTTPS.</p>
+    <p style="color:var(--accent); margin:0;">iOS Safari/Chrome supported for this overlay mode. (No WebXR required.)</p>
+    <p id="errMsg"></p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const startBtn = document.getElementById('startBtn');
+  const retryBtn = document.getElementById('retryBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const randBtn = document.getElementById('randBtn');
+  const unsupported = document.getElementById('unsupported');
+  const errMsg = document.getElementById('errMsg');
+  const v1 = document.getElementById('v1');
+  const v2 = document.getElementById('v2');
+  const v3 = document.getElementById('v3');
+
+  let W = window.innerWidth, H = window.innerHeight;
+  canvas.width = W; canvas.height = H;
+
+  // Complex state
+  let z1 = { re: 1, im: 0 };
+  let z2 = { re: 0, im: 1 };
+  let anchor = { x: W/2, y: H*0.6 };
+  let scale = Math.min(W, H) / 6; // px per unit
+  let dragging = null; // 'z1' | 'z2' | null
+  let dragMoved = false;
+  let lastTouchDist = null;
+
+  const fmt = (x) => (Math.abs(x) < 1e-3 ? '0.00' : x.toFixed(2));
+  function updateVals() {
+    const sum = { re: z1.re + z2.re, im: z1.im + z2.im };
+    v1.textContent = `${fmt(z1.re)} + ${fmt(z1.im)}i`;
+    v2.textContent = `${fmt(z2.re)} + ${fmt(z2.im)}i`;
+    v3.textContent = `${fmt(sum.re)} + ${fmt(sum.im)}i`;
+  }
+  updateVals();
+
+  function toScreen(z) {
+    return { x: anchor.x + z.re * scale, y: anchor.y - z.im * scale };
+  }
+  function toComplex(pt) {
+    return { re: (pt.x - anchor.x)/scale, im: (anchor.y - pt.y)/scale };
+  }
+
+  function drawArrow(x0,y0,x1,y1,color) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x0,y0);
+    ctx.lineTo(x1,y1);
+    ctx.stroke();
+    const dx = x1 - x0, dy = y1 - y0;
+    const len = Math.hypot(dx,dy);
+    if (len < 8) return;
+    const ux = dx/len, uy = dy/len;
+    const size = 10;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - ux*size + uy*size*0.6, y1 - uy*size - ux*size*0.6);
+    ctx.lineTo(x1 - ux*size - uy*size*0.6, y1 - uy*size + ux*size*0.6);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawHandle(x,y,color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x,y, 9, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = '#0b1120';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  function drawGrid() {
+    const extent = 4; // +- units
+    const step = 1;
+    ctx.strokeStyle = 'rgba(148,163,184,0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let k=-extent; k<=extent; k+=step) {
+      // vertical lines (x = k)
+      let x = anchor.x + k*scale;
+      ctx.moveTo(x, anchor.y - extent*scale);
+      ctx.lineTo(x, anchor.y + extent*scale);
+      // horizontal lines (y = k)
+      let y = anchor.y - k*scale;
+      ctx.moveTo(anchor.x - extent*scale, y);
+      ctx.lineTo(anchor.x + extent*scale, y);
+    }
+    ctx.stroke();
+    // axes
+    ctx.strokeStyle = 'rgba(148,163,184,0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(anchor.x - extent*scale, anchor.y);
+    ctx.lineTo(anchor.x + extent*scale, anchor.y);
+    ctx.moveTo(anchor.x, anchor.y - extent*scale);
+    ctx.lineTo(anchor.x, anchor.y + extent*scale);
+    ctx.stroke();
+    // origin dot
+    ctx.fillStyle = '#e2e8f0';
+    ctx.beginPath();
+    ctx.arc(anchor.x, anchor.y, 3, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function render() {
+    ctx.clearRect(0,0,W,H);
+    drawGrid();
+    const p1 = toScreen(z1);
+    const p2 = toScreen(z2);
+    const ps = toScreen({ re: z1.re + z2.re, im: z1.im + z2.im });
+
+    // arrows
+    drawArrow(anchor.x, anchor.y, p1.x, p1.y, '#38bdf8');
+    drawArrow(anchor.x, anchor.y, p2.x, p2.y, '#f97316');
+    drawArrow(anchor.x, anchor.y, ps.x, ps.y, '#a855f7');
+
+    // handles
+    drawHandle(p1.x, p1.y, '#38bdf8');
+    drawHandle(p2.x, p2.y, '#f97316');
+    drawHandle(ps.x, ps.y, '#a855f7');
+  }
+
+  function dist(a,b) { return Math.hypot(a.x-b.x, a.y-b.y); }
+
+  function handlePointerDown(x,y) {
+    dragMoved = false;
+    const p1 = toScreen(z1);
+    const p2 = toScreen(z2);
+    const hitR = 24;
+    if (dist({x,y}, p1) < hitR) dragging = 'z1';
+    else if (dist({x,y}, p2) < hitR) dragging = 'z2';
+    else dragging = null;
+  }
+
+  function handlePointerMove(x,y) {
+    if (dragging === 'z1') {
+      z1 = toComplex({x,y});
+      updateVals();
+    } else if (dragging === 'z2') {
+      z2 = toComplex({x,y});
+      updateVals();
+    }
+    render();
+    dragMoved = true;
+  }
+
+  function handlePointerUp(x,y) {
+    if (!dragMoved && !dragging) {
+      // tap: move anchor
+      anchor = { x, y };
+    }
+    dragging = null;
+    lastTouchDist = null;
+    render();
+  }
+
+  // Touch events (pinch + drag)
+  let touches = new Map();
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    for (const t of e.changedTouches) touches.set(t.identifier, { x:t.clientX, y:t.clientY });
+    if (touches.size === 1) {
+      const t = e.changedTouches[0];
+      handlePointerDown(t.clientX, t.clientY);
+    } else if (touches.size === 2) {
+      const [a,b] = [...touches.values()];
+      lastTouchDist = dist(a,b);
+    }
+  }, { passive:false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    for (const t of e.changedTouches) touches.set(t.identifier, { x:t.clientX, y:t.clientY });
+    if (touches.size === 1) {
+      const t = e.changedTouches[0];
+      handlePointerMove(t.clientX, t.clientY);
+    } else if (touches.size === 2) {
+      const [a,b] = [...touches.values()];
+      const d = dist(a,b);
+      if (lastTouchDist && d > 0) {
+        const factor = d / lastTouchDist;
+        scale = Math.min(Math.max(scale * factor, 20), 600);
+        lastTouchDist = d;
+        render();
+      }
+    }
+  }, { passive:false });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    for (const t of e.changedTouches) touches.delete(t.identifier);
+    if (touches.size === 0) {
+      const t = e.changedTouches[0];
+      handlePointerUp(t.clientX, t.clientY);
+    }
+    if (touches.size === 1) {
+      lastTouchDist = null;
+    }
+  }, { passive:false });
+
+  // Mouse (desktop fallback)
+  let mouseDown = false;
+  canvas.addEventListener('mousedown', (e) => {
+    mouseDown = true;
+    handlePointerDown(e.clientX, e.clientY);
+  });
+  canvas.addEventListener('mousemove', (e) => {
+    if (!mouseDown) return;
+    handlePointerMove(e.clientX, e.clientY);
+  });
+  canvas.addEventListener('mouseup', (e) => {
+    if (!mouseDown) return;
+    mouseDown = false;
+    handlePointerUp(e.clientX, e.clientY);
+  });
+
+  function showUnsupported(msg) {
+    unsupported.hidden = false;
+    errMsg.textContent = msg || '';
+  }
+
+  function hideUnsupported() {
+    unsupported.hidden = true;
+    errMsg.textContent = '';
+  }
+
+  let currentStream = null;
+
+  async function startCamera() {
+    // Stop previous stream if any
+    if (currentStream) {
+      currentStream.getTracks().forEach(t => t.stop());
+      currentStream = null;
+    }
+
+    const constraintsList = [
+      { video: { facingMode: { ideal: "environment" } }, audio: false },
+      { video: true, audio: false },
+    ];
+
+    try {
+      let stream = null, lastErr = null;
+      for (const c of constraintsList) {
+        try { stream = await navigator.mediaDevices.getUserMedia(c); break; }
+        catch (e) { lastErr = e; }
+      }
+      if (!stream) throw lastErr || new Error('Unknown camera error');
+      currentStream = stream;
+      video.srcObject = stream;
+      video.setAttribute('playsinline','');
+      video.setAttribute('autoplay','');
+      video.setAttribute('muted','');
+      await video.play().catch(()=>{});
+      hideUnsupported();
+      startBtn.textContent = "Camera on";
+      startBtn.disabled = true;
+      startBtn.style.opacity = 0.7;
+      retryBtn.style.display = 'inline-flex';
+    } catch (err) {
+      console.warn('Camera error', err);
+      showUnsupported(`${err.name || 'Error'}: ${err.message || err}`);
+      startBtn.textContent = "Start camera";
+      startBtn.disabled = false;
+      startBtn.style.opacity = 1;
+      retryBtn.style.display = 'inline-flex';
+    }
+  }
+
+  startBtn.addEventListener('click', () => startCamera());
+  retryBtn.addEventListener('click', () => startCamera());
+
+  // Buttons
+  resetBtn.addEventListener('click', () => {
+    z1 = { re: 1, im: 0 };
+    z2 = { re: 0, im: 1 };
+    anchor = { x: W/2, y: H*0.6 };
+    scale = Math.min(W, H)/6;
+    updateVals(); render();
+  });
+  randBtn.addEventListener('click', () => {
+    const rnd = () => +( (Math.random()*2 - 1) * 2 ).toFixed(2); // roughly [-2,2]
+    z1 = { re: rnd(), im: rnd() };
+    z2 = { re: rnd(), im: rnd() };
+    updateVals(); render();
+  });
+
+  // Resize
+  window.addEventListener('resize', () => {
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+    render();
+  });
+
+  // Stop camera on page hide (optional cleanup)
+  window.addEventListener('pagehide', () => {
+    if (currentStream) currentStream.getTracks().forEach(t => t.stop());
+  });
+
+  // Initial render
+  render();
+})();
+</script>
+</body>
+</html>
