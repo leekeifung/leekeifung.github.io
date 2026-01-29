@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NT317 · Matthew · Lesson 1 · Introduction</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827cc;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #cbd5e1;
+      --teal: #14b8a6;
+      --teal-soft: #0d948833;
+      --blue: #38bdf8;
+      --amber: #fbbf24;
+      --rose: #fb7185;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", -apple-system, system-ui, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 20% 20%, #1e293b 0, #0f172a 40%), #0f172a;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #134e4a33;
+      color: #5eead4;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 10px 0 8px;
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+    }
+    .lead {
+      max-width: 820px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 18px;
+    }
+    .tag-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      color: #e0f2fe;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .muted { color: var(--muted); }
+    .list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .list li {
+      margin-bottom: 8px;
+      padding-left: 14px;
+      position: relative;
+    }
+    .list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #67e8f9;
+    }
+    .grid-2 {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #0b1220;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0b1220;
+      color: var(--text);
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn:hover { border-color: #22d3ee; color: #e0f2fe; }
+    .btn-primary {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+      color: #ecfeff;
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: #67e8f9;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    footer {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="badge">✨ NT317 · Matthew · Lesson 1</div>
+      <h1>馬太福音導論 · 第 1 課｜耶穌的家譜與降生</h1>
+      <p class="lead">
+        聚焦馬太福音 1–2 章：家譜的神學旨意、童女懷孕與以馬內利、約瑟的義、博士與希律的對比，以及「新出埃及」與「拿撒勒人」的應驗。
+      </p>
+      <div class="tags">
+        <div class="tag-pill">家譜</div>
+        <div class="tag-pill">童女懷孕</div>
+        <div class="tag-pill">以馬內利</div>
+        <div class="tag-pill">博士 vs 希律</div>
+        <div class="tag-pill">新出埃及</div>
+        <div class="tag-pill">拿撒勒人 / Netser</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <h3>🌱 核心脈絡</h3>
+      <ul class="list">
+        <li><strong>家譜作為「創世記」開頭：</strong> 1:1 直譯「耶穌基督的創世記」，預示新創造與大衛後裔的王權。</li>
+        <li><strong>四位女性的驚喜：</strong> 他瑪、喇合、路得、烏利亞的妻子——外邦與邊緣人的納入，預告「萬民」救恩。</li>
+        <li><strong>以馬內利應驗：</strong> 童女懷孕成就以賽亞 7:14，神與我們同在的終極實現。</li>
+        <li><strong>約瑟的義：</strong> 憐憫與自制的義，選擇遮蓋而不羞辱。</li>
+        <li><strong>博士與希律：</strong> 外邦敬拜者 vs 名義猶太王的敵意；知識若無敬拜，易成冷漠。</li>
+        <li><strong>新的出埃及：</strong> 逃往埃及與歸回，重演以色列歷史，耶穌作新摩西。</li>
+        <li><strong>拿撒勒人：</strong> 可能指 Netser（枝子，賽 11:1）與卑微出身的雙關。</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>📌 關鍵經文與主題</h3>
+      <div class="grid-2">
+        <div>
+          <div class="eyebrow">家譜與外邦使命</div>
+          <ul class="list">
+            <li>三個十四代，時候滿足的線索。</li>
+            <li>外邦與邊緣女性預告「使萬民作門徒」。</li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow">以馬內利</div>
+          <ul class="list">
+            <li>賽 7:14 的終極應驗：神親臨同在。</li>
+            <li>開頭 1:23 與結尾 28:20 成為同在的括號。</li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow">約瑟的義</div>
+          <ul class="list">
+            <li>義＝憐憫＋自制，遮蓋而非羞辱。</li>
+            <li>順服夢中指示，接納神的計畫。</li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow">敬拜的對比</div>
+          <ul class="list">
+            <li>博士遠行敬拜；希律恐懼殺戮。</li>
+            <li>文士知而不行：知識若無敬拜行動即冷漠。</li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow">新出埃及</div>
+          <ul class="list">
+            <li>何西阿 11:1 應驗：我從埃及召出我的兒子。</li>
+            <li>耶穌重演以色列故事，顯出新摩西身份。</li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow">拿撒勒人</div>
+          <ul class="list">
+            <li>Netser（枝子）意象，賽 11:1。</li>
+            <li>卑微小鎮，符合僕人彌賽亞的形象。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔥 生活應用</h3>
+      <ul class="list">
+        <li><strong>接納家譜中的意外：</strong> 感謝神能用破碎背景成就計畫，主動關心被忽略的人。</li>
+        <li><strong>學習約瑟的義：</strong> 衝突時選擇憐憫遮蓋，不以羞辱為目的。</li>
+        <li><strong>成為尋求者：</strong> 像博士般付代價敬拜，而非文士式的冷漠旁觀。</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🧭 導覽</h3>
+      <div class="cta-row">
+        <a class="btn" href="./MatthewLesson0.html">← 回到 Lesson 0 簡介</a>
+        <a class="btn btn-primary" href="./MatthewLesson1.html">前往 Lesson 1 互動版（練習）</a>
+        <a class="btn" href="./Lesson2.html">下一步：Lesson 2 →</a>
+      </div>
+    </div>
+
+    <footer>
+      <div>✨ NT317 · Matthew · Lesson 1 · Introduction</div>
+      <div style="color:#67e8f9; font-weight:600;">下一步：Lesson 2 →</div>
+    </footer>
+  </div>
+</body>
+</html>
