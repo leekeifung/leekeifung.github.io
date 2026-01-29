@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Complex Plane – n-th Roots</title>
+<style>
+    :root {
+        color-scheme: light;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+    }
+    body {
+        margin: 0;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    h1 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .panel {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+    }
+    .controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        align-items: end;
+    }
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.9rem;
+        color: #334155;
+        font-weight: 600;
+    }
+    input, select, button {
+        height: 38px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 0 10px;
+        font-size: 0.95rem;
+        background: white;
+        color: #0f172a;
+    }
+    input:focus, select:focus {
+        outline: 2px solid #2563eb;
+        outline-offset: 1px;
+    }
+    button {
+        cursor: pointer;
+        background: linear-gradient(120deg, #2563eb, #1d4ed8);
+        color: white;
+        font-weight: 700;
+        border: none;
+        transition: transform 0.05s ease, box-shadow 0.1s ease;
+    }
+    button:active {
+        transform: translateY(1px);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+    }
+    canvas {
+        width: 100%;
+        height: 70vh;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        display: block;
+    }
+    .flex-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .roots-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+        font-size: 0.9rem;
+        color: #0f172a;
+    }
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 600;
+    }
+    .badge {
+        display: inline-block;
+        min-width: 22px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: #1d4ed8;
+        color: white;
+        font-size: 0.75rem;
+        text-align: center;
+    }
+    .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #334155;
+    }
+    .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    @media (max-width: 600px) {
+        canvas { height: 60vh; }
+    }
+</style>
+</head>
+<body>
+    <div class="panel">
+        <h1>n-th Roots on the Complex Plane</h1>
+        <div class="controls" style="margin-top:10px;">
+            <label>
+                Real part (a)
+                <input id="real" type="number" step="0.1" value="1.0" />
+            </label>
+            <label>
+                Imag part (b)
+                <input id="imag" type="number" step="0.1" value="0.0" />
+            </label>
+            <label>
+                n (root order)
+                <input id="order" type="number" min="2" max="24" step="1" value="5" />
+            </label>
+            <label>
+                Angle unit
+                <select id="angleUnit">
+                    <option value="deg">Degrees</option>
+                    <option value="rad">Radians</option>
+                </select>
+            </label>
+            <div class="flex-row">
+                <button id="update">Update</button>
+                <button id="random" style="background:linear-gradient(120deg,#059669,#047857);">Random example</button>
+                <button id="reset" style="background:linear-gradient(120deg,#475569,#334155);">Reset view</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="legend" style="margin-bottom:8px;">
+            <span><span class="dot" style="background:#ef4444"></span> Original z</span>
+            <span><span class="dot" style="background:#2563eb"></span> n-th roots</span>
+            <span><span class="dot" style="background:#facc15"></span> Polygon through roots</span>
+        </div>
+        <canvas id="plane"></canvas>
+    </div>
+
+    <div class="panel">
+        <div class="chip">Roots list</div>
+        <ul class="roots-list" id="rootsList" style="margin-top:10px; line-height:1.6;"></ul>
+    </div>
+
+<script>
+(() => {
+    const canvas = document.getElementById('plane');
+    const ctx = canvas.getContext('2d');
+
+    const realInput = document.getElementById('real');
+    const imagInput = document.getElementById('imag');
+    const orderInput = document.getElementById('order');
+    const angleUnit = document.getElementById('angleUnit');
+    const rootsList = document.getElementById('rootsList');
+
+    const btnUpdate = document.getElementById('update');
+    const btnRandom = document.getElementById('random');
+    const btnReset  = document.getElementById('reset');
+
+    // State
+    let z = { a: 1, b: 0 };
+    let n = 5;
+    let scale = 80;      // pixels per unit (will adapt)
+    let center = { x: 0, y: 0 };
+    let deviceRatio = window.devicePixelRatio || 1;
+
+    function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width  = rect.width  * deviceRatio;
+        canvas.height = rect.height * deviceRatio;
+        ctx.scale(deviceRatio, deviceRatio);
+        center.x = rect.width / 2;
+        center.y = rect.height / 2;
+    }
+
+    function polar(z) {
+        const r = Math.hypot(z.a, z.b);
+        let theta = Math.atan2(z.b, z.a); // radians in (-π, π]
+        if (theta < 0) theta += 2 * Math.PI;
+        return { r, theta };
+    }
+
+    function computeRoots(z, n) {
+        const { r, theta } = polar(z);
+        const rootMag = Math.pow(r, 1 / n);
+        const roots = [];
+        for (let k = 0; k < n; k++) {
+            const ang = (theta + 2 * Math.PI * k) / n;
+            roots.push({
+                k,
+                x: rootMag * Math.cos(ang),
+                y: rootMag * Math.sin(ang),
+                r: rootMag,
+                theta: ang
+            });
+        }
+        return roots;
+    }
+
+    function fitScale(roots, z) {
+        // Determine max radius to fit comfortably
+        let maxR = Math.max(Math.hypot(z.a, z.b), 1);
+        for (const p of roots) {
+            maxR = Math.max(maxR, Math.hypot(p.x, p.y));
+        }
+        const rect = canvas.getBoundingClientRect();
+        const margin = 0.9; // leave 10% margin
+        const maxPixels = Math.min(rect.width, rect.height) * 0.5 * margin;
+        const newScale = maxPixels / (maxR || 1);
+        // clamp scale for readability
+        scale = Math.max(30, Math.min(newScale, 200));
+    }
+
+    function toCanvas(x, y) {
+        return {
+            x: center.x + x * scale,
+            y: center.y - y * scale
+        };
+    }
+
+    function drawGrid() {
+        ctx.save();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#e2e8f0';
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width, h = rect.height;
+        const maxXUnits = Math.ceil(w / (2 * scale));
+        const maxYUnits = Math.ceil(h / (2 * scale));
+        ctx.beginPath();
+        for (let i = -maxXUnits; i <= maxXUnits; i++) {
+            const cx = toCanvas(i, 0).x;
+            ctx.moveTo(cx, 0);
+            ctx.lineTo(cx, h);
+        }
+        for (let j = -maxYUnits; j <= maxYUnits; j++) {
+            const cy = toCanvas(0, j).y;
+            ctx.moveTo(0, cy);
+            ctx.lineTo(w, cy);
+        }
+        ctx.stroke();
+        // Axes
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        // x-axis
+        ctx.moveTo(0, center.y);
+        ctx.lineTo(w, center.y);
+        // y-axis
+        ctx.moveTo(center.x, 0);
+        ctx.lineTo(center.x, h);
+        ctx.stroke();
+        // Axis arrows
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(w - 12, center.y - 4);
+        ctx.lineTo(w, center.y);
+        ctx.lineTo(w - 12, center.y + 4);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(center.x - 4, 12);
+        ctx.lineTo(center.x, 0);
+        ctx.lineTo(center.x + 4, 12);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawPoint(x, y, color, radius = 6, stroke = '#0f172a') {
+        const p = toCanvas(x, y);
+        ctx.save();
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 1.5;
+        ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawPolygon(points, color) {
+        if (points.length === 0) return;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        const p0 = toCanvas(points[0].x, points[0].y);
+        ctx.moveTo(p0.x, p0.y);
+        for (let i = 1; i < points.length; i++) {
+            const p = toCanvas(points[i].x, points[i].y);
+            ctx.lineTo(p.x, p.y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function formatAngle(theta) {
+        if (angleUnit.value === 'deg') {
+            const deg = theta * 180 / Math.PI;
+            return deg.toFixed(2) + '°';
+        }
+        return theta.toFixed(4) + ' rad';
+    }
+
+    function renderList(roots, z, n) {
+        const pol = polar(z);
+        const mag = pol.r.toFixed(4);
+        const ang = formatAngle(pol.theta);
+        let html = '';
+        html += `<li><strong>z</strong> = ${z.a.toFixed(3)} + ${z.b.toFixed(3)}i &nbsp; |z| = ${mag}, arg(z) = ${ang}</li>`;
+        html += `<li><strong>n</strong> = ${n}, |z|^{1/n} = ${Math.pow(pol.r, 1/n).toFixed(4)}</li>`;
+        html += `<li style="margin-top:6px;"><strong>Roots (k = 0 … ${n-1}):</strong></li>`;
+        roots.forEach(r => {
+            html += `<li><span class="badge">${r.k}</span> ` +
+                `= ${r.x.toFixed(4)} + ${r.y.toFixed(4)}i &nbsp; |w| = ${r.r.toFixed(4)}, arg = ${formatAngle(r.theta)}</li>`;
+        });
+        rootsList.innerHTML = html;
+    }
+
+    function draw() {
+        const rect = canvas.getBoundingClientRect();
+        ctx.clearRect(0, 0, rect.width, rect.height);
+
+        const roots = computeRoots(z, n);
+        fitScale(roots, z);
+
+        drawGrid();
+
+        // Polygon through roots
+        drawPolygon(roots, '#facc15');
+
+        // Roots
+        roots.forEach(r => drawPoint(r.x, r.y, '#2563eb', 5, '#1d4ed8'));
+
+        // Original point z
+        drawPoint(z.a, z.b, '#ef4444', 7, '#b91c1c');
+
+        renderList(roots, z, n);
+    }
+
+    function updateFromInputs() {
+        const a = parseFloat(realInput.value);
+        const b = parseFloat(imagInput.value);
+        const order = parseInt(orderInput.value, 10);
+        if (!Number.isFinite(a) || !Number.isFinite(b)) return;
+        if (!Number.isInteger(order) || order < 2 || order > 24) return;
+        z = { a, b };
+        n = order;
+        draw();
+    }
+
+    // Event listeners
+    btnUpdate.addEventListener('click', updateFromInputs);
+    realInput.addEventListener('change', updateFromInputs);
+    imagInput.addEventListener('change', updateFromInputs);
+    orderInput.addEventListener('change', updateFromInputs);
+    angleUnit.addEventListener('change', draw);
+
+    btnRandom.addEventListener('click', () => {
+        // random z in ring [0.5, 3], random angle
+        const r = 0.5 + Math.random() * 2.5;
+        const theta = Math.random() * 2 * Math.PI;
+        const a = r * Math.cos(theta);
+        const b = r * Math.sin(theta);
+        const order = 2 + Math.floor(Math.random() * 7); // 2..8
+        realInput.value = a.toFixed(2);
+        imagInput.value = b.toFixed(2);
+        orderInput.value = order;
+        updateFromInputs();
+    });
+
+    btnReset.addEventListener('click', () => {
+        scale = 80;
+        realInput.value = '1.0';
+        imagInput.value = '0.0';
+        orderInput.value = '5';
+        angleUnit.value = 'deg';
+        z = { a: 1, b: 0 };
+        n = 5;
+        draw();
+    });
+
+    window.addEventListener('resize', () => {
+        // Reset transform before resize to avoid compound scaling
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        resizeCanvas();
+        draw();
+    });
+
+    // Init
+    resizeCanvas();
+    draw();
+})();
+</script>
+</body>
+</html>
