@@ -96,6 +96,7 @@
     padding: 18px 20px;
     box-shadow: 0 18px 50px rgba(0,0,0,0.45);
   }
+  #errMsg { color: var(--muted); margin: 6px 0 0; white-space: pre-wrap; }
 </style>
 </head>
 <body>
@@ -106,6 +107,7 @@
   <div class="row">
     <div class="pill">AMA3730 · Complex Ops · Camera Overlay</div>
     <button class="btn" id="startBtn">Start camera</button>
+    <button class="btn" id="retryBtn" style="display:none;">Retry camera</button>
   </div>
   <div class="row" style="align-items:flex-end; gap:10px; flex-wrap:wrap;">
     <div class="panel" style="flex:1 1 320px;">
@@ -113,7 +115,7 @@
       <div style="color:var(--muted); font-size:0.95rem; line-height:1.5;">
         • Tap anywhere to place the complex plane.<br>
         • Drag blue/orange arrow tips to change \(z_1\), \(z_2\). Violet is \(z_1+z_2\).<br>
-        • Pinch to zoom the scale. Works on iOS Safari/Chrome (no WebXR needed).<br>
+        • Pinch to zoom the scale. Works on iOS Safari/Chrome (camera overlay; no WebXR).<br>
       </div>
     </div>
     <div class="panel" style="flex:1 1 220px;">
@@ -135,6 +137,7 @@
     <h2 style="margin:0 0 8px;">Camera not available</h2>
     <p style="color:var(--muted); margin:4px 0 10px;">We couldn’t access the camera. Please allow camera permission and ensure you’re on HTTPS.</p>
     <p style="color:var(--accent); margin:0;">iOS Safari/Chrome supported for this overlay mode. (No WebXR required.)</p>
+    <p id="errMsg"></p>
   </div>
 </div>
 
@@ -144,9 +147,11 @@
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   const startBtn = document.getElementById('startBtn');
+  const retryBtn = document.getElementById('retryBtn');
   const resetBtn = document.getElementById('resetBtn');
   const randBtn = document.getElementById('randBtn');
   const unsupported = document.getElementById('unsupported');
+  const errMsg = document.getElementById('errMsg');
   const v1 = document.getElementById('v1');
   const v2 = document.getElementById('v2');
   const v3 = document.getElementById('v3');
@@ -203,7 +208,7 @@
   function drawHandle(x,y,color) {
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.arc(x,y, nine, 0, Math.PI*2);
+    ctx.arc(x,y,  nine, 0, Math.PI*2);
     ctx.fill();
     ctx.strokeStyle = '#0b1120';
     ctx.lineWidth = 2;
@@ -263,7 +268,7 @@
 
   function dist(a,b) { return Math.hypot(a.x-b.x, a.y-b.y); }
 
-  function handlePointerDown(x,y, id, isTouch) {
+  function handlePointerDown(x,y) {
     dragMoved = false;
     const p1 = toScreen(z1);
     const p2 = toScreen(z2);
@@ -355,24 +360,57 @@
     handlePointerUp(e.clientX, e.clientY);
   });
 
-  // Camera
-  async function startCamera() {
+  function showUnsupported(msg) {
+    unsupported.hidden = false;
+    errMsg.textContent = msg || '';
+  }
+
+  function hideUnsupported() {
+    unsupported.hidden = true;
+    errMsg.textContent = '';
+  }
+
+  let currentStream = null;
+
+  async function startCamera({ preferRear = true } = {}) {
+    // Stop previous stream if any
+    if (currentStream) {
+      currentStream.getTracks().forEach(t => t.stop());
+      currentStream = null;
+    }
+
+    const rearConstraint = { video: { facingMode: preferRear ? { ideal: "environment" } : { ideal: "user" } }, audio: false };
+    const altConstraint  = { video: { facingMode: { ideal: "user" } }, audio: false };
+
+    const tryGet = async (constraint) => {
+      return navigator.mediaDevices.getUserMedia(constraint);
+    };
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
-        audio: false
-      });
+      const stream = await tryGet(rearConstraint).catch(() => tryGet(altConstraint));
+      currentStream = stream;
       video.srcObject = stream;
-      unsupported.hidden = true;
+      video.setAttribute('playsinline','');
+      video.setAttribute('autoplay','');
+      video.setAttribute('muted','');
+      await video.play().catch(()=>{});
+      hideUnsupported();
       startBtn.textContent = "Camera on";
       startBtn.disabled = true;
       startBtn.style.opacity = 0.7;
+      retryBtn.style.display = 'inline-flex';
     } catch (err) {
       console.warn('Camera error', err);
-      unsupported.hidden = false;
+      showUnsupported(`${err.name || 'Error'}: ${err.message || 'Cannot access camera'}`);
+      startBtn.textContent = "Start camera";
+      startBtn.disabled = false;
+      startBtn.style.opacity = 1;
+      retryBtn.style.display = 'inline-flex';
     }
   }
-  startBtn.addEventListener('click', startCamera);
+
+  startBtn.addEventListener('click', () => startCamera({ preferRear:true }));
+  retryBtn.addEventListener('click', () => startCamera({ preferRear:true }));
 
   // Buttons
   resetBtn.addEventListener('click', () => {
