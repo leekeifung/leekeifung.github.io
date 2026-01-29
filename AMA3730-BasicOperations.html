@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Complex Operations Visualizer</title>
+<style>
+:root {
+  color-scheme: light;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
+.panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.06);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 0.9rem; color: #334155; font-weight: 600;
+}
+input, select, button {
+  height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 0.95rem;
+  background: #fff; color: #0f172a;
+}
+input:focus, select:focus {
+  outline: 2px solid #2563eb; outline-offset: 1px;
+}
+button {
+  cursor: pointer;
+  background: linear-gradient(120deg, #2563eb, #1d4ed8);
+  color: #fff; font-weight: 700; border: none;
+  transition: transform 0.05s ease, box-shadow 0.1s ease;
+}
+button:active { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.15); }
+.small { font-size: 0.88rem; color: #475569; }
+.flex { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+canvas {
+  width: 100%; aspect-ratio: 1 / 1;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  display: block;
+}
+.legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.9rem; color: #334155; }
+.dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.mono { font-family: "SFMono-Regular", Consolas, Menlo, monospace; }
+@media (max-width: 640px) { canvas { aspect-ratio: 1 / 1; } }
+</style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Complex Operations on the Plane</h1>
+    <div class="grid" style="margin-top:8px;">
+      <label>z₁ real (a₁)<input id="a1" type="number" step="0.1" value="1.0"></label>
+      <label>z₁ imag (b₁)<input id="b1" type="number" step="0.1" value="1.0"></label>
+      <label>z₂ real (a₂)<input id="a2" type="number" step="0.1" value="1.0"></label>
+      <label>z₂ imag (b₂)<input id="b2" type="number" step="0.1" value="0.0"></label>
+      <label>Operation
+        <select id="op">
+          <option value="add">z₁ + z₂ (addition)</option>
+          <option value="sub">z₁ − z₂ (subtraction)</option>
+          <option value="mul">z₁ · z₂ (multiplication)</option>
+          <option value="div">z₁ / z₂ (division)</option>
+          <option value="mod1">|z₁| (modulus of z₁)</option>
+          <option value="mod2">|z₂| (modulus of z₂)</option>
+          <option value="conj1">conj(z₁)</option>
+          <option value="conj2">conj(z₂)</option>
+        </select>
+      </label>
+      <div class="flex" style="padding-top:4px;">
+        <button id="update">Update</button>
+        <button id="random" style="background:linear-gradient(120deg,#059669,#047857);">Random</button>
+        <button id="reset" style="background:linear-gradient(120deg,#475569,#334155);">Reset</button>
+      </div>
+      <div class="flex">
+        <label style="flex-direction:row; align-items:center; gap:8px; font-weight:600; color:#334155;">
+          <input id="snap" type="checkbox"> Snap to unit circle (z₁ & z₂)
+        </label>
+        <label style="flex-direction:row; align-items:center; gap:8px; font-weight:600; color:#334155;">
+          <input id="showPar" type="checkbox" checked> Show parallelogram (add/sub)
+        </label>
+      </div>
+    </div>
+    <div class="small" style="margin-top:6px;">Drag on the canvas to move z₁ (red) or z₂ (blue). Closest point to cursor will be grabbed.</div>
+  </div>
+
+  <div class="panel">
+    <div class="legend" style="margin-bottom:6px;">
+      <span><span class="dot" style="background:#ef4444"></span> z₁</span>
+      <span><span class="dot" style="background:#2563eb"></span> z₂</span>
+      <span><span class="dot" style="background:#22c55e"></span> result</span>
+      <span><span class="dot" style="background:#f59e0b"></span> parallelogram helper</span>
+    </div>
+    <canvas id="cnv"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="mono" id="info" style="line-height:1.55;"></div>
+  </div>
+
+<script>
+(() => {
+  const cnv = document.getElementById('cnv');
+  const ctx = cnv.getContext('2d');
+  const a1 = document.getElementById('a1');
+  const b1 = document.getElementById('b1');
+  const a2 = document.getElementById('a2');
+  const b2 = document.getElementById('b2');
+  const op = document.getElementById('op');
+  const snap = document.getElementById('snap');
+  const showPar = document.getElementById('showPar');
+  const info = document.getElementById('info');
+
+  let z1 = {x: 1, y: 1};
+  let z2 = {x: 1, y: 0};
+  let dragging = null; // 'z1' or 'z2'
+  let scale = 90; // px per unit
+
+  function resize() {
+    const rect = cnv.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    cnv.width = rect.width * ratio;
+    cnv.height = rect.height * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    render();
+  }
+
+  function toCanvas(pt) {
+    const rect = cnv.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    return { x: cx + pt.x * scale, y: cy - pt.y * scale };
+  }
+  function fromCanvas(x, y) {
+    const rect = cnv.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    return { x: (x - cx) / scale, y: -(y - cy) / scale };
+  }
+
+  function drawGrid() {
+    const rect = cnv.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    const cx = w / 2, cy = h / 2;
+    ctx.save();
+    ctx.clearRect(0,0,w,h);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#e2e8f0';
+    const maxX = Math.ceil(w / (2*scale));
+    const maxY = Math.ceil(h / (2*scale));
+    ctx.beginPath();
+    for (let i=-maxX;i<=maxX;i++){
+      const x = cx + i*scale;
+      ctx.moveTo(x,0); ctx.lineTo(x,h);
+    }
+    for (let j=-maxY;j<=maxY;j++){
+      const y = cy + j*scale;
+      ctx.moveTo(0,y); ctx.lineTo(w,y);
+    }
+    ctx.stroke();
+    // axes
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0,cy); ctx.lineTo(w,cy);
+    ctx.moveTo(cx,0); ctx.lineTo(cx,h);
+    ctx.stroke();
+    // arrows
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.moveTo(w-12, cy-4); ctx.lineTo(w, cy); ctx.lineTo(w-12, cy+4); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx-4, 12); ctx.lineTo(cx, 0); ctx.lineTo(cx+4, 12); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawVector(pt, color, label) {
+    const rect = cnv.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const end = toCanvas(pt);
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+    // arrowhead
+    const ang = Math.atan2(cy - end.y, end.x - cx);
+    const ah = 9;
+    const a1 = ang + Math.PI/10;
+    const a2 = ang - Math.PI/10;
+    ctx.beginPath();
+    ctx.moveTo(end.x, end.y);
+    ctx.lineTo(end.x - ah*Math.cos(a1), end.y + ah*Math.sin(a1));
+    ctx.lineTo(end.x - ah*Math.cos(a2), end.y + ah*Math.sin(a2));
+    ctx.fill();
+    // point
+    ctx.beginPath();
+    ctx.arc(end.x, end.y, 6, 0, Math.PI*2);
+    ctx.fill();
+    // label
+    ctx.font = "12px 'Inter', sans-serif";
+    ctx.fillText(label, end.x + 8, end.y - 8);
+    ctx.restore();
+  }
+
+  function drawParallelogram(z1, z2, result, type) {
+    // type: 'add' draws parallelogram z1+z2; 'sub' draws z1-(z2) (use -z2)
+    ctx.save();
+    ctx.strokeStyle = 'rgba(245,158,11,0.8)';
+    ctx.setLineDash([6,4]);
+    ctx.lineWidth = 2;
+    const p0 = toCanvas({x:0,y:0});
+    const p1 = toCanvas(z1);
+    const p2 = toCanvas(z2);
+    const p3 = toCanvas(result);
+    ctx.beginPath();
+    ctx.moveTo(p0.x, p0.y);
+    ctx.lineTo(p1.x, p1.y);
+    ctx.lineTo(p3.x, p3.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function computeResult(op, z1, z2) {
+    const add = {x: z1.x + z2.x, y: z1.y + z2.y};
+    const sub = {x: z1.x - z2.x, y: z1.y - z2.y};
+    const mul = {x: z1.x*z2.x - z1.y*z2.y, y: z1.x*z2.y + z1.y*z2.x};
+    const div = (() => {
+      const d = z2.x*z2.x + z2.y*z2.y;
+      if (d === 0) return {x: NaN, y: NaN};
+      return {x: (z1.x*z2.x + z1.y*z2.y)/d, y: (z1.y*z2.x - z1.x*z2.y)/d};
+    })();
+    const conj1 = {x: z1.x, y: -z1.y};
+    const conj2 = {x: z2.x, y: -z2.y};
+    switch(op){
+      case 'add': return {res: add, helper: add, helperType:'add'};
+      case 'sub': return {res: sub, helper: sub, helperType:'sub'};
+      case 'mul': return {res: mul};
+      case 'div': return {res: div};
+      case 'mod1': return {res: {x: Math.hypot(z1.x,z1.y), y: 0}};
+      case 'mod2': return {res: {x: Math.hypot(z2.x,z2.y), y: 0}};
+      case 'conj1': return {res: conj1};
+      case 'conj2': return {res: conj2};
+      default: return {res: {x:0,y:0}};
+    }
+  }
+
+  function render() {
+    // Update from inputs
+    z1 = {x: parseFloat(a1.value||0), y: parseFloat(b1.value||0)};
+    z2 = {x: parseFloat(a2.value||0), y: parseFloat(b2.value||0)};
+    if (snap.checked) {
+      const r1 = Math.hypot(z1.x,z1.y);
+      const r2 = Math.hypot(z2.x,z2.y);
+      if (r1>1e-9){ z1.x/=r1; z1.y/=r1; a1.value=z1.x.toFixed(3); b1.value=z1.y.toFixed(3); }
+      if (r2>1e-9){ z2.x/=r2; z2.y/=r2; a2.value=z2.x.toFixed(3); b2.value=z2.y.toFixed(3); }
+    }
+
+    // Fit scale to include z1,z2,res
+    const {res} = computeResult(op.value, z1, z2);
+    scale = fitScale([z1,z2,res]);
+
+    drawGrid();
+    // helpers
+    if (showPar.checked && (op.value === 'add' || op.value === 'sub')) {
+      drawParallelogram(z1, op.value==='add'? z2 : {x:-z2.x,y:-z2.y}, res, op.value);
+    }
+    // vectors
+    drawVector(z1, '#ef4444', 'z₁');
+    drawVector(z2, '#2563eb', 'z₂');
+    if (!Number.isNaN(res.x) && !Number.isNaN(res.y)) {
+      drawVector(res, '#22c55e', 'result');
+    }
+
+    // info
+    info.innerHTML = [
+      `z₁ = ${fmt(z1)}`,
+      `z₂ = ${fmt(z2)}`,
+      `op = ${opLabel(op.value)}`,
+      `result = ${fmt(res)}`,
+      `|z₁| = ${Math.hypot(z1.x,z1.y).toFixed(4)}, |z₂| = ${Math.hypot(z2.x,z2.y).toFixed(4)}`
+    ].join('<br>');
+  }
+
+  function fitScale(points) {
+    const rect = cnv.getBoundingClientRect();
+    const cx = rect.width/2, cy = rect.height/2;
+    let maxR = 1;
+    for (const p of points) {
+      const r = Math.hypot(p.x, p.y);
+      maxR = Math.max(maxR, r);
+    }
+    const margin = 0.78;
+    const limitingPx = Math.min(cx, cy) * margin;
+    const s = limitingPx / maxR;
+    return Math.max(40, Math.min(180, s));
+  }
+
+  function fmt(z){ return `${z.x.toFixed(4)} ${z.y>=0?'+':'-'} ${Math.abs(z.y).toFixed(4)} i`; }
+  function opLabel(v){
+    return {
+      add:'z₁ + z₂', sub:'z₁ − z₂', mul:'z₁ · z₂', div:'z₁ / z₂',
+      mod1:'|z₁|', mod2:'|z₂|', conj1:'conj(z₁)', conj2:'conj(z₂)'
+    }[v] || v;
+  }
+
+  // Events
+  window.addEventListener('resize', resize);
+  [a1,b1,a2,b2,op,snap,showPar].forEach(el => el.addEventListener('change', render));
+  document.getElementById('update').addEventListener('click', render);
+  document.getElementById('reset').addEventListener('click', () => {
+    a1.value=1; b1.value=1; a2.value=1; b2.value=0; op.value='add'; snap.checked=false; showPar.checked=true; render();
+  });
+  document.getElementById('random').addEventListener('click', () => {
+    const rnd = () => (Math.random()*2-1)*2.4;
+    a1.value = rnd().toFixed(2); b1.value = rnd().toFixed(2);
+    a2.value = rnd().toFixed(2); b2.value = rnd().toFixed(2);
+    render();
+  });
+
+  // Drag handling
+  cnv.addEventListener('pointerdown', startDrag);
+  cnv.addEventListener('pointermove', moveDrag);
+  cnv.addEventListener('pointerup', endDrag);
+  cnv.addEventListener('pointerleave', endDrag);
+
+  function startDrag(e){
+    const rect = cnv.getBoundingClientRect();
+    const pt = fromCanvas(e.clientX - rect.left, e.clientY - rect.top);
+    const d1 = Math.hypot(pt.x - z1.x, pt.y - z1.y);
+    const d2 = Math.hypot(pt.x - z2.x, pt.y - z2.y);
+    dragging = d1 <= d2 ? 'z1' : 'z2';
+    moveDrag(e);
+  }
+  function moveDrag(e){
+    if (!dragging) return;
+    const rect = cnv.getBoundingClientRect();
+    const pt = fromCanvas(e.clientX - rect.left, e.clientY - rect.top);
+    if (dragging === 'z1'){
+      z1 = pt;
+      if (snap.checked){
+        const r = Math.hypot(z1.x,z1.y); if (r>1e-9){ z1.x/=r; z1.y/=r; }
+      }
+      a1.value = z1.x.toFixed(3); b1.value = z1.y.toFixed(3);
+    } else {
+      z2 = pt;
+      if (snap.checked){
+        const r = Math.hypot(z2.x,z2.y); if (r>1e-9){ z2.x/=r; z2.y/=r; }
+      }
+      a2.value = z2.x.toFixed(3); b2.value = z2.y.toFixed(3);
+    }
+    render();
+  }
+  function endDrag(){ dragging = null; }
+
+  resize(); // initial
+})();
+</script>
+</body>
+</html>
