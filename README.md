@@ -9,6 +9,7 @@ LEE Kei Fung, Charles’ Github
 ## AMA3707 — Complex Variables
 - [n-th Roots on the Complex Plane](./AMA3730-nth-roots.html)
 - [Branches & Cuts: Log, √z, n-th Roots](./AMA3730-branches.html)
+- [Complex Operations](./AMA3730-complex-ops.html)
 - [Complex Operations in AR (WebXR)](./AMA3730-complex-ops-ar.html)
 
 ## Christian Theology
@@ -19,6 +20,7 @@ LEE Kei Fung, Charles’ Github
 - If GitHub Pages is enabled (Settings → Pages → Deploy from a branch → main → /root), the live URLs are:
   - https://leekeifung.github.io/AMA3730-nth-roots.html
   - https://leekeifung.github.io/AMA3730-branches.html
+  - https://leekeifung.github.io/AMA3730-complex-ops.html
   - https://leekeifung.github.io/AMA3730-complex-ops-ar.html
 - AR page: works on Chrome/Android with WebXR over HTTPS; move device to detect a surface, then place the plane.
 
