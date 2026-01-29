@@ -131,19 +131,9 @@
       padding: 10px 12px;
       font-size: 14px;
       outline: none;
-      transition: border 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      transition: border 0.15s ease;
     }
     .input:focus, select:focus, textarea:focus { border-color: #22d3ee; }
-    /* 新增：填充題即時顯示效果 */
-    .input-ok {
-      border-color: #2dd4bf;
-      background: #0d948833;
-      box-shadow: inset 0 1px 0 #2dd4bf33;
-    }
-    .input-warn {
-      border-color: #fca5a5;
-      background: #7f1d1d22;
-    }
     .grid-2 {
       display: grid;
       gap: 12px;
@@ -219,14 +209,6 @@
       color: var(--muted);
       font-size: 14px;
     }
-    /* 狀態列 */
-    .status-line {
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 24px;
-    }
   </style>
 </head>
 <body>
@@ -257,7 +239,7 @@
 
     <!-- Fill -->
     <div class="card" id="fill-section">
-      <h3>✏️ 填充題（即時檢查）</h3>
+      <h3>✏️ 填充題</h3>
       <div id="fill-container"></div>
     </div>
 
@@ -474,31 +456,20 @@
         wrapper.appendChild(qEl);
 
         const input = document.createElement("input");
-        input.className =
-          "input" +
-          (val.trim() === ""
-            ? ""
-            : correct
-            ? " input-ok"
-            : " input-warn");
+        input.className = "input";
         input.placeholder = "輸入答案";
         input.value = val;
         input.oninput = (e) => {
           fillState = { ...fillState, [q.id]: e.target.value };
           updateScore();
-          renderFill();
         };
         wrapper.appendChild(input);
 
-        // 狀態列：未作答 / 正確 / 再試一次
-        const status = document.createElement("div");
-        status.className = "status-line";
-        if (val.trim() === "") {
-          status.innerHTML = `<span class="muted">請作答</span>`;
-        } else {
-          status.innerHTML = resultBadge(correct);
+        if (val.trim() !== "") {
+          const badge = document.createElement("div");
+          badge.innerHTML = resultBadge(correct);
+          wrapper.appendChild(badge);
         }
-        wrapper.appendChild(status);
 
         box.appendChild(wrapper);
       });
@@ -707,7 +678,7 @@
     function renderAll() {
       renderMCQ();
       renderTF();
-      renderFill(); // updated with clearer feedback
+      renderFill();
       renderMatch();
       renderReflections();
       renderIGStatus();
