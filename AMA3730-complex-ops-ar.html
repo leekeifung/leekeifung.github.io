@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Complex Operations AR (WebXR)</title>
+<style>
+:root { color-scheme: light; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
+body {
+  margin: 0; padding: 0;
+  background: #0f172a;
+  color: #e2e8f0;
+  overflow: hidden;
+}
+#ui {
+  position: fixed; top: 10px; left: 10px; right: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px;
+  padding: 10px;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+label { font-size: 0.9rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 4px; }
+input, select, button {
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #0b1220;
+  color: #e2e8f0;
+  padding: 0 10px;
+  font-size: 0.95rem;
+}
+button {
+  cursor: pointer;
+  background: linear-gradient(120deg, #2563eb, #1d4ed8);
+  border: none;
+  font-weight: 700;
+}
+button:active { transform: translateY(1px); }
+#log {
+  position: fixed; bottom: 10px; left: 10px; right: 10px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  max-height: 28vh;
+  overflow-y: auto;
+}
+a { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div id="ui">
+  <label>z₁ real (a₁)<input id="a1" type="number" step="0.1" value="1.0"></label>
+  <label>z₁ imag (b₁)<input id="b1" type="number" step="0.1" value="1.0"></label>
+  <label>z₂ real (a₂)<input id="a2" type="number" step="0.1" value="1.0"></label>
+  <label>z₂ imag (b₂)<input id="b2" type="number" step="0.1" value="0.0"></label>
+  <label>Operation
+    <select id="op">
+      <option value="add">z₁ + z₂</option>
+      <option value="sub">z₁ − z₂</option>
+      <option value="mul">z₁ · z₂</option>
+      <option value="div">z₁ / z₂</option>
+      <option value="mod1">|z₁|</option>
+      <option value="mod2">|z₂|</option>
+      <option value="conj1">conj(z₁)</option>
+      <option value="conj2">conj(z₂)</option>
+    </select>
+  </label>
+  <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+    <button id="enter">Enter AR</button>
+    <button id="place" style="background:linear-gradient(120deg,#10b981,#059669);">Place plane</button>
+    <button id="reset" style="background:linear-gradient(120deg,#475569,#334155);">Reset</button>
+  </div>
+</div>
+<div id="log">Status: ready. Use Chrome/Android. Move device to detect a surface; tap “Place plane”.</div>
+
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.161.0/build/three.module.js';
+import { ARButton } from 'https://unpkg.com/three@0.161.0/examples/jsm/webxr/ARButton.js';
+
+const a1 = document.getElementById('a1');
+const b1 = document.getElementById('b1');
+const a2 = document.getElementById('a2');
+const b2 = document.getElementById('b2');
+const opSel = document.getElementById('op');
+const enterBtn = document.getElementById('enter');
+const placeBtn = document.getElementById('place');
+const resetBtn = document.getElementById('reset');
+const logEl = document.getElementById('log');
+
+let renderer, scene, camera;
+let reticle, hitTestSource = null, hitTestSourceRequested = false;
+let xrRefSpace = null;
+let planeGroup;
+let arrows = {};
+let grid;
+let placed = false;
+
+// Config: 1 complex unit = 0.2 meters
+const UNIT = 0.2;
+
+init();
+
+function init() {
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.xr.enabled = true;
+  document.body.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera();
+
+  // Light
+  const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+  scene.add(light);
+
+  // Reticle
+  const ringGeo = new THREE.RingGeometry(0.05, 0.06, 32).rotateX(-Math.PI/2);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0x22c55e });
+  reticle = new THREE.Mesh(ringGeo, ringMat);
+  reticle.matrixAutoUpdate = false;
+  reticle.visible = false;
+  scene.add(reticle);
+
+  // Plane group
+  planeGroup = new THREE.Group();
+  planeGroup.visible = false;
+  scene.add(planeGroup);
+
+  // Grid + axes
+  grid = new THREE.GridHelper(2.4, 12, 0x93c5fd, 0x475569);
+  grid.material.opacity = 0.6;
+  grid.material.transparent = true;
+  grid.rotation.x = -Math.PI / 2;
+  planeGroup.add(grid);
+
+  const axisLen = 1.2;
+  const xAxis = new THREE.ArrowHelper(new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), axisLen, 0x94a3b8, 0.08, 0.04);
+  const yAxis = new THREE.ArrowHelper(new THREE.Vector3(0,0,-1), new THREE.Vector3(0,0,0), axisLen, 0x94a3b8, 0.08, 0.04);
+  planeGroup.add(xAxis, yAxis);
+
+  // Arrows z1, z2, result
+  arrows.z1 = new THREE.ArrowHelper(new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 1*UNIT, 0xef4444, 0.12, 0.06);
+  arrows.z2 = new THREE.ArrowHelper(new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 1*UNIT, 0x2563eb, 0.12, 0.06);
+  arrows.res = new THREE.ArrowHelper(new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), 1*UNIT, 0x22c55e, 0.12, 0.06);
+  planeGroup.add(arrows.z1, arrows.z2, arrows.res);
+
+  // Op handlers
+  [a1,b1,a2,b2,opSel].forEach(el => el.addEventListener('change', updateVectors));
+  resetBtn.addEventListener('click', () => {
+    a1.value = 1; b1.value = 1; a2.value = 1; b2.value = 0; opSel.value='add';
+    updateVectors();
+  });
+
+  // AR button
+  enterBtn.addEventListener('click', () => {
+    const btn = ARButton.createButton(renderer, {
+      requiredFeatures: ['hit-test'],
+      optionalFeatures: ['local-floor']
+    });
+    btn.style.display = 'none'; // hide default button
+    document.body.appendChild(btn);
+    btn.click(); // trigger session
+  });
+
+  placeBtn.addEventListener('click', () => { if (reticle.visible) placePlane(); });
+
+  renderer.xr.addEventListener('sessionstart', onSessionStart);
+  renderer.xr.addEventListener('sessionend', onSessionEnd);
+
+  window.addEventListener('resize', onWindowResize);
+  updateVectors();
+  renderer.setAnimationLoop(render);
+  log('Ready. Tap Enter AR.');
+}
+
+function log(msg) {
+  logEl.textContent = msg;
+}
+
+function onSessionStart() {
+  log('Move your device to detect a surface. When the green ring appears, tap “Place plane”.');
+}
+
+function onSessionEnd() {
+  hitTestSourceRequested = false;
+  hitTestSource = null;
+  placed = false;
+  planeGroup.visible = false;
+  reticle.visible = false;
+  log('Session ended. Tap Enter AR to start again.');
+}
+
+function placePlane() {
+  if (!reticle.visible) return;
+  planeGroup.visible = true;
+  planeGroup.matrix.copy(reticle.matrix);
+  planeGroup.matrix.decompose(planeGroup.position, planeGroup.quaternion, planeGroup.scale);
+  placed = true;
+  log('Plane placed. Adjust z₁, z₂, operation. Tap Place plane again to reposition.');
+}
+
+function updateVectors() {
+  const z1 = { x: parseFloat(a1.value||0), y: parseFloat(b1.value||0) };
+  const z2 = { x: parseFloat(a2.value||0), y: parseFloat(b2.value||0) };
+  const { res } = compute(opSel.value, z1, z2);
+
+  setArrow(arrows.z1, z1);
+  setArrow(arrows.z2, z2);
+  setArrow(arrows.res, res);
+
+  log(`z₁ = ${fmt(z1)} |z₁|=${mag(z1).toFixed(3)}; z₂ = ${fmt(z2)} |z₂|=${mag(z2).toFixed(3)}; result = ${fmt(res)}`);
+}
+
+function setArrow(arrow, z) {
+  const dir = new THREE.Vector3(z.x, 0, -z.y);
+  const len = dir.length();
+  if (len < 1e-6) {
+    arrow.setDirection(new THREE.Vector3(1,0,0));
+    arrow.setLength(0.0001);
+    return;
+  }
+  dir.normalize();
+  arrow.setDirection(dir);
+  arrow.setLength(len * UNIT, 0.12, 0.06);
+}
+
+function compute(op, z1, z2) {
+  const add = {x: z1.x + z2.x, y: z1.y + z2.y};
+  const sub = {x: z1.x - z2.x, y: z1.y - z2.y};
+  const mul = {x: z1.x*z2.x - z1.y*z2.y, y: z1.x*z2.y + z1.y*z2.x};
+  const div = (() => {
+    const d = z2.x*z2.x + z2.y*z2.y;
+    if (d === 0) return {x: NaN, y: NaN};
+    return {x: (z1.x*z2.x + z1.y*z2.y)/d, y: (z1.y*z2.x - z1.x*z2.y)/d};
+  })();
+  const conj1 = {x: z1.x, y: -z1.y};
+  const conj2 = {x: z2.x, y: -z2.y};
+  switch(op){
+    case 'add': return {res: add};
+    case 'sub': return {res: sub};
+    case 'mul': return {res: mul};
+    case 'div': return {res: div};
+    case 'mod1': return {res: {x: mag(z1), y: 0}};
+    case 'mod2': return {res: {x: mag(z2), y: 0}};
+    case 'conj1': return {res: conj1};
+    case 'conj2': return {res: conj2};
+    default: return {res: {x:0,y:0}};
+  }
+}
+
+function mag(z){ return Math.hypot(z.x, z.y); }
+function fmt(z){ return `${z.x.toFixed(3)} ${z.y>=0?'+':'-'} ${Math.abs(z.y).toFixed(3)} i`; }
+
+function onWindowResize() {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function render(timestamp, frame) {
+  const session = renderer.xr.getSession();
+  if (session) {
+    if (!hitTestSourceRequested) {
+      const viewerSpacePromise = session.requestReferenceSpace('viewer');
+      viewerSpacePromise.then((refSpace) => {
+        xrRefSpace = refSpace;
+        session.requestHitTestSource({ space: xrRefSpace }).then((source) => {
+          hitTestSource = source;
+        });
+      });
+      session.addEventListener('end', () => {
+        hitTestSourceRequested = false;
+        hitTestSource = null;
+      });
+      hitTestSourceRequested = true;
+    }
+
+    if (frame && hitTestSource) {
+      const referenceSpace = renderer.xr.getReferenceSpace();
+      const hitTestResults = frame.getHitTestResults(hitTestSource);
+      if (hitTestResults.length > 0) {
+        const hit = hitTestResults[0];
+        const pose = hit.getPose(referenceSpace);
+        reticle.visible = true;
+        reticle.matrix.fromArray(pose.transform.matrix);
+      } else {
+        reticle.visible = false;
+      }
+    }
+  }
+
+  renderer.render(scene, camera);
+}
+</script>
+</body>
+</html>
