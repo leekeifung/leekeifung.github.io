@@ -1,559 +1,712 @@
-import React, { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Sparkles,
-  CheckCircle2,
-  XCircle,
-  BookOpen,
-  ClipboardList,
-  RefreshCcw,
-  Download,
-  Image as ImageIcon,
-} from "lucide-react";
-
-const mcqQuestions = [
-  {
-    id: "mcq1",
-    q: "馬太福音 28:18-20 的核心命令是什麼？",
-    options: [
-      "去到猶太全地",
-      "使萬民作門徒",
-      "建立會堂",
-      "遵守摩西律法",
-    ],
-    answer: "使萬民作門徒",
-  },
-  {
-    id: "mcq2",
-    q: "「去、施洗、教導」在大使命中屬於哪一類文法功能？",
-    options: ["祈使句", "分詞（執行方式）", "形容詞", "名詞子句"],
-    answer: "分詞（執行方式）",
-  },
-  {
-    id: "mcq3",
-    q: "馬太福音的五大講論結構，可能意在對應舊約的哪個架構？",
-    options: ["詩篇", "歷代志", "摩西五經", "以賽亞書"],
-    answer: "摩西五經",
-  },
-];
-
-const tfQuestions = [
-  {
-    id: "tf1",
-    q: "馬太福音被視為古代傳記，重點不僅是歷史記錄。",
-    answer: true,
-  },
-  {
-    id: "tf2",
-    q: "家譜中外邦女性的出現，與全書「萬民」的主題無關。",
-    answer: false,
-  },
-  {
-    id: "tf3",
-    q: "馬太福音以「我就常與你們同在」收尾，呼應了開頭的以馬內利。",
-    answer: true,
-  },
-];
-
-const fillQuestions = [
-  {
-    id: "fill1",
-    q: "耶穌宣告「天上地下所有的 ______ 都賜給我了」（28:18）。",
-    answer: "權柄",
-  },
-  {
-    id: "fill2",
-    q: "奉父、子、聖靈的「名」（單數）施洗，顯明耶穌的 ______。",
-    answer: "神性",
-  },
-  {
-    id: "fill3",
-    q: "五大講論中，13 章主題是天國的 ______（已然未然）。",
-    answer: "奧祕",
-  },
-];
-
-const matchPairs = [
-  {
-    left: "登山寶訓（5-7）",
-    right: "天國倫理與門徒品格",
-  },
-  {
-    left: "差遣門徒（10）",
-    right: "宣教使命與逼迫預備",
-  },
-  {
-    left: "天國比喻（13）",
-    right: "天國已然未然的奧祕",
-  },
-  {
-    left: "教會生活（18）",
-    right: "謙卑、饒恕、紀律",
-  },
-];
-
-const igTemplatePalette = [
-  { from: "#0f172a", to: "#0ea5e9" },
-  { from: "#1e293b", to: "#22c55e" },
-  { from: "#111827", to: "#a855f7" },
-  { from: "#0f172a", to: "#f59e0b" },
-];
-
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(" ");
-  let line = "";
-  const lines = [];
-  for (let n = 0; n < words.length; n++) {
-    const testLine = line + words[n] + " ";
-    const metrics = ctx.measureText(testLine);
-    if (metrics.width > maxWidth && n > 0) {
-      lines.push(line.trim());
-      line = words[n] + " ";
-    } else {
-      line = testLine;
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NT317 · Matthew · Lesson 0 · 互動練習</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg2: #111827;
+      --card: #1f2937;
+      --border: #243047;
+      --text: #e5e7eb;
+      --muted: #cbd5e1;
+      --teal: #14b8a6;
+      --teal-soft: #0d948833;
+      --rose: #fb7185;
+      --amber: #fbbf24;
+      --sky: #38bdf8;
+      --emerald: #34d399;
     }
-  }
-  lines.push(line.trim());
-  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
-  return lines.length;
-}
-
-export default function Lesson0Interactive() {
-  const [mcqState, setMcqState] = useState({});
-  const [tfState, setTfState] = useState({});
-  const [fillState, setFillState] = useState({});
-  const [matchState, setMatchState] = useState({});
-  const [reflections, setReflections] = useState([]);
-  const [currentReflection, setCurrentReflection] = useState("");
-  const [studentName, setStudentName] = useState("");
-  const [igStatus, setIgStatus] = useState(null);
-
-  const score = useMemo(() => {
-    let s = 0;
-    mcqQuestions.forEach((q) => {
-      if (mcqState[q.id] === q.answer) s += 1;
-    });
-    tfQuestions.forEach((q) => {
-      if (tfState[q.id] === q.answer) s += 1;
-    });
-    fillQuestions.forEach((q) => {
-      const ans = (fillState[q.id] || "").trim();
-      if (ans && ans === q.answer) s += 1;
-    });
-    matchPairs.forEach((p) => {
-      if (matchState[p.left] === p.right) s += 1;
-    });
-    return s;
-  }, [mcqState, tfState, fillState, matchState]);
-
-  const total = mcqQuestions.length + tfQuestions.length + fillQuestions.length + matchPairs.length;
-
-  const resetAll = () => {
-    setMcqState({});
-    setTfState({});
-    setFillState({});
-    setMatchState({});
-    setReflections([]);
-    setCurrentReflection("");
-    setStudentName("");
-    setIgStatus(null);
-  };
-
-  const downloadAnswers = () => {
-    const data = {
-      studentName,
-      mcqState,
-      tfState,
-      fillState,
-      matchState,
-      reflections,
-      score,
-      total,
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "lesson0-answers.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const addReflection = () => {
-    const text = currentReflection.trim();
-    if (!text) return;
-    setReflections((r) => [...r, text]);
-    setCurrentReflection("");
-  };
-
-  const generateIG = async () => {
-    if (!reflections.length) {
-      setIgStatus("請先新增至少一則反思，再產出 IG 圖卡。");
-      return;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 20% 20%, #1e293b 0, #0f172a 40%), #0f172a;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    setIgStatus("產出中...");
-    const canvas = document.createElement("canvas");
-    const width = 900;
-    const height = 1600;
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #134e4a33;
+      color: #5eead4;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 10px 0 6px;
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
+    }
+    .lead {
+      max-width: 780px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 18px;
+    }
+    .tag-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      color: #e0f2fe;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+    .card {
+      background: #111827cc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .muted { color: var(--muted); }
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .item-block {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #0b1220;
+    }
+    .btn {
+      border: 1px solid var(--border);
+      background: #0b1220;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { border-color: #22d3ee; color: #e0f2fe; }
+    .btn-primary {
+      border-color: #14b8a6;
+      background: var(--teal-soft);
+      color: #ecfeff;
+    }
+    .btn-danger {
+      border-color: #fca5a5;
+      color: #fecdd3;
+    }
+    .input, select, textarea {
+      width: 100%;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.15s ease;
+    }
+    .input:focus, select:focus, textarea:focus { border-color: #22d3ee; }
+    .grid-2 {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .grid-3 {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0b1220;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .option-btn:hover { border-color: #22d3ee; color: #e0f2fe; }
+    .option-btn.selected {
+      border-color: #2dd4bf;
+      background: #0d948833;
+      color: #ecfeff;
+      box-shadow: inset 0 1px 0 #2dd4bf33;
+    }
+    .badge-result {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      margin-top: 6px;
+    }
+    .badge-ok {
+      background: #0f766e33;
+      color: #99f6e4;
+      border: 1px solid #0d9488;
+    }
+    .badge-warn {
+      background: #7f1d1d33;
+      color: #fecdd3;
+      border: 1px solid #fca5a5;
+    }
+    .score-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      color: #5eead4;
+    }
+    .list {
+      list-style: none;
+      padding-left: 16px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .list li { margin-bottom: 6px; }
+    footer {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="badge">✨ NT317 · Matthew · Lesson 0</div>
+      <h1>互動練習｜課程導論與大使命框架</h1>
+      <p class="lead">
+        包含選擇、是非、填充、配對、與開放反思。可下載答案，並將反思生成 IG 圖卡。
+      </p>
+      <div class="tags">
+        <div class="tag-pill">大使命</div>
+        <div class="tag-pill">五大講論</div>
+      </div>
+    </header>
 
-    const palette = igTemplatePalette[Math.floor(Math.random() * igTemplatePalette.length)];
-    const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, palette.from);
-    gradient.addColorStop(1, palette.to);
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
+    <!-- MCQ -->
+    <div class="card" id="mcq-section">
+      <h3>📝 選擇題 (MCQ)</h3>
+      <div id="mcq-container"></div>
+    </div>
 
-    // Overlay shapes
-    ctx.fillStyle = "rgba(255,255,255,0.08)";
-    ctx.beginPath();
-    ctx.ellipse(width * 0.7, height * 0.2, 220, 140, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(width * 0.3, height * 0.75, 260, 170, 0, 0, Math.PI * 2);
-    ctx.fill();
+    <!-- True / False -->
+    <div class="card" id="tf-section">
+      <h3>✔ / ✖ 是非題 (T / F)</h3>
+      <div id="tf-container"></div>
+    </div>
 
-    // Title
-    ctx.fillStyle = "#e2e8f0";
-    ctx.font = "bold 42px 'Inter', 'Segoe UI', sans-serif";
-    ctx.fillText("NT317 馬太福音 Lesson 0", 60, 120);
-    ctx.font = "600 32px 'Inter', 'Segoe UI', sans-serif";
-    ctx.fillText("大使命導論：我的反思", 60, 170);
+    <!-- Fill -->
+    <div class="card" id="fill-section">
+      <h3>✏️ 填充題</h3>
+      <div id="fill-container"></div>
+    </div>
 
-    // Body text
-    ctx.fillStyle = "#f8fafc";
-    ctx.font = "28px 'Inter', 'Segoe UI', sans-serif";
-    const main = reflections[reflections.length - 1];
-    const linesUsed = wrapText(ctx, `「${main}」`, 60, 250, width - 120, 40);
+    <!-- Matching -->
+    <div class="card" id="match-section">
+      <h3>🔗 配對題</h3>
+      <div id="match-container"></div>
+    </div>
 
-    // Footer
-    ctx.font = "22px 'Inter', 'Segoe UI', sans-serif";
-    ctx.fillStyle = "#cbd5e1";
-    const nameText = studentName ? `@${studentName}` : "@未命名";
-    ctx.fillText(nameText, 60, 260 + linesUsed * 40 + 60);
-    ctx.fillText("馬太 28:18-20 · 以馬內利同在", 60, 260 + linesUsed * 40 + 100);
+    <!-- Reflections -->
+    <div class="card">
+      <h3>💬 開放反思</h3>
+      <div class="grid-2" style="margin-bottom:12px;">
+        <div>
+          <div class="muted" style="margin-bottom:6px;">你的名字 (可選，用於 IG 標註)</div>
+          <input id="studentName" class="input" placeholder="e.g. charleslee" />
+        </div>
+        <div>
+          <div class="muted" style="margin-bottom:6px;">輸入你的反思</div>
+          <textarea id="currentReflection" rows="3" class="input" placeholder="本週我要如何踐行『去、施洗、教導』與以馬內利的應許？"></textarea>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+        <button class="btn btn-primary" id="addReflectionBtn">新增反思</button>
+        <button class="btn" id="igBtn">產出 IG 圖卡 (PNG)</button>
+        <button class="btn" id="downloadBtn">下載答案 (JSON)</button>
+        <button class="btn btn-danger" id="resetBtn">重設全部</button>
+      </div>
+      <div id="igStatus" class="muted" style="margin-bottom:10px;"></div>
+      <div class="item-block" id="reflectionsList">
+        <div class="muted">已儲存的反思：</div>
+        <div id="reflectionsItems" class="muted" style="margin-top:6px;"></div>
+      </div>
+    </div>
 
-    // Download
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        setIgStatus("產出失敗，請再試一次。");
+    <!-- Score & Suggestions -->
+    <div class="card">
+      <h3>🏁 分數 & 建議</h3>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div class="score-box" id="scoreBox">分數：0 / 0</div>
+        <div class="muted">持續練習：特別留意「去、施洗、教導」三個分詞如何在生活中落地。</div>
+      </div>
+    </div>
+
+    <!-- Image suggestions -->
+    <div class="card">
+      <h3>🖼️ 可用的圖片主題建議（自行尋找或製作）</h3>
+      <ul class="list">
+        <li>「以馬內利」主題的溫暖光線背景，帶有光束與剪影。</li>
+        <li>地球／世界地圖的抽象線條，代表「萬民」「去」。</li>
+        <li>水波或洗禮象徵的極簡插畫，呼應「施洗」。</li>
+        <li>開卷的書卷與光芒，象徵「教導」與五大講論。</li>
+        <li>山脈剪影與曙光，呼應登山寶訓與使命展開。</li>
+        <li>（本程式不內建圖片；可將以上主題作為 Midjourney / DALL·E 提示或自行設計的方向。）</li>
+      </ul>
+    </div>
+
+    <footer>
+      <div>✨ NT317 · Matthew · Lesson 0 · Interactive</div>
+      <div style="color:#67e8f9; font-weight:600;">下一步：Lesson 1 →</div>
+    </footer>
+  </div>
+
+  <script>
+    // Data
+    const mcqQuestions = [
+      {
+        id: "mcq1",
+        q: "馬太福音 28:18-20 的核心命令是什麼？",
+        options: ["去到猶太全地", "使萬民作門徒", "建立會堂", "遵守摩西律法"],
+        answer: "使萬民作門徒",
+      },
+      {
+        id: "mcq2",
+        q: "「去、施洗、教導」在大使命中屬於哪一類文法功能？",
+        options: ["祈使句", "分詞（執行方式）", "形容詞", "名詞子句"],
+        answer: "分詞（執行方式）",
+      },
+      {
+        id: "mcq3",
+        q: "馬太福音的五大講論結構，可能意在對應舊約的哪個架構？",
+        options: ["詩篇", "歷代志", "摩西五經", "以賽亞書"],
+        answer: "摩西五經",
+      },
+    ];
+
+    const tfQuestions = [
+      { id: "tf1", q: "馬太福音被視為古代傳記，重點不僅是歷史記錄。", answer: true },
+      { id: "tf2", q: "家譜中外邦女性的出現，與全書「萬民」的主題無關。", answer: false },
+      { id: "tf3", q: "馬太福音以「我就常與你們同在」收尾，呼應了開頭的以馬內利。", answer: true },
+    ];
+
+    const fillQuestions = [
+      { id: "fill1", q: "耶穌宣告「天上地下所有的 ______ 都賜給我了」（28:18）。", answer: "權柄" },
+      { id: "fill2", q: "奉父、子、聖靈的「名」（單數）施洗，顯明耶穌的 ______。", answer: "神性" },
+      { id: "fill3", q: "五大講論中，13 章主題是天國的 ______（已然未然）。", answer: "奧祕" },
+    ];
+
+    const matchPairs = [
+      { left: "登山寶訓（5-7）", right: "天國倫理與門徒品格" },
+      { left: "差遣門徒（10）", right: "宣教使命與逼迫預備" },
+      { left: "天國比喻（13）", right: "天國已然未然的奧祕" },
+      { left: "教會生活（18）", right: "謙卑、饒恕、紀律" },
+    ];
+
+    const igTemplatePalette = [
+      { from: "#0f172a", to: "#0ea5e9" },
+      { from: "#1e293b", to: "#22c55e" },
+      { from: "#111827", to: "#a855f7" },
+      { from: "#0f172a", to: "#f59e0b" },
+    ];
+
+    // State
+    let mcqState = {};
+    let tfState = {};
+    let fillState = {};
+    let matchState = {};
+    let reflections = [];
+    let currentReflection = "";
+    let studentName = "";
+    let igStatus = null;
+
+    // Helpers
+    const $ = (id) => document.getElementById(id);
+
+    function resultBadge(correct) {
+      const cls = correct ? "badge-result badge-ok" : "badge-result badge-warn";
+      const text = correct ? "正確" : "再試一次";
+      return `<span class="${cls}">${correct ? "✔" : "✖"} ${text}</span>`;
+    }
+
+    function renderMCQ() {
+      const box = $("mcq-container");
+      box.innerHTML = "";
+      mcqQuestions.forEach((q) => {
+        const selected = mcqState[q.id];
+        const correct = selected === q.answer;
+        const wrapper = document.createElement("div");
+        wrapper.className = "item-block";
+        wrapper.style.marginBottom = "10px";
+        const qEl = document.createElement("div");
+        qEl.className = "section-title";
+        qEl.textContent = q.q;
+        wrapper.appendChild(qEl);
+
+        q.options.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn" + (selected === opt ? " selected" : "");
+          btn.textContent = opt;
+          btn.onclick = () => {
+            mcqState = { ...mcqState, [q.id]: opt };
+            updateScore();
+            renderMCQ();
+          };
+          wrapper.appendChild(btn);
+        });
+
+        if (selected) {
+          const badge = document.createElement("div");
+          badge.innerHTML = resultBadge(correct);
+          wrapper.appendChild(badge);
+        }
+        box.appendChild(wrapper);
+      });
+    }
+
+    function renderTF() {
+      const box = $("tf-container");
+      box.innerHTML = "";
+      tfQuestions.forEach((q) => {
+        const selected = tfState[q.id];
+        const correct = selected === q.answer;
+        const wrapper = document.createElement("div");
+        wrapper.className = "item-block";
+        wrapper.style.marginBottom = "10px";
+        const qEl = document.createElement("div");
+        qEl.className = "section-title";
+        qEl.textContent = q.q;
+        wrapper.appendChild(qEl);
+
+        [true, false].forEach((val) => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn" + (selected === val ? " selected" : "");
+          btn.textContent = val ? "True / 是" : "False / 否";
+          btn.onclick = () => {
+            tfState = { ...tfState, [q.id]: val };
+            updateScore();
+            renderTF();
+          };
+          wrapper.appendChild(btn);
+        });
+
+        if (selected !== undefined) {
+          const badge = document.createElement("div");
+          badge.innerHTML = resultBadge(correct);
+          wrapper.appendChild(badge);
+        }
+        box.appendChild(wrapper);
+      });
+    }
+
+    function renderFill() {
+      const box = $("fill-container");
+      box.innerHTML = "";
+      fillQuestions.forEach((q) => {
+        const val = fillState[q.id] || "";
+        const correct = val.trim() === q.answer;
+        const wrapper = document.createElement("div");
+        wrapper.className = "item-block";
+        wrapper.style.marginBottom = "10px";
+        const qEl = document.createElement("div");
+        qEl.className = "section-title";
+        qEl.textContent = q.q;
+        wrapper.appendChild(qEl);
+
+        const input = document.createElement("input");
+        input.className = "input";
+        input.placeholder = "輸入答案";
+        input.value = val;
+        input.oninput = (e) => {
+          fillState = { ...fillState, [q.id]: e.target.value };
+          updateScore();
+        };
+        wrapper.appendChild(input);
+
+        if (val.trim() !== "") {
+          const badge = document.createElement("div");
+          badge.innerHTML = resultBadge(correct);
+          wrapper.appendChild(badge);
+        }
+
+        box.appendChild(wrapper);
+      });
+    }
+
+    function renderMatch() {
+      const box = $("match-container");
+      box.innerHTML = "";
+      matchPairs.forEach((p) => {
+        const val = matchState[p.left] || "";
+        const correct = val === p.right;
+        const wrapper = document.createElement("div");
+        wrapper.className = "item-block";
+        wrapper.style.marginBottom = "10px";
+
+        const qEl = document.createElement("div");
+        qEl.className = "section-title";
+        qEl.textContent = p.left;
+        wrapper.appendChild(qEl);
+
+        const sel = document.createElement("select");
+        sel.className = "input";
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "選擇配對";
+        sel.appendChild(placeholder);
+
+        matchPairs.forEach((o) => {
+          const opt = document.createElement("option");
+          opt.value = o.right;
+          opt.textContent = o.right;
+          if (o.right === val) opt.selected = true;
+          sel.appendChild(opt);
+        });
+
+        sel.onchange = (e) => {
+          matchState = { ...matchState, [p.left]: e.target.value };
+          updateScore();
+          renderMatch();
+        };
+        wrapper.appendChild(sel);
+
+        if (val) {
+          const badge = document.createElement("div");
+          badge.innerHTML = resultBadge(correct);
+          wrapper.appendChild(badge);
+        }
+
+        box.appendChild(wrapper);
+      });
+    }
+
+    function renderReflections() {
+      const listEl = $("reflectionsItems");
+      if (!reflections.length) {
+        listEl.innerHTML = "<span class='muted'>尚無反思，請新增。</span>";
         return;
       }
+      listEl.innerHTML = reflections
+        .map((r, i) => `<div style="margin-bottom:4px;">${i + 1}. ${r}</div>`)
+        .join("");
+    }
+
+    function renderIGStatus() {
+      $("igStatus").textContent = igStatus || "";
+    }
+
+    function updateScore() {
+      let s = 0;
+      mcqQuestions.forEach((q) => {
+        if (mcqState[q.id] === q.answer) s += 1;
+      });
+      tfQuestions.forEach((q) => {
+        if (tfState[q.id] === q.answer) s += 1;
+      });
+      fillQuestions.forEach((q) => {
+        const ans = (fillState[q.id] || "").trim();
+        if (ans && ans === q.answer) s += 1;
+      });
+      matchPairs.forEach((p) => {
+        if (matchState[p.left] === p.right) s += 1;
+      });
+      const total = mcqQuestions.length + tfQuestions.length + fillQuestions.length + matchPairs.length;
+      $("scoreBox").textContent = `分數：${s} / ${total}`;
+    }
+
+    function downloadAnswers() {
+      const total = mcqQuestions.length + tfQuestions.length + fillQuestions.length + matchPairs.length;
+      let score = 0;
+      mcqQuestions.forEach((q) => mcqState[q.id] === q.answer && score++);
+      tfQuestions.forEach((q) => tfState[q.id] === q.answer && score++);
+      fillQuestions.forEach((q) => (fillState[q.id] || "").trim() === q.answer && score++);
+      matchPairs.forEach((p) => matchState[p.left] === p.right && score++);
+
+      const data = {
+        studentName,
+        mcqState,
+        tfState,
+        fillState,
+        matchState,
+        reflections,
+        score,
+        total,
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "lesson0-ig-card.png";
+      a.download = "lesson0-answers.json";
       a.click();
       URL.revokeObjectURL(url);
-      setIgStatus("已下載 IG 圖卡！");
-    }, "image/png");
-  };
+    }
 
-  const resultBadge = (correct) => (
-    <div
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${
-        correct ? "bg-emerald-500/15 text-emerald-200 border border-emerald-500/40" : "bg-rose-500/15 text-rose-200 border border-rose-500/40"
-      }`}
-    >
-      {correct ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
-      {correct ? "正確" : "再試一次"}
-    </div>
-  );
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(" ");
+      let line = "";
+      const lines = [];
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + " ";
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && n > 0) {
+          lines.push(line.trim());
+          line = words[n] + " ";
+        } else {
+          line = testLine;
+        }
+      }
+      lines.push(line.trim());
+      lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+      return lines.length;
+    }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-10">
-        <header className="flex flex-col gap-3 mb-8">
-          <div className="flex items-center gap-2 text-teal-200 uppercase tracking-[0.18em] text-xs sm:text-sm">
-            <Sparkles className="h-4 w-4" />
-            NT317 · Matthew · Lesson 0
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
-            互動練習｜課程導論與大使命框架
-          </h1>
-          <p className="text-slate-200 text-sm sm:text-base max-w-3xl leading-relaxed">
-            包含選擇、是非、填充、配對、與開放反思。可下載答案，並將反思生成 IG 圖卡。
-          </p>
-          <div className="flex flex-wrap gap-3 text-sm text-slate-300">
-            <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700">
-              <BookOpen className="h-4 w-4 text-teal-300" />
-              大使命
-            </div>
-            <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700">
-              <ClipboardList className="h-4 w-4 text-amber-300" />
-              五大講論
-            </div>
-          </div>
-        </header>
+    async function generateIG() {
+      if (!reflections.length) {
+        igStatus = "請先新增至少一則反思，再產出 IG 圖卡。";
+        renderIGStatus();
+        return;
+      }
+      igStatus = "產出中...";
+      renderIGStatus();
 
-        {/* MCQ */}
-        <section className="space-y-3 mb-6">
-          <div className="text-lg font-semibold text-white">選擇題 (MCQ)</div>
-          <div className="grid gap-3">
-            {mcqQuestions.map((q) => {
-              const selected = mcqState[q.id];
-              const correct = selected === q.answer;
-              return (
-                <motion.div
-                  key={q.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
-                >
-                  <div className="flex items-start gap-2">
-                    <div className="mt-1.5 h-2 w-2 rounded-full bg-teal-400" />
-                    <div className="flex-1">
-                      <div className="font-semibold text-slate-50 mb-2">{q.q}</div>
-                      <div className="grid sm:grid-cols-2 gap-2">
-                        {q.options.map((opt) => (
-                          <button
-                            key={opt}
-                            onClick={() =>
-                              setMcqState((s) => ({ ...s, [q.id]: opt }))
-                            }
-                            className={`w-full text-left px-3 py-2 rounded-lg border transition ${
-                              selected === opt
-                                ? "border-teal-400 bg-teal-500/15 text-teal-50"
-                                : "border-slate-800 bg-slate-900/60 text-slate-200 hover:border-teal-400/60"
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        ))}
-                      </div>
-                      {selected && (
-                        <div className="mt-3">{resultBadge(correct)}</div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
+      const canvas = document.createElement("canvas");
+      const width = 900, height = 1600;
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext("2d");
 
-        {/* T/F */}
-        <section className="space-y-3 mb-6">
-          <div className="text-lg font-semibold text-white">是非題 (T / F)</div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {tfQuestions.map((q) => {
-              const selected = tfState[q.id];
-              const correct = selected === q.answer;
-              return (
-                <motion.div
-                  key={q.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
-                >
-                  <div className="font-semibold text-slate-50 mb-3">{q.q}</div>
-                  <div className="flex gap-2">
-                    {[true, false].map((val) => (
-                      <button
-                        key={String(val)}
-                        onClick={() =>
-                          setTfState((s) => ({ ...s, [q.id]: val }))
-                        }
-                        className={`flex-1 px-3 py-2 rounded-lg border transition ${
-                          selected === val
-                            ? "border-teal-400 bg-teal-500/15 text-teal-50"
-                            : "border-slate-800 bg-slate-900/60 text-slate-200 hover:border-teal-400/60"
-                        }`}
-                      >
-                        {val ? "True / 是" : "False / 否"}
-                      </button>
-                    ))}
-                  </div>
-                  {selected !== undefined && (
-                    <div className="mt-3">{resultBadge(correct)}</div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
+      const palette = igTemplatePalette[Math.floor(Math.random() * igTemplatePalette.length)];
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, palette.from);
+      gradient.addColorStop(1, palette.to);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
 
-        {/* Fill in */}
-        <section className="space-y-3 mb-6">
-          <div className="text-lg font-semibold text-white">填充題</div>
-          <div className="grid gap-3">
-            {fillQuestions.map((q) => {
-              const val = fillState[q.id] || "";
-              const correct = val.trim() === q.answer;
-              return (
-                <motion.div
-                  key={q.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
-                >
-                  <div className="font-semibold text-slate-50 mb-2">{q.q}</div>
-                  <input
-                    value={val}
-                    onChange={(e) =>
-                      setFillState((s) => ({ ...s, [q.id]: e.target.value }))
-                    }
-                    className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-slate-100 placeholder-slate-500 focus:border-teal-400 focus:outline-none"
-                    placeholder="輸入答案"
-                  />
-                  {val.trim() !== "" && (
-                    <div className="mt-3">{resultBadge(correct)}</div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
+      ctx.fillStyle = "rgba(255,255,255,0.08)";
+      ctx.beginPath(); ctx.ellipse(width * 0.7, height * 0.2, 220, 140, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(width * 0.3, height * 0.75, 260, 170, 0, 0, Math.PI * 2); ctx.fill();
 
-        {/* Matching */}
-        <section className="space-y-3 mb-6">
-          <div className="text-lg font-semibold text-white">配對題</div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {matchPairs.map((p) => {
-              const val = matchState[p.left] || "";
-              const correct = val === p.right;
-              return (
-                <motion.div
-                  key={p.left}
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
-                >
-                  <div className="font-semibold text-slate-50 mb-2">{p.left}</div>
-                  <select
-                    value={val}
-                    onChange={(e) =>
-                      setMatchState((s) => ({ ...s, [p.left]: e.target.value }))
-                    }
-                    className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-slate-100 focus:border-teal-400 focus:outline-none"
-                  >
-                    <option value="">選擇配對</option>
-                    {matchPairs.map((o) => (
-                      <option key={o.right} value={o.right}>
-                        {o.right}
-                      </option>
-                    ))}
-                  </select>
-                  {val && <div className="mt-3">{resultBadge(correct)}</div>}
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
+      ctx.fillStyle = "#e2e8f0";
+      ctx.font = "bold 42px 'Inter', 'Segoe UI', sans-serif";
+      ctx.fillText("NT317 馬太福音 Lesson 0", 60, 120);
+      ctx.font = "600 32px 'Inter', 'Segoe UI', sans-serif";
+      ctx.fillText("大使命導論：我的反思", 60, 170);
 
-        {/* Reflections */}
-        <section className="space-y-3 mb-8">
-          <div className="text-lg font-semibold text-white">開放反思</div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 space-y-3">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm text-slate-300">你的名字 (可選，用於 IG 標註)</label>
-                <input
-                  value={studentName}
-                  onChange={(e) => setStudentName(e.target.value)}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-slate-100 placeholder-slate-500 focus:border-teal-400 focus:outline-none"
-                  placeholder="e.g. charleslee"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm text-slate-300">輸入你的反思</label>
-                <textarea
-                  value={currentReflection}
-                  onChange={(e) => setCurrentReflection(e.target.value)}
-                  rows={3}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-slate-100 placeholder-slate-500 focus:border-teal-400 focus:outline-none"
-                  placeholder="本週我要如何踐行『去、施洗、教導』與以馬內利的應許？"
-                />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={addReflection}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-500 text-white font-semibold shadow hover:bg-teal-400"
-              >
-                <BookOpen className="h-4 w-4" />
-                新增反思
-              </button>
-              <button
-                onClick={generateIG}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-500 text-white font-semibold shadow hover:bg-indigo-400"
-              >
-                <ImageIcon className="h-4 w-4" />
-                產出 IG 圖卡 (PNG)
-              </button>
-              <button
-                onClick={downloadAnswers}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 text-white font-semibold hover:bg-slate-600"
-              >
-                <Download className="h-4 w-4" />
-                下載答案 (JSON)
-              </button>
-              <button
-                onClick={resetAll}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-500 text-white font-semibold shadow hover:bg-rose-400"
-              >
-                <RefreshCcw className="h-4 w-4" />
-                重設全部
-              </button>
-            </div>
-            {igStatus && (
-              <div className="text-sm text-slate-200">{igStatus}</div>
-            )}
-            <div className="space-y-2">
-              <div className="text-sm text-slate-300">已儲存的反思</div>
-              <div className="space-y-2">
-                <AnimatePresence>
-                  {reflections.map((r, i) => (
-                    <motion.div
-                      key={`${r}-${i}`}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      className="rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-2 text-slate-100 text-sm leading-relaxed"
-                    >
-                      {i + 1}. {r}
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
-        </section>
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "28px 'Inter', 'Segoe UI', sans-serif";
+      const main = reflections[reflections.length - 1];
+      const linesUsed = wrapText(ctx, `「${main}」`, 60, 250, width - 120, 40);
 
-        {/* Score & Suggestions */}
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 sm:p-5 mb-6">
-          <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base text-slate-200">
-            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-950/70 border border-slate-800">
-              <CheckCircle2 className="h-5 w-5 text-teal-300" />
-              分數：{score} / {total}
-            </div>
-            <div className="text-slate-300">
-              持續練習：特別留意「去、施洗、教導」三個分詞如何在生活中落地。
-            </div>
-          </div>
-        </section>
+      ctx.font = "22px 'Inter', 'Segoe UI', sans-serif";
+      ctx.fillStyle = "#cbd5e1";
+      const nameText = studentName ? `@${studentName}` : "@未命名";
+      ctx.fillText(nameText, 60, 260 + linesUsed * 40 + 60);
+      ctx.fillText("馬太 28:18-20 · 以馬內利同在", 60, 260 + linesUsed * 40 + 100);
 
-        {/* Image suggestions */}
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 sm:p-5">
-          <div className="text-lg font-semibold text-white mb-2">可用的圖片主題建議（自行尋找或製作）</div>
-          <ul className="list-disc list-inside text-sm sm:text-base text-slate-200 space-y-1">
-            <li>「以馬內利」主題的溫暖光線背景，帶有光束與剪影。</li>
-            <li>地球／世界地圖的抽象線條，代表「萬民」「去」。</li>
-            <li>水波或洗禮象徵的極簡插畫，呼應「施洗」。</li>
-            <li>開卷的書卷與光芒，象徵「教導」與五大講論。</li>
-            <li>山脈剪影與曙光，呼應登山寶訓與使命展開。</li>
-          </ul>
-          <p className="text-xs text-slate-400 mt-2">
-            （本程式不內建圖片；可將以上主題作為 Midjourney / DALL·E 提示或自行設計的方向。）
-          </p>
-        </section>
-      </div>
-    </div>
-  );
-}
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          igStatus = "產出失敗，請再試一次。";
+          renderIGStatus();
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "lesson0-ig-card.png";
+        a.click();
+        URL.revokeObjectURL(url);
+        igStatus = "已下載 IG 圖卡！";
+        renderIGStatus();
+      }, "image/png");
+    }
+
+    function resetAll() {
+      mcqState = {};
+      tfState = {};
+      fillState = {};
+      matchState = {};
+      reflections = [];
+      currentReflection = "";
+      studentName = "";
+      igStatus = null;
+      $("studentName").value = "";
+      $("currentReflection").value = "";
+      renderAll();
+    }
+
+    function renderAll() {
+      renderMCQ();
+      renderTF();
+      renderFill();
+      renderMatch();
+      renderReflections();
+      renderIGStatus();
+      updateScore();
+    }
+
+    // Event bindings
+    $("addReflectionBtn").onclick = () => {
+      const text = $("currentReflection").value.trim();
+      studentName = $("studentName").value.trim();
+      if (!text) return;
+      reflections = [...reflections, text];
+      $("currentReflection").value = "";
+      renderReflections();
+      updateScore();
+    };
+    $("igBtn").onclick = generateIG;
+    $("downloadBtn").onclick = downloadAnswers;
+    $("resetBtn").onclick = resetAll;
+    $("studentName").oninput = (e) => {
+      studentName = e.target.value;
+    };
+    $("currentReflection").oninput = (e) => {
+      currentReflection = e.target.value;
+    };
+
+    // Initial render
+    renderAll();
+  </script>
+</body>
+</html>
