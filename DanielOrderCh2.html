@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>但以理夢像排序練習（Greek vs Roman View）</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-strong: #1d4ed8;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      --chip: #f3f4f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    .app {
+      width: min(1100px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+    .sub {
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 12px;
+    }
+    .col-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #1f2937;
+    }
+    .rows {
+      display: grid;
+      gap: 8px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .dream {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .slot {
+      position: relative;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px dashed #cdd4df;
+      background: #fbfcff;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: border 0.15s ease, background 0.15s ease;
+    }
+    .slot.filled {
+      border-style: solid;
+      border-color: var(--border);
+      color: var(--text);
+      background: #ffffff;
+    }
+    .slot.drag-over {
+      border-color: var(--primary);
+      background: #eef2ff;
+    }
+    .chip {
+      user-select: none;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: var(--chip);
+      border: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #111827;
+      cursor: grab;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.12s ease, box-shadow 0.15s ease, border 0.15s ease;
+    }
+    .chip:active { cursor: grabbing; }
+    .chip:hover {
+      border-color: #cfd6e0;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+    .chip .badge {
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      background: #e5edff;
+      color: #1d4ed8;
+      border: 1px solid #c7d7ff;
+      font-weight: 700;
+    }
+    .bank {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+    }
+    .bank-chips, .slot-chip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .actions {
+      margin: 14px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, border 0.15s ease;
+    }
+    button:hover {
+      border-color: #cfd6e0;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+    }
+    button:active { transform: translateY(1px); }
+    .primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .primary:hover { background: var(--primary-strong); border-color: var(--primary-strong); }
+    .result {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      line-height: 1.5;
+    }
+    .result h3 { margin: 0 0 6px; font-size: 1.02rem; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.86rem;
+    }
+    .tag.green { background: #ecfdf3; color: #047857; border: 1px solid #bbf7d0; }
+    .tag.blue { background: #e0ecff; color: #1d4ed8; border: 1px solid #c7d7ff; }
+    .tag.gray { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+    .ref {
+      margin-top: 10px;
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+    .mini-table {
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .mini-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    .mini-table th, .mini-table td {
+      border-bottom: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .mini-table th {
+      background: #f3f4f6;
+      font-weight: 800;
+    }
+    .mini-table tr:last-child td { border-bottom: none; }
+    @media (max-width: 720px) {
+      .layout { grid-template-columns: 1fr; }
+      .slot { min-height: 58px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>但以理像的國度排序（拖曳右側解釋，自上而下對應）</h1>
+    <div class="sub">
+      左欄：夢中的圖像（固定順序）。右欄：請拖動解釋卡片，排成對應的次序。<br>
+      預設右欄已隨機排列（採希臘觀點的元素）；你也可把下方「備選卡片」拖入對應格，或把格子裡的卡片拖回備選池。
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="col-title">夢中圖像（固定）</div>
+        <div class="rows" id="dreamCol"></div>
+      </div>
+      <div>
+        <div class="col-title">你的排序（可拖放）</div>
+        <div class="rows" id="slotCol"></div>
+      </div>
+    </div>
+
+    <div class="bank" aria-label="備選卡片池">
+      <strong>備選卡片</strong>（拖到右側格子以替換）：
+      <div class="bank-chips" id="bank"></div>
+    </div>
+
+    <div class="actions">
+      <button id="shuffleBtn">重新隨機排序</button>
+      <button id="resetBtn">重置到初始隨機</button>
+      <button class="primary" id="confirmBtn">確定排序並判讀</button>
+    </div>
+
+    <div class="result" id="result" style="display:none;"></div>
+
+    <div class="mini-table">
+      <table>
+        <thead>
+          <tr>
+            <th>夢的部位</th>
+            <th>希臘觀 (Widder 傾向)</th>
+            <th>羅馬觀 (傳統派)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>金頭</td><td>巴比倫 / 尼布甲尼撒</td><td>巴比倫</td>
+          </tr>
+          <tr>
+            <td>銀胸臂</td><td>瑪代（Media）</td><td>瑪代－波斯（Medo-Persia）</td>
+          </tr>
+          <tr>
+            <td>銅腹腰</td><td>波斯（Persia）</td><td>希臘</td>
+          </tr>
+          <tr>
+            <td>鐵腿、鐵與泥腳</td><td>希臘（亞歷山大 → 王朝通婚混合）</td><td>羅馬（含復興/延伸）</td>
+          </tr>
+          <tr>
+            <td>石頭</td><td>神的國度（永存）</td><td>神的國度（永存）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ref">
+      依據：Wendy L. Widder, <em>Daniel</em>, The Story of God Bible Commentary (2016), pp. 52–55。她以但以理 7–8 章的連結支持「希臘觀」：第四國與山羊（希臘）的小角呼應，鐵與泥的混雜對應亞歷山大後繼王朝的通婚混合。
+    </div>
+  </div>
+
+  <script>
+    // Data
+    const dreamOrder = [
+      { id: "gold", label: "金頭 (Gold head)" },
+      { id: "silver", label: "銀胸臂 (Silver torso)" },
+      { id: "bronze", label: "銅腹腰 (Bronze mid-section)" },
+      { id: "iron", label: "鐵腿／鐵與泥腳趾 (Iron legs / iron-clay feet)" },
+      { id: "rock", label: "石頭 (Rock)" },
+    ];
+
+    const options = [
+      { id: "babylon", label: "巴比倫 / 尼布甲尼撒" },
+      { id: "media", label: "瑪代（Media）" },
+      { id: "persia", label: "波斯（Persia）" },
+      { id: "medo-persia", label: "瑪代－波斯（Medo-Persia）" },
+      { id: "greece", label: "希臘（亞歷山大 → 王朝通婚混合）" },
+      { id: "rome", label: "羅馬（鐵；鐵與泥腳／復興羅馬）" },
+      { id: "god", label: "神的國度（永存）" },
+    ];
+
+    const greekSeq = ["babylon", "media", "persia", "greece", "god"];
+    const romanSeq = ["babylon", "medo-persia", "greece", "rome", "god"];
+
+    // State
+    let slots = Array(5).fill(null);
+    let bankItems = [];
+    let initialSlots = [];
+
+    // Helpers
+    const $(id) => document.getElementById(id);
+
+    function shuffle(arr) {
+      return arr.map(x => ({ x, r: Math.random() }))
+                .sort((a, b) => a.r - b.r)
+                .map(o => o.x);
+    }
+
+    function initState() {
+      // Start with Greek set assigned randomly to slots
+      const greekSet = options.filter(o => greekSeq.includes(o.id));
+      const shuffled = shuffle(greekSet);
+      slots = shuffled.slice(0, 5).map(o => o.id);
+      // bank holds the remaining (non-used) items
+      bankItems = options
+        .map(o => o.id)
+        .filter(id => !slots.includes(id));
+      initialSlots = [...slots];
+    }
+
+    function renderDream() {
+      const col = $("dreamCol");
+      col.innerHTML = "";
+      dreamOrder.forEach((d, i) => {
+        const row = document.createElement("div");
+        row.className = "row";
+        const dreamBox = document.createElement("div");
+        dreamBox.className = "dream";
+        dreamBox.textContent = `${i + 1}. ${d.label}`;
+        row.appendChild(dreamBox);
+        col.appendChild(row);
+      });
+    }
+
+    function renderSlots() {
+      const col = $("slotCol");
+      col.innerHTML = "";
+      dreamOrder.forEach((_, i) => {
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const slot = document.createElement("div");
+        slot.className = "slot";
+        slot.dataset.slotIndex = i;
+        slot.addEventListener("dragover", onDragOverSlot);
+        slot.addEventListener("dragleave", onDragLeaveSlot);
+        slot.addEventListener("drop", onDropOnSlot);
+
+        const itemId = slots[i];
+        if (itemId) {
+          const chip = createChip(itemId, true, i);
+          slot.innerHTML = "";
+          slot.appendChild(chip);
+          slot.classList.add("filled");
+        } else {
+          slot.textContent = "拖曳卡片到此";
+          slot.classList.remove("filled");
+        }
+
+        row.appendChild(slot);
+        col.appendChild(row);
+      });
+    }
+
+    function renderBank() {
+      const bank = $("bank");
+      bank.innerHTML = "";
+      bankItems.forEach(id => {
+        const chip = createChip(id, false, null);
+        bank.appendChild(chip);
+      });
+    }
+
+    function createChip(id, fromSlot, slotIndex) {
+      const opt = options.find(o => o.id === id);
+      const chip = document.createElement("div");
+      chip.className = "chip";
+      chip.draggable = true;
+      chip.textContent = opt.label;
+      chip.dataset.itemId = id;
+      chip.dataset.from = fromSlot ? "slot" : "bank";
+      if (fromSlot) chip.dataset.slotIndex = slotIndex;
+
+      chip.addEventListener("dragstart", onDragStart);
+      chip.addEventListener("dragend", onDragEnd);
+
+      // badge to show origin
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = fromSlot ? "在格子" : "備選";
+      chip.appendChild(badge);
+
+      return chip;
+    }
+
+    function onDragStart(e) {
+      const id = e.target.dataset.itemId;
+      const from = e.target.dataset.from;
+      const slotIndex = e.target.dataset.slotIndex ?? "";
+      e.dataTransfer.setData("text/plain", `${from}|${slotIndex}|${id}`);
+      e.dataTransfer.effectAllowed = "move";
+    }
+
+    function onDragEnd() {
+      document
+        .querySelectorAll(".slot.drag-over")
+        .forEach(el => el.classList.remove("drag-over"));
+    }
+
+    function onDragOverSlot(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add("drag-over");
+      e.dataTransfer.dropEffect = "move";
+    }
+
+    function onDragLeaveSlot(e) {
+      e.currentTarget.classList.remove("drag-over");
+    }
+
+    function onDropOnSlot(e) {
+      e.preventDefault();
+      const slotEl = e.currentTarget;
+      slotEl.classList.remove("drag-over");
+      const data = e.dataTransfer.getData("text/plain");
+      if (!data) return;
+      const [from, fromSlotIdx, itemId] = data.split("|");
+      const targetIdx = parseInt(slotEl.dataset.slotIndex, 10);
+
+      if (from === "slot") {
+        const srcIdx = parseInt(fromSlotIdx, 10);
+        if (Number.isNaN(srcIdx)) return;
+        // swap slots
+        const temp = slots[targetIdx];
+        slots[targetIdx] = slots[srcIdx];
+        slots[srcIdx] = temp;
+      } else if (from === "bank") {
+        // move from bank into slot, replace out-going to bank
+        const outgoing = slots[targetIdx];
+        slots[targetIdx] = itemId;
+        if (outgoing) bankItems.push(outgoing);
+        bankItems = bankItems.filter(id => id !== itemId);
+      }
+      renderSlots();
+      renderBank();
+      hideResult();
+    }
+
+    // Drop back to bank
+    $("bank").addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    });
+    $("bank").addEventListener("drop", (e) => {
+      e.preventDefault();
+      const data = e.dataTransfer.getData("text/plain");
+      if (!data) return;
+      const [from, fromSlotIdx, itemId] = data.split("|");
+      if (from === "slot") {
+        const idx = parseInt(fromSlotIdx, 10);
+        if (Number.isNaN(idx)) return;
+        // remove from slot to bank
+        if (slots[idx] === itemId) {
+          slots[idx] = null;
+          if (!bankItems.includes(itemId)) bankItems.push(itemId);
+          renderSlots();
+          renderBank();
+          hideResult();
+        }
+      }
+    });
+
+    function evaluateOrder() {
+      const user = slots.map(id => id || "(空)");
+      const greekMatches = user.reduce((acc, id, i) => acc + (id === greekSeq[i] ? 1 : 0), 0);
+      const romanMatches = user.reduce((acc, id, i) => acc + (id === romanSeq[i] ? 1 : 0), 0);
+
+      let verdict = "";
+      let tag = "";
+      let expl = "";
+
+      if (greekMatches === 5 && romanMatches < 5) {
+        verdict = "完全符合：希臘觀（Widder 傾向的解讀）";
+        tag = "green";
+        expl = "你的排序與希臘觀 1:1 對應：金頭=巴比倫；銀胸臂=瑪代；銅腹腰=波斯；鐵腿/鐵泥腳=希臘（亞歷山大與後續王朝通婚混合）；石頭=神的國度。Widder 以但以理 7–8 章的小角與山羊（希臘）呼應，支持此解讀。";
+      } else if (romanMatches === 5 && greekMatches < 5) {
+        verdict = "完全符合：羅馬觀（傳統派）";
+        tag = "blue";
+        expl = "你的排序與羅馬觀 1:1 對應：金頭=巴比倫；銀胸臂=瑪代－波斯；銅腹腰=希臘；鐵腿/鐵泥腳=羅馬（含延伸/復興）；石頭=神的國度。Widder 提醒羅馬觀是傳統主流，但她指出希臘觀也有強力文本依據。";
+      } else {
+        // partial
+        const closer = greekMatches > romanMatches ? "希臘觀（Widder 傾向）" :
+                       romanMatches > greekMatches ? "羅馬觀（傳統派）" :
+                       "兩者皆不完全相符";
+        const closerTag = greekMatches === romanMatches ? "gray" :
+                          greekMatches > romanMatches ? "green" : "blue";
+        verdict = `最接近：${closer}`;
+        tag = closerTag;
+        expl =
+          `對希臘觀的對位正確數：${greekMatches}/5；對羅馬觀：${romanMatches}/5。` +
+          " 若要完全符合希臘觀，請設定銀胸臂=瑪代，銅腹腰=波斯，鐵腿/腳=希臘（亞歷山大→王朝通婚）；" +
+          "若要符合羅馬觀，請設定銀胸臂=瑪代－波斯，銅腹腰=希臘，鐵腿/腳=羅馬。";
+      }
+
+      const resultBox = $("result");
+      resultBox.innerHTML = `
+        <h3>結果</h3>
+        <div class="tag ${tag}">${verdict}</div>
+        <div style="margin-top:8px;"><strong>你的排序（自上而下）：</strong></div>
+        <ol style="margin:6px 0 8px 18px; padding-left:4px;">
+          ${user.map(u => `<li>${labelOf(u)}</li>`).join("")}
+        </ol>
+        <div>${expl}</div>
+      `;
+      resultBox.style.display = "block";
+    }
+
+    function labelOf(id) {
+      if (!id || id === "(空)") return "(空)";
+      const o = options.find(x => x.id === id);
+      return o ? o.label : id;
+    }
+
+    function hideResult() {
+      $("result").style.display = "none";
+    }
+
+    // Buttons
+    $("shuffleBtn").addEventListener("click", () => {
+      const greekSet = options.filter(o => greekSeq.includes(o.id));
+      const shuffled = shuffle(greekSet);
+      slots = shuffled.slice(0, 5).map(o => o.id);
+      bankItems = options.map(o => o.id).filter(id => !slots.includes(id));
+      renderSlots();
+      renderBank();
+      hideResult();
+    });
+
+    $("resetBtn").addEventListener("click", () => {
+      slots = [...initialSlots];
+      bankItems = options.map(o => o.id).filter(id => !slots.includes(id));
+      renderSlots();
+      renderBank();
+      hideResult();
+    });
+
+    $("confirmBtn").addEventListener("click", evaluateOrder);
+
+    // Initialize
+    initState();
+    renderDream();
+    renderSlots();
+    renderBank();
+  </script>
+</body>
+</html>
