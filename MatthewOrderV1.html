@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>可拖曳文字方塊排列句子</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-strong: #1d4ed8;
+      --border: #e5e7eb;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .app {
+      width: min(960px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, border 0.15s ease;
+    }
+    button:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    button:hover {
+      border-color: #cdd4df;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .primary:hover { background: var(--primary-strong); border-color: var(--primary-strong); }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 10px;
+      margin: 14px 0 10px;
+      align-items: start;
+    }
+    .chip {
+      user-select: none;
+      padding: 14px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border 0.15s ease, background 0.15s ease;
+    }
+    .chip:active { cursor: grabbing; }
+    .chip.drag-over {
+      border-color: var(--primary);
+      background: #eef2ff;
+      transform: scale(1.02);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+    }
+    .chip.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+      background: #eef2ff;
+    }
+    .sentence-box {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+    .footer {
+      margin-top: 12px;
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    @media (max-width: 480px) {
+      .chip { padding: 12px 10px; }
+      .title { width: 100%; }
+      .header { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="title">🧩 拖曳或點選重排文字方塊</div>
+      <div class="controls">
+        <button id="resetBtn">重置</button>
+        <button id="shuffleBtn">隨機排列</button>
+        <button id="copyBtn" class="primary">複製句子</button>
+      </div>
+    </div>
+    <div class="hint">桌面：拖曳方塊以重排。<br>手機：連續點擊兩個方塊可交換位置。</div>
+    <div id="board" class="board" aria-live="polite"></div>
+    <div class="sentence-box">
+      目前句子：<span id="sentenceText"></span>
+    </div>
+    <div class="footer">提示：可將本頁嵌入 GitHub Pages，讓學生自行練習排句。</div>
+  </div>
+
+  <script>
+    (() => {
+      const initialWords = ["我", "做", "功課", "。"];
+      let words = [...initialWords];
+      let dragIndex = null;
+      let selectedIndex = null;
+
+      const board = document.getElementById("board");
+      const sentenceText = document.getElementById("sentenceText");
+      const resetBtn = document.getElementById("resetBtn");
+      const shuffleBtn = document.getElementById("shuffleBtn");
+      const copyBtn = document.getElementById("copyBtn");
+
+      const render = () => {
+        board.innerHTML = "";
+        words.forEach((w, idx) => {
+          const chip = document.createElement("button");
+          chip.className = "chip" + (idx === selectedIndex ? " selected" : "");
+          chip.textContent = w;
+          chip.draggable = true;
+          chip.dataset.index = idx;
+
+          // Drag events (desktop)
+          chip.addEventListener("dragstart", (e) => {
+            dragIndex = idx;
+            e.dataTransfer.effectAllowed = "move";
+          });
+          chip.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            chip.classList.add("drag-over");
+          });
+          chip.addEventListener("dragleave", () => {
+            chip.classList.remove("drag-over");
+          });
+          chip.addEventListener("drop", (e) => {
+            e.preventDefault();
+            chip.classList.remove("drag-over");
+            const targetIndex = idx;
+            if (dragIndex === null || dragIndex === targetIndex) return;
+            moveItem(dragIndex, targetIndex);
+            dragIndex = null;
+          });
+
+          // Tap / click to swap (mobile friendly)
+          chip.addEventListener("click", () => {
+            if (selectedIndex === null) {
+              selectedIndex = idx;
+            } else if (selectedIndex === idx) {
+              selectedIndex = null;
+            } else {
+              swapItems(selectedIndex, idx);
+              selectedIndex = null;
+            }
+            render();
+          });
+
+          chip.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              chip.click();
+            }
+          });
+
+          board.appendChild(chip);
+        });
+        updateSentence();
+      };
+
+      const updateSentence = () => {
+        // For Chinese + punctuation, join directly
+        const sentence = words.join("");
+        sentenceText.textContent = sentence;
+      };
+
+      const moveItem = (from, to) => {
+        const updated = [...words];
+        const [moved] = updated.splice(from, 1);
+        updated.splice(to, 0, moved);
+        words = updated;
+        selectedIndex = null;
+        render();
+      };
+
+      const swapItems = (a, b) => {
+        const updated = [...words];
+        [updated[a], updated[b]] = [updated[b], updated[a]];
+        words = updated;
+        render();
+      };
+
+      const shuffle = () => {
+        words = words
+          .map((x) => ({ x, r: Math.random() }))
+          .sort((a, b) => a.r - b.r)
+          .map((o) => o.x);
+        selectedIndex = null;
+        render();
+      };
+
+      resetBtn.addEventListener("click", () => {
+        words = [...initialWords];
+        selectedIndex = null;
+        render();
+      });
+
+      shuffleBtn.addEventListener("click", () => {
+        shuffle();
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        const text = words.join("");
+        try {
+          await navigator.clipboard.writeText(text);
+          copyBtn.textContent = "已複製！";
+          setTimeout(() => (copyBtn.textContent = "複製句子"), 1200);
+        } catch (err) {
+          copyBtn.textContent = "複製失敗";
+          setTimeout(() => (copyBtn.textContent = "複製句子"), 1200);
+        }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
