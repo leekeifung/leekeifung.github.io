@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MathJax Demo</title>
+
+  <!-- MathJax v3 (TeX + CHTML) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <h1>MathJax on GitHub Pages</h1>
+  <p>Inline math: \(\det A = a_{11}a_{22} - a_{12}a_{21}\).</p>
+  <p>Display math:</p>
+  \[
+    \det A =
+    \begin{vmatrix}
+      a_{11} & a_{12}\\
+      a_{21} & a_{22}
+    \end{vmatrix}
+    = a_{11}a_{22} - a_{12}a_{21}.
+  \]
+</body>
+</html>
