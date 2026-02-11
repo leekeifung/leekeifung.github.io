@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vector intro: addition, subtraction, scalar multiples, linear combinations</title>
+
+  <!-- MathJax v3 (TeX + CHTML) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #d9e2ec;
+      --text: #0f172a;
+      --muted: #475569;
+      --v1: #2563eb;
+      --v2: #ef4444;
+      --comb: #10b981;
+      --par: #0ea5e9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 14px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text);
+      display: flex; justify-content: center;
+    }
+    .wrap {
+      width: min(960px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 26px rgba(15,23,42,0.08);
+    }
+    h1 { margin: 0 0 8px; font-size: 1.35rem; }
+    .sub { color: var(--muted); margin-bottom: 12px; }
+    .grid {
+      display: grid; gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      align-items: start;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+    .label {
+      font-weight: 700; margin-bottom: 6px;
+      display: inline-flex; gap: 6px; align-items: center;
+    }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .slider-group { margin-bottom: 8px; }
+    .slider-group label { font-weight: 600; color: var(--muted); }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--v1);
+    }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 6px; }
+    canvas {
+      width: 100%; height: 420px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #ffffff;
+    }
+    .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; font-size: 0.95rem; }
+    .dot {
+      width: 12px; height: 12px; border-radius: 999px;
+      display: inline-block; margin-right: 6px;
+    }
+    .formula {
+      background: #f8fafc; border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px; overflow-x: auto; margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Vectors: addition, subtraction, scalar multiples, and linear combinations</h1>
+  <div class="sub">Move the sliders to see how coefficients change each vector and their linear combination.</div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Base vectors</div>
+      <div class="row"><strong>\( \mathbf{v}_1 = (4,\,6) \)</strong><span style="color:var(--muted)">blue</span></div>
+      <div class="row"><strong>\( \mathbf{v}_2 = (3,\,-2) \)</strong><span style="color:var(--muted)">red</span></div>
+
+      <div class="slider-group">
+        <label for="c1">Scalar \( c_1 \) (applied to \( \mathbf{v}_1 \))</label>
+        <input id="c1" type="range" min="-3" max="3" step="0.5" value="1" />
+        <div>Current: <code id="c1Val">1</code></div>
+      </div>
+
+      <div class="slider-group">
+        <label for="c2">Scalar \( c_2 \) (applied to \( \mathbf{v}_2 \))</label>
+        <input id="c2" type="range" min="-3" max="3" step="0.5" value="1" />
+        <div>Current: <code id="c2Val">1</code></div>
+      </div>
+
+      <div class="label" style="margin-top:8px;">Results</div>
+      <div class="formula">
+        \[
+          c_1 \mathbf{v}_1 + c_2 \mathbf{v}_2
+          = (\;c_1\cdot 4 + c_2\cdot 3,\;\; c_1\cdot 6 + c_2\cdot (-2)\;)
+        \]
+        \[
+          = \big( \; \color{#2563eb}{c_1}\cdot 4 + \color{#ef4444}{c_2}\cdot 3,\;
+                 \color{#2563eb}{c_1}\cdot 6 + \color{#ef4444}{c_2}\cdot (-2) \; \big)
+        \]
+        Current \( \mathbf{b} = \big( \; \color{#10b981}{\text{<span id="bx"></span>}},\; \color{#10b981}{\text{<span id="by"></span>}} \; \big)\).
+      </div>
+
+      <div class="formula">
+        Addition: \( \mathbf{v}_1 + \mathbf{v}_2 \) (set \( c_1=1, c_2=1 \))<br/>
+        Subtraction: \( \mathbf{v}_1 - \mathbf{v}_2 \) (set \( c_1=1, c_2=-1 \))<br/>
+        Scalar multiple: \( k\mathbf{v}_1 \) (set \( c_1 = k, c_2 = 0 \)).
+      </div>
+    </div>
+
+    <div class="card">
+      <canvas id="plot"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--v1)"></span>\( \mathbf{v}_1 \)</span>
+        <span><span class="dot" style="background:var(--v2)"></span>\( \mathbf{v}_2 \)</span>
+        <span><span class="dot" style="background:var(--comb)"></span>\( c_1\mathbf{v}_1 + c_2\mathbf{v}_2 = \mathbf{b} \)</span>
+        <span><span class="dot" style="background:var(--par)"></span>Parallelogram edges</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const v1 = [4, 6];
+  const v2 = [3, -2];
+  const c1Input = document.getElementById('c1');
+  const c2Input = document.getElementById('c2');
+  const c1Val = document.getElementById('c1Val');
+  const c2Val = document.getElementById('c2Val');
+  const bxEl = document.getElementById('bx');
+  const byEl = document.getElementById('by');
+  const canvas = document.getElementById('plot');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    draw();
+  }
+
+  function toCanvas(x, y) {
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    const scale = Math.min(w, h) / 16; // fits ~ +/-8 in view
+    const cx = w / 2;
+    const cy = h / 2;
+    return [cx + x * scale, cy - y * scale];
+  }
+
+  function drawAxes() {
+    const { width, height } = canvas.getBoundingClientRect();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#cbd5e1';
+    // grid
+    const scale = Math.min(width, height) / 16;
+    for (let i = -8; i <= 8; i++) {
+      const [x0, y0] = toCanvas(i, -8);
+      const [x1, y1] = toCanvas(i, 8);
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      const [gx0, gy0] = toCanvas(-8, i);
+      const [gx1, gy1] = toCanvas(8, i);
+      ctx.beginPath(); ctx.moveTo(gx0, gy0); ctx.lineTo(gx1, gy1); ctx.stroke();
+    }
+    // axes
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.6;
+    const [x0, y0] = toCanvas(-8, 0);
+    const [x1, y1] = toCanvas(8, 0);
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+    const [xa0, ya0] = toCanvas(0, -8);
+    const [xa1, ya1] = toCanvas(0, 8);
+    ctx.beginPath(); ctx.moveTo(xa0, ya0); ctx.lineTo(xa1, ya1); ctx.stroke();
+  }
+
+  function drawArrow(vec, color, from=[0,0], width=3) {
+    const [x, y] = vec;
+    const [fx, fy] = toCanvas(from[0], from[1]);
+    const [tx, ty] = toCanvas(from[0] + x, from[1] + y);
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(fx, fy);
+    ctx.lineTo(tx, ty);
+    ctx.stroke();
+    // arrowhead
+    const angle = Math.atan2(ty - fy, tx - fx);
+    const size = 10;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(tx - size * Math.cos(angle - Math.PI / 6), ty - size * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(tx - size * Math.cos(angle + Math.PI / 6), ty - size * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawParallelogram(a, b) {
+    const p0 = [0,0];
+    const p1 = a;
+    const p2 = [a[0] + b[0], a[1] + b[1]];
+    const p3 = b;
+    const pts = [p0, p1, p2, p3];
+    ctx.strokeStyle = 'rgba(14,165,233,0.9)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    pts.forEach((p, i) => {
+      const [cx, cy] = toCanvas(p[0], p[1]);
+      if (i === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+    });
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function draw() {
+    const c1 = parseFloat(c1Input.value);
+    const c2 = parseFloat(c2Input.value);
+    const a = [c1 * v1[0], c1 * v1[1]];
+    const b = [c2 * v2[0], c2 * v2[1]];
+    const comb = [a[0] + b[0], a[1] + b[1]];
+
+    c1Val.textContent = c1;
+    c2Val.textContent = c2;
+    bxEl.textContent = comb[0].toFixed(2).replace(/\.00$/,'');
+    byEl.textContent = comb[1].toFixed(2).replace(/\.00$/,'');
+
+    const { width, height } = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, width, height);
+    drawAxes();
+    drawParallelogram(a, b);
+    drawArrow(a, 'var(--v1)', [0,0], 3);
+    drawArrow(b, 'var(--v2)', [0,0], 3);
+    drawArrow(comb, 'var(--comb)', [0,0], 3.5);
+  }
+
+  c1Input.addEventListener('input', draw);
+  c2Input.addEventListener('input', draw);
+  window.addEventListener('resize', resize);
+
+  resize();
+})();
+</script>
+</body>
+</html>
