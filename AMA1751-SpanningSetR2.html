@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Span and Spanning Set in ℝ² — with Linear System</title>
+
+  <!-- MathJax v3 (TeX + CHTML) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #d9e2ec;
+      --text: #0f172a;
+      --muted: #475569;
+      --v1: #2563eb;
+      --v2: #ef4444;
+      --comb: #10b981;
+      --span: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 14px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text);
+      display: flex; justify-content: center;
+    }
+    .wrap {
+      width: min(1080px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 26px rgba(15,23,42,0.08);
+    }
+    h1 { margin: 0 0 8px; font-size: 1.35rem; }
+    .sub { color: var(--muted); margin-bottom: 12px; }
+    .grid {
+      display: grid; gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      align-items: start;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+    .label {
+      font-weight: 700; margin-bottom: 6px;
+      display: inline-flex; gap: 6px; align-items: center;
+    }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .slider-group { margin-bottom: 8px; }
+    .slider-group label { font-weight: 600; color: var(--muted); }
+    input[type="range"] { width: 100%; accent-color: var(--v1); }
+    select {
+      padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);
+      background: #fff; font-weight: 600;
+    }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 6px; }
+    canvas {
+      width: 100%; height: 460px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #ffffff;
+    }
+    .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; font-size: 0.95rem; }
+    .dot {
+      width: 12px; height: 12px; border-radius: 999px;
+      display: inline-block; margin-right: 6px;
+    }
+    .formula {
+      background: #f8fafc; border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px; overflow-x: auto; margin-top: 8px;
+      line-height: 1.45;
+    }
+    .pill {
+      display: inline-flex; gap: 6px; align-items: center;
+      padding: 6px 10px; border-radius: 999px;
+      background: #eef2ff; color: #1d4ed8; font-weight: 700;
+      font-size: 0.95rem; margin-bottom: 8px;
+    }
+    .status { font-weight: 700; margin-top: 8px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="pill">Span and Spanning Set in ℝ² · Interactive</div>
+  <h1>Span{v₁, v₂}, linear combinations, and the linear system A c = b</h1>
+  <div class="sub">Adjust the vectors and coefficients to see when two vectors span all of ℝ² (independent) or only a line (dependent).</div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Pick a preset</div>
+      <select id="preset">
+        <option value="indep">Independent (spans ℝ²): v₁=(4,6), v₂=(3,-2)</option>
+        <option value="orth">Independent (orthogonal): v₁=(2,0), v₂=(0,3)</option>
+        <option value="dep">Dependent (same line): v₁=(2,1), v₂=(4,2)</option>
+      </select>
+
+      <div class="label" style="margin-top:10px;">Edit vectors (components in ℝ²)</div>
+      <div class="slider-group">
+        <label for="v1x">\( \mathbf{v}_1 = (v_{1x}, v_{1y}) \) — x-component</label>
+        <input id="v1x" type="range" min="-6" max="6" step="1" value="4" />
+        <div>v₁x: <code id="v1xVal">4</code></div>
+      </div>
+      <div class="slider-group">
+        <label for="v1y">\( \mathbf{v}_1 \) — y-component</label>
+        <input id="v1y" type="range" min="-6" max="6" step="1" value="6" />
+        <div>v₁y: <code id="v1yVal">6</code></div>
+      </div>
+
+      <div class="slider-group">
+        <label for="v2x">\( \mathbf{v}_2 = (v_{2x}, v_{2y}) \) — x-component</label>
+        <input id="v2x" type="range" min="-6" max="6" step="1" value="3" />
+        <div>v₂x: <code id="v2xVal">3</code></div>
+      </div>
+      <div class="slider-group">
+        <label for="v2y">\( \mathbf{v}_2 \) — y-component</label>
+        <input id="v2y" type="range" min="-6" max="6" step="1" value="-2" />
+        <div>v₂y: <code id="v2yVal">-2</code></div>
+      </div>
+
+      <div class="label" style="margin-top:10px;">Coefficients for a linear combination</div>
+      <div class="slider-group">
+        <label for="c1">\( c_1 \) (applied to \( \mathbf{v}_1 \))</label>
+        <input id="c1" type="range" min="-3" max="3" step="0.5" value="1" />
+        <div>c₁: <code id="c1Val">1</code></div>
+      </div>
+      <div class="slider-group">
+        <label for="c2">\( c_2 \) (applied to \( \mathbf{v}_2 \))</label>
+        <input id="c2" type="range" min="-3" max="3" step="0.5" value="1" />
+        <div>c₂: <code id="c2Val">1</code></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <canvas id="plot"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--v1)"></span>\( \mathbf{v}_1 \)</span>
+        <span><span class="dot" style="background:var(--v2)"></span>\( \mathbf{v}_2 \)</span>
+        <span><span class="dot" style="background:var(--comb)"></span>\( \mathbf{b}=c_1\mathbf{v}_1+c_2\mathbf{v}_2 \)</span>
+        <span><span class="dot" style="background:var(--span)"></span>Span visualization</span>
+      </div>
+      <div class="status" id="spanStatus"></div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:12px;">
+    <div class="card">
+      <div class="label">What is a span?</div>
+      <div class="formula">
+        \[
+          \text{Span}\{\mathbf{v}_1, \mathbf{v}_2\}
+          = \{\, c_1 \mathbf{v}_1 + c_2 \mathbf{v}_2 \mid c_1, c_2 \in \mathbb{R} \,\}.
+        \]
+        In \( \mathbb{R}^2 \):
+        <ul>
+          <li>If \( \mathbf{v}_1, \mathbf{v}_2 \) are linearly independent (determinant \( \neq 0 \)), their span is all of \( \mathbb{R}^2 \).</li>
+          <li>If they are dependent (one is a scalar multiple of the other), the span is just the line through the origin in that direction.</li>
+        </ul>
+      </div>
+      <div class="formula" id="detBox"></div>
+    </div>
+
+    <div class="card">
+      <div class="label">Linear system \( A\,\mathbf{c} = \mathbf{b} \)</div>
+      <div class="formula" id="systemBox"></div>
+      <div class="formula" id="solutionBox"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const preset = document.getElementById('preset');
+  const sliders = ['v1x','v1y','v2x','v2y','c1','c2'].map(id => document.getElementById(id));
+  const vals = {
+    v1x: document.getElementById('v1xVal'),
+    v1y: document.getElementById('v1yVal'),
+    v2x: document.getElementById('v2xVal'),
+    v2y: document.getElementById('v2yVal'),
+    c1: document.getElementById('c1Val'),
+    c2: document.getElementById('c2Val'),
+  };
+  const bxEl = document.createElement('span');
+  const byEl = document.createElement('span');
+  const detBox = document.getElementById('detBox');
+  const systemBox = document.getElementById('systemBox');
+  const solutionBox = document.getElementById('solutionBox');
+  const spanStatus = document.getElementById('spanStatus');
+
+  const canvas = document.getElementById('plot');
+  const ctx = canvas.getContext('2d');
+
+  function setPreset(name) {
+    if (name === 'indep') {
+      sliders[0].value = 4; sliders[1].value = 6; sliders[2].value = 3; sliders[3].value = -2;
+    } else if (name === 'orth') {
+      sliders[0].value = 2; sliders[1].value = 0; sliders[2].value = 0; sliders[3].value = 3;
+    } else if (name === 'dep') {
+      sliders[0].value = 2; sliders[1].value = 1; sliders[2].value = 4; sliders[3].value = 2;
+    }
+    update();
+  }
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.resetTransform();
+    ctx.scale(dpr, dpr);
+    draw();
+  }
+
+  function toCanvas(x, y) {
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    const scale = Math.min(w, h) / 14; // fits roughly +/-7
+    const cx = w / 2;
+    const cy = h / 2;
+    return [cx + x * scale, cy - y * scale];
+  }
+
+  function drawAxes() {
+    const { width, height } = canvas.getBoundingClientRect();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#e2e8f0';
+    const scale = Math.min(width, height) / 14;
+    for (let i = -7; i <= 7; i++) {
+      const [x0, y0] = toCanvas(i, -7);
+      const [x1, y1] = toCanvas(i, 7);
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      const [gx0, gy0] = toCanvas(-7, i);
+      const [gx1, gy1] = toCanvas(7, i);
+      ctx.beginPath(); ctx.moveTo(gx0, gy0); ctx.lineTo(gx1, gy1); ctx.stroke();
+    }
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(...toCanvas(-7, 0)); ctx.lineTo(...toCanvas(7, 0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(...toCanvas(0, -7)); ctx.lineTo(...toCanvas(0, 7)); ctx.stroke();
+  }
+
+  function drawArrow(vec, color, from=[0,0], width=3) {
+    const [x, y] = vec;
+    const [fx, fy] = toCanvas(from[0], from[1]);
+    const [tx, ty] = toCanvas(from[0] + x, from[1] + y);
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(fx, fy);
+    ctx.lineTo(tx, ty);
+    ctx.stroke();
+    const angle = Math.atan2(ty - fy, tx - fx);
+    const size = 10;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(tx - size * Math.cos(angle - Math.PI / 6), ty - size * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(tx - size * Math.cos(angle + Math.PI / 6), ty - size * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawSpan(v1, v2, independent) {
+    const rect = canvas.getBoundingClientRect();
+    if (independent) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(34,197,94,0.07)';
+      ctx.fillRect(0, 0, rect.width, rect.height);
+      ctx.restore();
+    } else {
+      // draw a thick line along the span direction
+      ctx.save();
+      ctx.strokeStyle = 'rgba(34,197,94,0.35)';
+      ctx.lineWidth = 18;
+      ctx.lineCap = 'round';
+      const dir = (Math.hypot(v1[0], v1[1]) > 1e-9) ? v1 : v2;
+      const L = 8;
+      const from = [-dir[0] * L, -dir[1] * L];
+      const to = [dir[0] * L, dir[1] * L];
+      const [fx, fy] = toCanvas(...from);
+      const [tx, ty] = toCanvas(...to);
+      ctx.beginPath();
+      ctx.moveTo(fx, fy);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function drawParallelogram(a, b) {
+    const pts = [
+      [0,0],
+      [a[0], a[1]],
+      [a[0] + b[0], a[1] + b[1]],
+      [b[0], b[1]]
+    ];
+    ctx.save();
+    ctx.strokeStyle = 'rgba(34,197,94,0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    pts.forEach((p, i) => {
+      const [cx, cy] = toCanvas(p[0], p[1]);
+      if (i === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+    });
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  function draw() {
+    const v1x = parseFloat(sliders[0].value);
+    const v1y = parseFloat(sliders[1].value);
+    const v2x = parseFloat(sliders[2].value);
+    const v2y = parseFloat(sliders[3].value);
+    const c1 = parseFloat(sliders[4].value);
+    const c2 = parseFloat(sliders[5].value);
+
+    const v1 = [v1x, v1y];
+    const v2 = [v2x, v2y];
+    const a = [c1 * v1x, c1 * v1y];
+    const b = [c2 * v2x, c2 * v2y];
+    const comb = [a[0] + b[0], a[1] + b[1]];
+    const det = v1x * v2y - v1y * v2x;
+    const independent = Math.abs(det) > 1e-9;
+
+    const { width, height } = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, width, height);
+    drawAxes();
+    drawSpan(v1, v2, independent);
+    drawParallelogram(a, b);
+    drawArrow(v1, 'var(--v1)', [0,0], 3);
+    drawArrow(v2, 'var(--v2)', [0,0], 3);
+    drawArrow(comb, 'var(--comb)', [0,0], 3.5);
+
+    // text updates
+    vals.v1x.textContent = v1x;
+    vals.v1y.textContent = v1y;
+    vals.v2x.textContent = v2x;
+    vals.v2y.textContent = v2y;
+    vals.c1.textContent = c1;
+    vals.c2.textContent = c2;
+
+    const bx = comb[0];
+    const by = comb[1];
+    const detStr = det.toFixed(2).replace(/\.00$/,'');
+    detBox.innerHTML = `
+      \\[
+        A = \\begin{bmatrix} ${v1x} & ${v2x} \\\\ ${v1y} & ${v2y} \\end{bmatrix},
+        \\quad \\det(A) = ${detStr}.
+      \\]
+      ${independent
+        ? 'Since \\(\\det(A) \\neq 0\\), \\(\\mathbf{v}_1,\\mathbf{v}_2\\) are independent and \\(\\text{Span}\\{\\mathbf{v}_1,\\mathbf{v}_2\\} = \\mathbb{R}^2.\\)'
+        : 'Since \\(\\det(A) = 0\\), \\(\\mathbf{v}_1,\\mathbf{v}_2\\) are dependent and the span is only the line through the origin in that direction.'
+      }
+    `;
+    systemBox.innerHTML = `
+      \\[
+        \\begin{bmatrix}
+          ${v1x} & ${v2x} \\\\
+          ${v1y} & ${v2y}
+        \\end{bmatrix}
+        \\begin{bmatrix} c_1 \\\\ c_2 \\end{bmatrix}
+        =
+        \\begin{bmatrix} b_x \\\\ b_y \\end{bmatrix},
+        \\quad
+        b_x = c_1\\,${v1x} + c_2\\,${v2x},\\;
+        b_y = c_1\\,${v1y} + c_2\\,${v2y}.
+      \\]
+    `;
+    solutionBox.innerHTML = `
+      With your sliders: \\( c_1 = ${c1},\\; c_2 = ${c2} \\). So
+      \\[
+        \\mathbf{b} = c_1\\mathbf{v}_1 + c_2\\mathbf{v}_2
+        = (${bx.toFixed(2).replace(/\\.00$/,'')},\\; ${by.toFixed(2).replace(/\\.00$/,'')}).
+      \\]
+      This means the system
+      \\[
+        \\begin{cases}
+          ${v1x}\\,c_1 + ${v2x}\\,c_2 = ${bx.toFixed(2).replace(/\\.00$/,'')} \\\\
+          ${v1y}\\,c_1 + ${v2y}\\,c_2 = ${by.toFixed(2).replace(/\\.00$/,'')}
+        \\end{cases}
+      \\]
+      is exactly the equations whose solution gives this linear combination.
+    `;
+    spanStatus.textContent = independent
+      ? 'Result: v₁ and v₂ span all of ℝ² (independent). Any b in ℝ² can be reached.'
+      : 'Result: v₁ and v₂ are dependent; their span is just one line through the origin.';
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      MathJax.typesetPromise();
+    }
+  }
+
+  function update() { draw(); }
+
+  preset.addEventListener('change', e => setPreset(e.target.value));
+  sliders.forEach(s => s.addEventListener('input', update));
+  window.addEventListener('resize', resize);
+
+  setPreset('indep');
+  resize();
+})();
+</script>
+</body>
+</html>
