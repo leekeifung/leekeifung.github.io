@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>羅馬統治者與新約背景｜互動查經小抄</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;          /* softbg */
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #d9e2ec;
+      --header: #2c3e50;      /* deepblue/headerblue */
+      --row: #ecf0f1;         /* rowgray */
+      --accent: #3498db;      /* accentblue */
+      --gold: #b48232;        /* accentgold */
+      --red: #c0392b;         /* warmred */
+      --teal: #16a085;        /* tealbox */
+      --shadow: 0 12px 28px rgba(15,23,42,0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    a { color: var(--accent); }
+    .page { width: min(1100px, 100%); }
+    header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #075985;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    h1 { margin: 0 0 6px; font-size: 1.35rem; color: var(--header); }
+    p.sub { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    /* Tabs */
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .tab {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .tab.active {
+      color: var(--text);
+      border-color: var(--accent);
+      box-shadow: 0 8px 18px rgba(52,152,219,0.14);
+      transform: translateY(-1px);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.05);
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      color: var(--header);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .tag.teal { background: #e6fffa; color: var(--teal); }
+    .tag.gold { background: #fff7ec; color: var(--gold); }
+    .tag.red  { background: #fdecec; color: var(--red); }
+    .tag.blue { background: #e0f2fe; color: #075985; }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--header);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+
+    /* Details */
+    details {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    details[open] { border-color: var(--accent); box-shadow: 0 6px 14px rgba(52,152,219,0.12); }
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--header);
+      list-style: none;
+      outline: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+
+    .hint {
+      background: #fffaf0;
+      border: 1px solid #e2d9c3;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 8px 0;
+      color: #8b6b2e;
+      font-weight: 600;
+    }
+    .answer {
+      background: #e0e7ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 8px;
+      color: var(--text);
+      white-space: pre-line;
+    }
+    .answer.red { background: #fdecec; border-color: #f5c2c2; }
+    .answer.gold { background: #fff7ec; border-color: #f5d9a8; }
+    .answer.teal { background: #e6fffa; border-color: #b2f5ea; }
+
+    .flex { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+    button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 12px rgba(52,152,219,0.12);
+      transform: translateY(-1px);
+    }
+    .era-filter button.active {
+      background: #e0f2fe;
+      border-color: var(--accent);
+      color: #075985;
+    }
+
+    .list { margin: 0; padding-left: 18px; line-height: 1.6; }
+    .note {
+      background: #f8fafc;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    footer { text-align: center; color: var(--muted); font-size: 0.95rem; margin-top: 12px; }
+
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      header, .card { padding: 12px; }
+      table, th, td { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="pill">羅馬史 x 新約背景 · 互動查經</div>
+      <h1>羅馬統治者與聖經歷史對照（165 BC – AD 117）</h1>
+      <p class="sub">主材：「Rome History to Github.tex」。幫助小組快速理解耶穌時代與初期教會背後的羅馬政局，並用於查經帶領與應用。</p>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <div class="tab active" data-tab="overview" role="tab" aria-selected="true">速覽與重點</div>
+      <div class="tab" data-tab="timeline" role="tab" aria-selected="false">時序表（可橫向捲動）</div>
+      <div class="tab" data-tab="profiles" role="tab" aria-selected="false">統治者卡片</div>
+      <div class="tab" data-tab="titles" role="tab" aria-selected="false">頭銜與語言</div>
+      <div class="tab" data-tab="qa" role="tab" aria-selected="false">小組互動問答</div>
+      <div class="tab" data-tab="refs" role="tab" aria-selected="false">經文對照 & 應用</div>
+    </div>
+
+    <!-- Overview -->
+    <section class="panel active" id="overview" role="tabpanel">
+      <div class="card">
+        <span class="tag teal">為什麼重要？</span>
+        <h2>這段羅馬史為新約搭建舞台</h2>
+        <ul class="list">
+          <li>63 BC 龐培攻陷耶路撒冷，猶太地正式入羅馬版圖，催生「政治彌賽亞」期待。</li>
+          <li>27 BC 奧古斯都開創帝國時代，戶口普查使耶穌出生於伯利恆（路 2:1）。</li>
+          <li>提庇留時期：耶穌受洗、傳道、受難（本丟彼拉多為其任命）。</li>
+          <li>尼祿：羅馬大火後迫害基督徒，傳統認為彼得、保羅殉道於其末期。</li>
+          <li>圖密善：自稱「主與神」，逼迫拒絕稱他為主的基督徒，啟示錄背景。</li>
+          <li>AD 70 聖殿被毀：韋帕薌登基後，其子提圖斯攻陷耶路撒冷。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="tag gold">帶領提示</span>
+        <h2>三個關鍵脈絡講清楚</h2>
+        <ol class="list">
+          <li><strong>政局脈絡：</strong> 從群雄割據（共和末）到一人獨裁（帝國），解釋猶太人對「王」與「解放」的張力。</li>
+          <li><strong>頭銜脈絡：</strong> Caesar 由姓氏 → 繼承合法性 → 皇帝頭銜；Princeps / Imperator / Augustus 的「不說自己是王」政治語言。</li>
+          <li><strong>逼迫脈絡：</strong> 尼祿的替罪羊、圖密善的帝國崇拜，對比基督徒只稱耶穌為主的忠誠衝突。</li>
+        </ol>
+        <div class="note">行動：請組員各挑一位皇帝，描述其決策如何影響耶穌、生平、或初代教會。</div>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="panel" id="timeline" role="tabpanel">
+      <div class="card">
+        <span class="tag blue">時序表 · 可左右捲動</span>
+        <div class="note">提示：手機可橫向滑動表格；點選下方「按時代濾選」可在「統治者卡片」中快速聚焦。</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>統治者</th>
+                <th>在位</th>
+                <th>繼位原因</th>
+                <th>死亡</th>
+                <th>聖經關聯</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>龐培 Pompey（共和末）</td>
+                <td>活躍 63 BC</td>
+                <td>將軍、執政官</td>
+                <td>48 BC 兵敗逃埃及被殺</td>
+                <td>63 BC 攻陷耶路撒冷，猶太地納入羅馬</td>
+              </tr>
+              <tr>
+                <td>尤利烏斯·凱撒 Julius Caesar</td>
+                <td>49–44 BC（獨裁官）</td>
+                <td>內戰勝利，終身獨裁官</td>
+                <td>44 BC 三月十五刺殺</td>
+                <td>任命安提帕特為猶太長官，為大希律鋪路</td>
+              </tr>
+              <tr>
+                <td>奧古斯都 Augustus</td>
+                <td>27 BC–AD 14</td>
+                <td>凱撒養子，內戰勝出</td>
+                <td>AD 14 自然亡</td>
+                <td>路 2:1 戶口普查 → 耶穌伯利恆降生</td>
+              </tr>
+              <tr>
+                <td>提庇留 Tiberius</td>
+                <td>AD 14–37</td>
+                <td>奧古斯都繼子</td>
+                <td>AD 37 病亡</td>
+                <td>路 3:1 第15年施洗約翰起頭；耶穌受難時皇帝</td>
+              </tr>
+              <tr>
+                <td>卡利古拉 Caligula</td>
+                <td>AD 37–41</td>
+                <td>被禁衛軍擁立</td>
+                <td>AD 41 被刺</td>
+                <td>企圖立像聖殿，激化猶太–羅馬緊張</td>
+              </tr>
+              <tr>
+                <td>克勞狄 Claudius</td>
+                <td>AD 41–54</td>
+                <td>禁衛軍擁立</td>
+                <td>AD 54 疑遭毒殺</td>
+                <td>徒 18:2 驅逐猶太人令；大饑荒時期</td>
+              </tr>
+              <tr>
+                <td>尼祿 Nero</td>
+                <td>AD 54–68</td>
+                <td>克勞狄養子</td>
+                <td>AD 68 自殺</td>
+                <td>AD 64 大火後迫害；傳統彼得、保羅殉道</td>
+              </tr>
+              <tr>
+                <td>四帝年 Galba/Otho/Vitellius</td>
+                <td>AD 68–69</td>
+                <td>內戰各自擁立</td>
+                <td>皆死於兵變/自殺</td>
+                <td>猶太戰爭中段，耶路撒冷教會得以逃往佩拉</td>
+              </tr>
+              <tr>
+                <td>韋帕薌 Vespasian</td>
+                <td>AD 69–79</td>
+                <td>東方軍團擁立，內戰勝出</td>
+                <td>AD 79 病亡</td>
+                <td>其子提圖斯 AD 70 毀聖殿</td>
+              </tr>
+              <tr>
+                <td>提圖斯 Titus</td>
+                <td>AD 79–81</td>
+                <td>父死子繼</td>
+                <td>AD 81 早逝</td>
+                <td>攻陷耶路撒冷的將領；在位遇龐貝城火山爆發</td>
+              </tr>
+              <tr>
+                <td>圖密善 Domitian</td>
+                <td>AD 81–96</td>
+                <td>弟承兄位</td>
+                <td>AD 96 被刺</td>
+                <td>自稱「主與神」；傳統約翰被流放拔摩，寫啟示錄</td>
+              </tr>
+              <tr>
+                <td>涅爾瓦 Nerva</td>
+                <td>AD 96–98</td>
+                <td>元老院推舉</td>
+                <td>AD 98 病亡</td>
+                <td>釋放政治犯；使徒約翰或此時回以弗所安逝</td>
+              </tr>
+              <tr>
+                <td>圖拉真 Trajan</td>
+                <td>AD 98–117</td>
+                <td>涅爾瓦養子</td>
+                <td>AD 117 自然亡</td>
+                <td>後使徒時期；對基督徒政策：被告且不獻祭則處刑</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profiles -->
+    <section class="panel" id="profiles" role="tabpanel">
+      <div class="card">
+        <span class="tag teal">統治者卡片</span>
+        <div class="flex era-filter" aria-label="filter by era">
+          <button data-era="all" class="active">全部</button>
+          <button data-era="republic">共和晚期</button>
+          <button data-era="julio">朱里亞-克勞狄</button>
+          <button data-era="four">四帝年</button>
+          <button data-era="flavian">弗拉維</button>
+          <button data-era="antonine">安敦尼初</button>
+        </div>
+
+        <!-- Cards grouped as details -->
+        <div id="profile-list">
+          <!-- Republic -->
+          <details data-era="republic">
+            <summary>龐培 Pompey（63 BC 攻陷耶路撒冷）</summary>
+            <div class="answer teal">
+              在位/活躍：63 BC（將軍）<br>
+              繼位/崛起：軍事征服，執政官<br>
+              死亡：48 BC 內戰敗北後被殺<br>
+              聖經意義：兩約之間，猶太地納入羅馬，激發政治彌賽亞期待
+            </div>
+          </details>
+          <details data-era="republic">
+            <summary>尤利烏斯·凱撒（49–44 BC）</summary>
+            <div class="answer teal">
+              獨裁官，內戰勝利；44 BC 遭刺殺。<br>
+              對聖經：任命安提帕特為猶太行政長官，為大希律崛起鋪路；「Caesar」仍為姓氏。
+            </div>
+          </details>
+
+          <!-- Julio-Claudian -->
+          <details data-era="julio">
+            <summary>奧古斯都 Augustus（27 BC–AD 14）</summary>
+            <div class="answer">
+              凱撒養子；首位皇帝；創戶口普查。<br>
+              聖經：路 2:1 戶口普查 → 耶穌伯利恆降生。頭銜：Princeps / Imperator / Augustus。
+            </div>
+          </details>
+          <details data-era="julio">
+            <summary>提庇留 Tiberius（AD 14–37）</summary>
+            <div class="answer">
+              奧古斯都繼子；耶穌受難時在位。<br>
+              聖經：路 3:1 第15年施洗約翰開始；彼拉多受其任命。
+            </div>
+          </details>
+          <details data-era="julio">
+            <summary>卡利古拉 Caligula（AD 37–41）</summary>
+            <div class="answer">
+              被禁衛軍擁立；暴政。<br>
+              聖經背景：欲將自身像立於聖殿，激化猶太與羅馬張力。
+            </div>
+          </details>
+          <details data-era="julio">
+            <summary>克勞狄 Claudius（AD 41–54）</summary>
+            <div class="answer">
+              被禁衛軍擁立；疑遭毒殺。<br>
+              聖經：徒 18:2 驅逐猶太人令（百基拉、亞居拉遇保羅）；大饑荒。
+            </div>
+          </details>
+          <details data-era="julio">
+            <summary>尼祿 Nero（AD 54–68）</summary>
+            <div class="answer red">
+              大火後迫害基督徒；自殺。<br>
+              聖經：傳統彼得、保羅殉道；徒 25:11 保羅「上告於凱撒」所指即尼祿。
+            </div>
+          </details>
+
+          <!-- Four emperors -->
+          <details data-era="four">
+            <summary>四帝年 Galba / Otho / Vitellius（AD 68–69）</summary>
+            <div class="answer">
+              內戰短暫稱帝，皆死於兵變/自殺。<br>
+              聖經背景：猶太戰爭中段，政局混亂讓耶路撒冷教會得以逃往佩拉。
+            </div>
+          </details>
+
+          <!-- Flavian -->
+          <details data-era="flavian">
+            <summary>韋帕薌 Vespasian（AD 69–79）</summary>
+            <div class="answer">
+              東方軍團擁立，內戰勝出。<br>
+              聖經：其子提圖斯 AD 70 毀聖殿，應驗耶穌預言。
+            </div>
+          </details>
+          <details data-era="flavian">
+            <summary>提圖斯 Titus（AD 79–81）</summary>
+            <div class="answer">
+              攻陷耶路撒冷的將領；在位遭龐貝火山爆發。<br>
+              對教會：後戰爭時期安撫東方，但聖殿已亡。
+            </div>
+          </details>
+          <details data-era="flavian">
+            <summary>圖密善 Domitian（AD 81–96）</summary>
+            <div class="answer red">
+              要求稱其「主與神」Dominus et Deus；被刺。<br>
+              聖經：傳統約翰被流放拔摩並寫啟示錄；帝國崇拜壓力下的忠誠衝突。
+            </div>
+          </details>
+
+          <!-- Antonine early -->
+          <details data-era="antonine">
+            <summary>涅爾瓦 Nerva（AD 96–98）</summary>
+            <div class="answer">
+              元老院推舉；釋放政治犯。<br>
+              聖經傳統：使徒約翰或於此時回以弗所並安逝，象徵使徒時代結束。
+            </div>
+          </details>
+          <details data-era="antonine">
+            <summary>圖拉真 Trajan（AD 98–117）</summary>
+            <div class="answer">
+              五賢帝首波；被養為嗣。<br>
+              對教會：頒「不主動搜捕」但若被控且拒獻祭則處刑的政策，福音廣傳期的張力。
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Titles & language -->
+    <section class="panel" id="titles" role="tabpanel">
+      <div class="card">
+        <span class="tag gold">頭銜演變與語言</span>
+        <h2>「凱撒」三階段</h2>
+        <ol class="list">
+          <li><strong>姓氏：</strong> Julius Caesar 的家族名。</li>
+          <li><strong>合法繼承標記：</strong> 奧古斯都繼承並加上「Caesar」，後續朱里亞家族皆帶此名。</li>
+          <li><strong>皇帝頭銜：</strong> 尼祿後無血統關聯者（如韋帕薌）仍加「Caesar」示合法性，遂成帝王頭銜。</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <span class="tag blue">避談「王」的政治語言</span>
+        <h2>他們實際用的稱號</h2>
+        <ul class="list">
+          <li><strong>Princeps</strong>（第一公民）：奧古斯都的「謙卑包裝」。</li>
+          <li><strong>Imperator</strong>（大統帥）：原戰功尊號，後成皇權象徵；英語 Emperor 源此。</li>
+          <li><strong>Augustus</strong>（至尊/神聖者）：帶宗教色彩的尊號。</li>
+          <li><strong>Rex（王）禁忌：</strong> 羅馬痛恨王制，誰敢自稱王幾乎是政治自殺。</li>
+        </ul>
+        <div class="note">東部說希臘語者習慣稱帝為 <strong>Basileus</strong>（王/皇帝），故新約經文常譯「王」。</div>
+      </div>
+
+      <div class="card">
+        <span class="tag red">誰突破了界線？</span>
+        <ul class="list">
+          <li><strong>卡利古拉：</strong> 自神化，企圖立像聖殿。</li>
+          <li><strong>圖密善：</strong> 要求稱他「主與神」Dominus et Deus，與基督徒只稱耶穌為主直接衝突。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Q&A -->
+    <section class="panel" id="qa" role="tabpanel">
+      <div class="card">
+        <span class="tag teal">小組互動問答（可展開）</span>
+        <div class="flex">
+          <button id="toggle-qa">全部展開 / 摺疊</button>
+        </div>
+
+        <details class="qa-item">
+          <summary>1) 為何羅馬皇帝避免稱自己為「王」？</summary>
+          <div class="hint">想想 509 BC 共和建立後的文化禁忌。</div>
+          <div class="answer gold">
+因「王」(Rex) 是羅馬的政治禁忌，與推翻暴君的共和精神衝突。稱王易引發政變，故用 Princeps / Imperator 等包裝。
+          </div>
+        </details>
+
+        <details class="qa-item">
+          <summary>2) 新約裡「凱撒」指的是同一個人嗎？</summary>
+          <div class="hint">對照路 2:1、太 22:21、徒 25:11。</div>
+          <div class="answer gold">
+不是。同為頭銜：路 2:1=奧古斯都；太 22:21=提庇留；徒 25:11=尼祿。
+          </div>
+        </details>
+
+        <details class="qa-item">
+          <summary>3) 尼祿與圖密善的逼迫有何差異？</summary>
+          <div class="answer gold">
+尼祿：AD 64 大火後替罪羊式迫害，集中羅馬。<br>
+圖密善：帝國崇拜取向，要求稱「主與神」，範圍更制度化，觸及忠誠衝突（啟示錄背景）。
+          </div>
+        </details>
+
+        <details class="qa-item">
+          <summary>4) AD 70 聖殿被毀的皇帝與將領是誰？</summary>
+          <div class="answer gold">
+皇帝：韋帕薌；主將：其子提圖斯。事件應驗耶穌對聖殿的預言，重塑猶太敬拜與早期教會處境。
+          </div>
+        </details>
+
+        <details class="qa-item">
+          <summary>5) 早期帝國三個頭銜的功能各是什麼？</summary>
+          <div class="answer gold">
+Princeps：政治謙詞，安撫元老院。<br>
+Imperator：軍事最高統帥，合法暴力來源。<br>
+Augustus：宗教尊號，建構神聖性。
+          </div>
+        </details>
+
+        <details class="qa-item">
+          <summary>6) 怎樣用這段歷史幫助查經馬太 22:21「凱撒的物當歸給凱撒」？</summary>
+          <div class="answer gold">
+當時凱撒是提庇留，錢幣刻其像；耶穌用帝國稅幣對照神的形像，教導在帝國秩序下仍以神為終極主權。
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- References & application -->
+    <section class="panel" id="refs" role="tabpanel">
+      <div class="card">
+        <span class="tag blue">經文快速對照</span>
+        <ul class="list">
+          <li>路加福音 2:1 — 奧古斯都：戶口普查 → 耶穌伯利恆降生。</li>
+          <li>馬太福音 22:21 — 提庇留：凱撒的物歸凱撒，神的物歸神。</li>
+          <li>使徒行傳 25:11 — 尼祿：保羅上告於凱撒，後赴羅馬受審。</li>
+          <li>啟示錄（傳統背景）— 圖密善：帝國崇拜 vs. 唯獨基督為主。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="tag red">應用導向小結</span>
+        <ol class="list">
+          <li><strong>忠誠的張力：</strong> 帝國要求效忠；基督徒宣告耶穌是主。討論：今日我們的「帝國」是什麼？</li>
+          <li><strong>盼望的座標：</strong> 聖殿被毀後，敬拜中心轉向基督與群體。討論：若失去熟悉的宗教形式，信仰如何站立？</li>
+          <li><strong>權柄與順服：</strong> 羅馬稅幣與神形像的對比。討論：基督徒如何在體制內盡責又保持對神的終極順服？</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <span class="tag gold">帶走的重點（可複製）</span>
+        <ul class="list">
+          <li>Caesar 從姓氏變頭銜：奧古斯都後成「皇帝」代稱。</li>
+          <li>避稱「王」：政治禁忌，改用 Princeps / Imperator / Augustus。</li>
+          <li>三位「凱撒」經文對照：路 2:1=奧古斯都；太 22:21=提庇留；徒 25:11=尼祿。</li>
+          <li>兩大迫害節點：尼祿（羅馬大火後）、圖密善（帝國崇拜）。</li>
+          <li>AD 70 聖殿被毀：韋帕薌／提圖斯，重塑猶太與教會景觀。</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>互動頁 · 可離線使用 · 橫向滑動表格 · 展開卡片即時帶領</footer>
+  </div>
+
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Toggle all QA
+    document.getElementById('toggle-qa').addEventListener('click', () => {
+      const items = document.querySelectorAll('.qa-item');
+      const anyClosed = Array.from(items).some(d => !d.open);
+      items.forEach(d => d.open = anyClosed);
+    });
+
+    // Era filter
+    const eraButtons = document.querySelectorAll('.era-filter button');
+    const profileItems = document.querySelectorAll('#profile-list details');
+    eraButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        eraButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const era = btn.dataset.era;
+        profileItems.forEach(item => {
+          item.style.display = (era === 'all' || item.dataset.era === era) ? 'block' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
