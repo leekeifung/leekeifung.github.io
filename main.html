@@ -6,142 +6,229 @@
   <title>leekeifung | Teaching Resources</title>
   <style>
     :root {
-      color-scheme: light;
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
       --muted: #475569;
-      --border: #e2e8f0;
-      --accent: #2563eb;
-      --accent-2: #0ea5e9;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --border: #d9e2ec;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding: 16px;
+      padding: 20px;
       display: flex;
       justify-content: center;
     }
-    main {
-      width: min(960px, 100%);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .page {
+      width: min(1100px, 100%);
     }
     header {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      padding: 18px;
+      box-shadow: 0 10px 26px rgba(15,23,42,0.06);
+      margin-bottom: 16px;
     }
-    h1 { margin: 0 0 6px 0; font-size: 1.4rem; }
-    p { margin: 4px 0; color: var(--muted); }
-    section {
+    h1 { margin: 0 0 6px; font-size: 1.35rem; }
+    p.sub { margin: 0; color: var(--muted); }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .section {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      margin-bottom: 14px;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.05);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    h2 {
-      margin: 0 0 10px 0;
+    .section h2 {
+      margin: 0 0 10px;
       font-size: 1.1rem;
       display: flex;
       align-items: center;
       gap: 8px;
+      position: relative;
+      padding-left: 10px;
     }
-    .badge {
-      background: #e0f2fe;
-      color: #0369a1;
+    .section h2::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
       border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
+      background: currentColor;
+      opacity: 0.8;
     }
-    .links {
+    .section h3 {
+      margin: 12px 0 8px;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+    .list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
     }
-    a.card {
-      text-decoration: none;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      background: #f8fafc;
-      color: var(--text);
-      transition: transform 0.06s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    .item a {
       display: block;
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s, background 0.15s;
     }
-    a.card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
-      border-color: #bfdbfe;
-    }
-    .title { font-weight: 700; margin-bottom: 6px; }
-    .desc { color: var(--muted); font-size: 0.95rem; margin: 0; }
     footer {
       text-align: center;
       color: var(--muted);
-      font-size: 0.9rem;
-      padding: 8px 0 16px;
+      font-size: 0.95rem;
+      margin-top: 12px;
+    }
+    /* Category themes */
+    .cat-ama {
+      --c: #2563eb;
+      --c-soft: #e0e7ff;
+      --c-border: #bfdbfe;
+    }
+    .cat-theology {
+      --c: #16a34a;
+      --c-soft: #dcfce7;
+      --c-border: #bbf7d0;
+    }
+    .cat-ar {
+      --c: #a855f7;
+      --c-soft: #f3e8ff;
+      --c-border: #e9d5ff;
+    }
+    .cat-ama h2,
+    .cat-theology h2,
+    .cat-ar h2 {
+      color: var(--c);
+    }
+    .cat-ama {
+      border-color: var(--c-border);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+    }
+    .cat-theology {
+      border-color: var(--c-border);
+      box-shadow: 0 10px 24px rgba(22, 163, 74, 0.08);
+    }
+    .cat-ar {
+      border-color: var(--c-border);
+      box-shadow: 0 10px 24px rgba(168, 85, 247, 0.08);
+    }
+    .cat-ama .item a:hover {
+      border-color: var(--c);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.14);
+      background: var(--c-soft);
+      transform: translateY(-1px);
+    }
+    .cat-theology .item a:hover {
+      border-color: var(--c);
+      box-shadow: 0 8px 18px rgba(22, 163, 74, 0.14);
+      background: var(--c-soft);
+      transform: translateY(-1px);
+    }
+    .cat-ar .item a:hover {
+      border-color: var(--c);
+      box-shadow: 0 8px 18px rgba(168, 85, 247, 0.14);
+      background: var(--c-soft);
+      transform: translateY(-1px);
+    }
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      header, .section { padding: 12px; }
     }
   </style>
 </head>
 <body>
-<main>
-  <header>
-    <h1>leekeifung | Teaching Resources</h1>
-    <p>Quick links to course visualizations and tools.</p>
-  </header>
+  <div class="page">
+    <header>
+      <div class="pill">Teaching Resources</div>
+      <h1>leekeifung | Quick links to course visualizations and tools</h1>
+      <p class="sub">Grouped by subject areas. All links are relative to this repository.</p>
+    </header>
 
-  <section>
-    <h2><span class="badge">AMA3707</span> Complex Variables</h2>
-    <div class="links">
-      <a class="card" href="./AMA3730-nth-roots.html">
-        <div class="title">n-th Roots on the Complex Plane</div>
-        <p class="desc">Visualize n-th roots, polygon of roots, and list of values.</p>
-      </a>
-      <a class="card" href="./AMA3730-branches.html">
-        <div class="title">Branches & Cuts</div>
-        <p class="desc">Explore branch cuts for Log, √z, and z^{1/n}; interactive z-plane and w-plane.</p>
-      </a>
-      <a class="card" href="./AMA3730-complex-ops.html">
-        <div class="title">Complex Operations</div>
-        <p class="desc">Compute and visualize z₁, z₂, and operations (add, subtract, multiply, divide, modulus, conjugate) on the complex plane.</p>
-      </a>
-      <a class="card" href="./AMA3730-complex-ops-ar.html">
-        <div class="title">Complex Operations in AR (WebXR)</div>
-        <p class="desc">Place the complex plane in AR and visualize z₁, z₂, and results. Chrome/Android over HTTPS.</p>
-      </a>
-    </div>
-  </section>
+    <!-- AMA (Applied Mathematics) -->
+    <section class="section cat-ama">
+      <h2>AMA · Applied Mathematics</h2>
 
-  <section>
-    <h2><span class="badge">Christian Theology</span> (placeholder)</h2>
-    <div class="links">
-      <a class="card" href="#" aria-disabled="true">
-        <div class="title">Coming soon</div>
-        <p class="desc">Add your resources here when ready.</p>
-      </a>
-      <a class="card" href="./MatthewLesson0.html">
-        <div class="title">Introduction to the Gospel of Matthew</div>
-        <p class="desc">Introduction</p>
-      </a>
-      <a class="card" href="./MatthewLesson0ex.html">
-        <div class="title">Exercise for the Introduction to the Gospel of Matthew</div>
-        <p class="desc">Exercise Introduction</p>
-      </a>
-    </div>
-  </section>
+      <h3>AMA3730 · Complex Variables</h3>
+      <ul class="list">
+        <li class="item"><a href="AMA3730-nth-roots.html">n-th Roots on the Complex Plane</a></li>
+        <li class="item"><a href="AMA3730-branches.html">Branches &amp; Cuts (Log, √z, z^{1/n})</a></li>
+        <li class="item"><a href="AMA3730-BasicOperations.html">Basic Operations (ℂ)</a></li>
+        <li class="item"><a href="AMA3730-complex-ops.html">Complex Ops (web)</a></li>
+        <li class="item"><a href="AMA3730-complex-ops-ar.html">Complex Ops (AR, web)</a></li>
+        <li class="item"><a href="AMA3730-complex-ops-ar-ios.html">Complex Ops (AR, iOS)</a></li>
+        <li class="item"><a href="AMA3730-AR2.html">AR2 Demo</a></li>
+      </ul>
 
-  <footer>
-    Hosted on GitHub Pages — <a href="https://leekeifung.github.io/" style="color:var(--accent);text-decoration:none;">leekeifung.github.io</a>
-  </footer>
-</main>
+      <h3>AMA1751 · Linear Algebra</h3>
+      <ul class="list">
+        <li class="item"><a href="AMA1751-LinearCombinationR2.html">Linear Combination in ℝ²</a></li>
+        <li class="item"><a href="AMA1751-SpanningSetR2.html">Spanning Set in ℝ²</a></li>
+        <li class="item"><a href="AMA1751-SpanningSetR3V1.html">Spanning Set in ℝ³ (v1)</a></li>
+        <li class="item"><a href="AMA1751-SpanningSetR3V2.html">Spanning Set in ℝ³ (v2)</a></li>
+        <li class="item"><a href="AMA1751-determinant.html">Determinant Visualizer</a></li>
+      </ul>
+    </section>
+
+    <!-- Christian Theology -->
+    <section class="section cat-theology">
+      <h2>Christian Theology</h2>
+
+      <h3>The Gospel of Matthew</h3>
+      <ul class="list">
+        <li class="item"><a href="MatthewLesson0.html">Matthew Lesson 0</a></li>
+        <li class="item"><a href="MatthewLesson0ex.html">Matthew Lesson 0 · Exercises</a></li>
+        <li class="item"><a href="MatthewLesson1.html">Matthew Lesson 1</a></li>
+        <li class="item"><a href="MatthewLesson1ex.html">Matthew Lesson 1 · Exercises</a></li>
+        <li class="item"><a href="MatthewOrderV1.html">Matthew Order V1</a></li>
+      </ul>
+
+      <h3>Daniel</h3>
+      <ul class="list">
+        <li class="item"><a href="DanielOrderCh2.html">Daniel Order Ch2</a></li>
+        <li class="item"><a href="DanielOrderCh2-V2.html">Daniel Order Ch2 (V2)</a></li>
+      </ul>
+    </section>
+
+    <!-- AR -->
+    <section class="section cat-ar">
+      <h2>AR · Augmented Reality</h2>
+      <ul class="list">
+        <li class="item"><a href="ar-camera-test.html">AR Camera Test</a></li>
+        <!-- AMA3730 AR links are listed under AMA3730 as well -->
+      </ul>
+    </section>
+
+    <footer>
+      Hosted on GitHub Pages — <a href="https://leekeifung.github.io">leekeifung.github.io</a>
+    </footer>
+  </div>
 </body>
 </html>
