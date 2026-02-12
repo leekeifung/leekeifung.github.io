@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>提摩太前書 1:1-11｜查經互動頁 (Lesson 1)</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #d9e2ec;
+      --teal: #0f766e;
+      --teal-soft: #e0f2f1;
+      --blue: #2563eb;
+      --blue-soft: #e0e7ff;
+      --brown: #8b4513;
+      --brown-soft: #fdf6e3;
+      --purple: #663399;
+      --purple-soft: #f4ebff;
+      --gray-soft: #f3f4f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    a { color: var(--blue); }
+    .page { width: min(1100px, 100%); }
+    header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.06);
+      margin-bottom: 14px;
+    }
+    h1 { margin: 0 0 4px; font-size: 1.4rem; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 700;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .sub { margin: 0; color: var(--muted); }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .tab {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .tab.active {
+      color: var(--text);
+      border-color: var(--blue);
+      box-shadow: 0 8px 16px rgba(37,99,235,0.12);
+      transform: translateY(-1px);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.04);
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .tag.teal { background: var(--teal-soft); color: var(--teal); }
+    .tag.brown { background: var(--brown-soft); color: var(--brown); }
+    .tag.purple { background: var(--purple-soft); color: var(--purple); }
+    details {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    details[open] {
+      border-color: var(--blue);
+      box-shadow: 0 6px 14px rgba(37,99,235,0.12);
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+      list-style: none;
+      outline: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    .hint {
+      background: #fffaf0;
+      border: 1px solid #e2d9c3;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 8px 0;
+      color: #8b6b2e;
+      font-weight: 600;
+    }
+    .answer {
+      background: var(--blue-soft);
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 8px;
+      color: var(--text);
+      white-space: pre-line;
+    }
+    .answer.brown { background: var(--brown-soft); border-color: var(--brown); }
+    .answer.purple { background: var(--purple-soft); border-color: var(--purple); }
+    .flex {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover {
+      border-color: var(--blue);
+      box-shadow: 0 6px 12px rgba(37,99,235,0.12);
+      transform: translateY(-1px);
+    }
+    .scripture {
+      background: var(--gray-soft);
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      line-height: 1.65;
+      font-size: 0.98rem;
+    }
+    .section-title {
+      margin: 0 0 6px;
+      font-weight: 800;
+      color: var(--teal);
+    }
+    ul, ol { padding-left: 18px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: left;
+    }
+    th { background: var(--blue-soft); color: var(--blue); }
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      header, .card { padding: 12px; }
+      table, th, td { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="pill">提摩太前書 1:1-11 · Lesson 1</div>
+      <h1>提防假教導 — 互動查經頁</h1>
+      <p class="sub">主題：在神的家中維護真道（1:1-11）。整合主教材、辛惠蘭參考答案、鮑維均博士進階觀點。</p>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <div class="tab active" data-tab="overview" role="tab" aria-selected="true">概覽 / 經文 & 釋義</div>
+      <div class="tab" data-tab="sun" role="tab" aria-selected="false">辛惠蘭 Q&A（組長本）</div>
+      <div class="tab" data-tab="pao" role="tab" aria-selected="false">鮑維均博士進階 Q&A</div>
+      <div class="tab" data-tab="scripture" role="tab" aria-selected="false">經文</div>
+    </div>
+
+    <!-- Overview -->
+    <section class="panel active" id="overview" role="tabpanel">
+      <div class="card">
+        <span class="tag teal">主教材：提摩太前書 1:1-11 研經筆記</span>
+        <h2>經文結構與概覽</h2>
+        <ul>
+          <li><strong>A 信首語 (1:1-2)：</strong> 權柄與關係的確立（奉命使徒；真兒子）。</li>
+          <li><strong>B 阻止異端散播 (1:3-11)：</strong> 虛談與家譜；律法的正用；惡行綱目。</li>
+          <li><strong>C 保羅見證插段 (1:12-17)：</strong>（將在課程後續展開）。</li>
+          <li><strong>D 重申囑咐 (1:18-20)：</strong>（與首段首尾呼應）。</li>
+        </ul>
+        <h3 class="section-title">寫作特色</h3>
+        <ul>
+          <li><strong>省略感恩：</strong> 突顯問題的嚴重與緊急。</li>
+          <li><strong>三明治結構：</strong> 囑咐包夾律法與見證段。</li>
+          <li><strong>對比：</strong> 真命令生出愛；假教導只生辯論。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="tag teal">釋義重點</span>
+        <h2>信首語：權柄的傳承 (1:1-2)</h2>
+        <ul>
+          <li>保羅「奉命」作使徒，權柄源自父神與基督。</li>
+          <li>提摩太為「真兒子」：合法、忠實的繼承人與代表。</li>
+          <li>問安加入「憐憫」，呼應後文蒙憐憫的主題。</li>
+        </ul>
+        <h2>假教師的問題：虛浮空談 (1:3-7)</h2>
+        <ul>
+          <li>別的教義、荒渺無憑的話語、無窮家譜 → 只生辯論。</li>
+          <li>想作教法師，卻不明白所講；偏離愛的目標，轉向空話。</li>
+        </ul>
+        <h2>律法的正用：顯明罪惡 (1:8-11)</h2>
+        <ul>
+          <li>律法本是好的，需「合法地」使用。</li>
+          <li>不是為義人設立，乃為不法者定罪；對照「健康教義」。</li>
+        </ul>
+        <h2>罪行綱目與十誡對應 (1:9-10)</h2>
+        <table>
+          <tr><th>罪行綱目</th><th>十誡對應</th></tr>
+          <tr><td>不法、不服、不敬虔、犯罪、不聖潔、戀世俗</td><td>第1-4誡（對神的虧欠）</td></tr>
+          <tr><td>弒父母</td><td>第5誡</td></tr>
+          <tr><td>殺人</td><td>第6誡</td></tr>
+          <tr><td>行淫、親男色</td><td>第7誡</td></tr>
+          <tr><td>搶人口</td><td>第8誡（偷盜）</td></tr>
+          <tr><td>說謊、起假誓</td><td>第9誡</td></tr>
+        </table>
+        <p style="margin:8px 0 0;color:var(--muted);">凡違背律法者即違背「健康教義」—與託付的榮耀福音相反。</p>
+      </div>
+
+      <div class="card">
+        <span class="tag teal">小組討論與應用</span>
+        <ul>
+          <li>真命令的目標是愛；我如何在教會衝突中活出愛？</li>
+          <li>面對「虛浮的話」與「家譜式臆測」，如何回到福音核心？</li>
+          <li>律法的正用是顯罪、引人歸向福音；我怎麼向人解釋？</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Sun Q&A -->
+    <section class="panel" id="sun" role="tabpanel">
+      <div class="card">
+        <span class="tag brown">辛惠蘭 · 小組查經組長本（參考答案）</span>
+        <div class="flex">
+          <button id="toggle-sun">全部展開 / 摺疊</button>
+        </div>
+
+        <details class="qa-sun">
+          <summary>1. 在書信的問安部份中（一1～2），保羅如何形容神和基督耶穌？</summary>
+          <div class="answer brown">
+我們救主，我們的盼望，父，我們主（一1～2）。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>2a. 「救主、盼望」揭示父神與基督與信徒的關係？</summary>
+          <div class="hint">人藉著何事得了神兒女名分？盼望由誰成全？</div>
+          <div class="answer brown">
+神是救恩的發起者與源頭；差遣基督成全救贖。父收納信徒為兒女，賜產業；基督是得救與末後得贖的盼望。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>2b. 「真兒子」含義？為何用「真」？</summary>
+          <div class="hint">gnēsios：名副其實、合法。</div>
+          <div class="answer brown">
+表達提摩太在信仰中的真兒子，合法且忠實的繼承人，顯明保羅的確信與親密關懷。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>3a. 此認信如何助你日常見證？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>3b. 教會屬靈前輩教導如何幫助你成長？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>4a. 以弗所教會出了什麼問題？</summary>
+          <div class="answer brown">
+有人傳異教；荒渺無憑的話語、無窮家譜；講虛浮話；想作教法師卻不明白所講。（一3、4、6、7）
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>4b. 這些問題帶來何影響？</summary>
+          <div class="answer brown">
+只生辯論，不發明神在信上所立的章程。（一4）
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>5a. 什麼是無窮的家譜？保羅是否反對讀聖經家譜？</summary>
+          <div class="hint">猶太傳統寓意家譜與神話傳說。</div>
+          <div class="answer brown">
+指猶太人寓意重述或編造的家譜傳說，成為傳統並引發空談；不是拒讀聖經家譜，而是拒絕無稽臆測。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>5b. 「不發明神在信上所立的章程」意指？</summary>
+          <div class="answer brown">
+因神話與家譜爭論只生空談，毫無助於真正教導與教會管家的職事。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>6a. 若有人傳異端或極端思想，你會如何回應？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>6b. 曾為新穎解經或神學課題爭辯嗎？學到什麼？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>7. 愛是從什麼生出（一5）？</summary>
+          <div class="answer brown">
+清潔的心，無虧的良心，無偽的信心（一5）。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>8a. 「命令的總歸就是愛」的「命令」指何事？</summary>
+          <div class="answer brown">
+指合乎正統的教導職事／保羅囑咐提摩太制止異教的命令。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>8b. 清潔的心、無虧的良心、無偽的信心是什麼？</summary>
+          <div class="hint">心=真正的自己；良心=分辨善惡；信心=信行合一。</div>
+          <div class="answer brown">
+清潔的心：藉赦罪更新而純潔。<br>
+無虧的良心：被更新、以神話為準則，分辨力恰當美好。<br>
+無偽的信心：聽且行的真信，信行合一、帶來合一。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>8c. 為何在制止假道後談命令與愛？假教師問題何在？</summary>
+          <div class="hint">哪一種是信徒應有素質？</div>
+          <div class="answer brown">
+真教導生出愛與美善生命；假教師傳無根據傳說、製造紛爭，絆倒人。保羅要信徒持守美善，提防假師。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>9. 罪目讓你想起哪些誡命？是否一對一？</summary>
+          <div class="answer brown">
+十誡。雖多處相似，非嚴格一對一；保羅用十誡作框架，反映假教師的狂妄。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>10a. 律法「用得合宜」是什麼？</summary>
+          <div class="hint">假教師曲解律法。</div>
+          <div class="answer brown">
+律法本是好的，需正確明白後用於合適對象，顯罪定罪，不供臆測。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>10b. 義人指誰？</summary>
+          <div class="hint">人因何稱義？</div>
+          <div class="answer brown">
+指因信基督得稱義的人（類的單數）；蒙憐憫、知罪悔改歸向基督。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>10c. 為何稱神「可稱頌」、福音「榮耀」？與上文關係？</summary>
+          <div class="answer brown">
+來源真確、內容重要；福音顯明神的榮耀與權柄。保羅所傳與假教師完全不同，信徒當持守所信的道。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>11a. 你最想得勝的罪？方法？邀請代禱。</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>11b. 若有人刻意犯列出的罪，你會怎做？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Pao Q&A -->
+    <section class="panel" id="pao" role="tabpanel">
+      <div class="card">
+        <span class="tag purple">鮑維均博士觀點 · 進階參考答案</span>
+        <div class="flex">
+          <button id="toggle-pao">全部展開 / 摺疊</button>
+        </div>
+
+        <details class="qa-pao">
+          <summary>1. 保羅如何形容神與基督（一1-2）？</summary>
+          <div class="answer purple">
+神為「我們救主」；基督耶穌為「我們的盼望」。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>2a. 「救主／盼望」要闡釋何關係？</summary>
+          <div class="answer purple">
+稱神為救主：反對競爭性救贖（假教師）並顛覆帝國將皇帝稱為救主的宣傳。<br>
+稱基督為盼望：盼望的內容與基礎皆在基督；末世救恩的實體與保障；強調救恩歷史中父與子的聯繫。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>2b. 「真兒子」意涵？</summary>
+          <div class="answer purple">
+「真」（γνησίῳ）指合法性、從屬與忠誠；提摩太是保羅使命的合法代表與繼承人，對抗假教師對其權柄的威脅。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>4a. 教會問題？</summary>
+          <div class="answer purple">
+出現假教師，傳「別的教義」；專注無稽之談與無窮家譜，引發臆測；自稱律法教師卻不明白所言。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>4b. 影響？</summary>
+          <div class="answer purple">
+導致臆測而非「神在信仰上的管家職分」；偏離愛的目標，轉向空話，破壞群體合一與真理。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>5a. 無窮家譜是什麼？</summary>
+          <div class="answer purple">
+一個針對對手的慣用語，指不可信的猶太式神話與家譜臆測（參多1:14; 3:9），非指聖經家譜本身；拒絕無窮且徒勞的討論。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>5b. 「神在信上所立的章程」意指？</summary>
+          <div class="answer purple">
+「來自神的管家職分」；在信仰所建立的群體中，按神方式管理與安排（神的家），與臆測形成對比。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>7. 愛出自何處（一5）？</summary>
+          <div class="answer purple">
+純潔的心、無虧的良心、無偽的信心。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>8a. 「命令」指什麼？</summary>
+          <div class="answer purple">
+回指1:3保羅囑咐提摩太制止異教的命令；此命令的目標是產生愛。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>8b. 三重來源的含義？</summary>
+          <div class="answer purple">
+純潔的心：對神純一奉獻。<br>
+無虧的良心：不僅內在指南針，更是按真理盡責行事的認真態度。<br>
+無偽的信心：真實無假、內外一致，連結客觀真理。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>8c. 為何在制止假道後談愛？假教師問題何在？</summary>
+          <div class="answer purple">
+假教師已偏離愛的目標，落入空話與無知；真教導的命令旨在產生基於真理與全心奉獻的愛，假教導無效且空洞。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>9. 罪行綱目與十誡關係？</summary>
+          <div class="answer purple">
+顯然依賴十誡的次序（除第十誡缺席）：前幾項對應第一塊法版；後列對應5-9誡，屬米德拉什式呈現，非嚴格字面一對一。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>10a. 律法「用得合宜」？</summary>
+          <div class="answer purple">
+按律法本意使用：為定罪違背神旨意者，非供臆測。假教師誤用律法；正用是揭露罪，與純正教義一致。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>10b. 「義人」是誰？</summary>
+          <div class="answer purple">
+指順服純正教導的人；對比不法者。律法設立為約束惡人，不是為定罪這類「義人」。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>10c. 為何稱神可稱頌、福音榮耀？與上文關係？</summary>
+          <div class="answer purple">
+福音的崇高與神的優越性，對比假教導的空洞；所有教導與律法使用需受「榮耀的福音」評判，福音是標準。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>其餘應用題（11a, 11b）</summary>
+          <div class="answer purple">
+（自由分享）
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Scripture -->
+    <section class="panel" id="scripture" role="tabpanel">
+      <div class="card">
+        <span class="tag teal">經文原文段落 · 提摩太前書 1:1-11 (和合本修訂版)</span>
+        <div class="scripture">
+1 奉我們救主上帝和我們的盼望基督耶穌命令作基督耶穌使徒的保羅，<br/>
+2 寫信給那因信作我真兒子的提摩太：願恩惠、憐憫、平安，從父神和我們主基督耶穌歸與你！<br/>
+3 我往馬其頓去的時候，曾勸你仍住在以弗所，好囑咐那幾個人不可傳異教，<br/>
+4 也不可留戀荒渺無憑的話語和無窮的家譜；這等事只生辯論，並不發明神在信上所立的章程。<br/>
+5 但命令的總歸就是愛，這愛是出於清潔的心、無虧的良心、無偽的信心。<br/>
+6 有人偏離這些，反去講虛浮的話；<br/>
+7 想要作教法師，卻不明白自己所講說的、所論定的。<br/>
+8 我們知道律法原是好的，只要人用得合宜，<br/>
+9 因為律法不是為義人設立的，乃是為不法和不服的，不虔誠和犯罪的，不聖潔和戀世俗的，弒父母的，殺人的，<br/>
+10 行淫和親男色的，搶人口的，說謊話的，起假誓的，或為別樣敵正道的事設立的。<br/>
+11 這是照著可稱頌之神交託我榮耀福音說的。
+        </div>
+      </div>
+    </section>
+
+    <footer style="text-align:center;color:var(--muted);font-size:0.95rem;margin-top:12px;">
+      互動頁面 · 可離線使用 · 按「全部展開/摺疊」協助帶領討論
+    </footer>
+  </div>
+
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Toggle all helpers
+    function toggleAll(selector) {
+      const items = document.querySelectorAll(selector);
+      const anyClosed = Array.from(items).some(d => !d.open);
+      items.forEach(d => d.open = anyClosed);
+    }
+    document.getElementById('toggle-sun').addEventListener('click', () => toggleAll('.qa-sun'));
+    document.getElementById('toggle-pao').addEventListener('click', () => toggleAll('.qa-pao'));
+  </script>
+</body>
+</html>
