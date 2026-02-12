@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>提摩太前書 1:12-20｜查經互動頁 (Lesson 2)</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #d9e2ec;
+      --teal: #0f766e;
+      --teal-soft: #e0f2f1;
+      --blue: #2563eb;
+      --blue-soft: #e0e7ff;
+      --brown: #8b4513;
+      --brown-soft: #fdf6e3;
+      --purple: #663399;
+      --purple-soft: #f4ebff;
+      --gray-soft: #f3f4f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    a { color: var(--blue); }
+    .page {
+      width: min(1100px, 100%);
+    }
+    header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.06);
+      margin-bottom: 14px;
+    }
+    h1 { margin: 0 0 4px; font-size: 1.4rem; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 700;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .sub { margin: 0; color: var(--muted); }
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .tab {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .tab.active {
+      color: var(--text);
+      border-color: var(--blue);
+      box-shadow: 0 8px 16px rgba(37,99,235,0.12);
+      transform: translateY(-1px);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.04);
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .tag.teal { background: var(--teal-soft); color: var(--teal); }
+    .tag.brown { background: var(--brown-soft); color: var(--brown); }
+    .tag.purple { background: var(--purple-soft); color: var(--purple); }
+    /* Details */
+    details {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    details[open] {
+      border-color: var(--blue);
+      box-shadow: 0 6px 14px rgba(37,99,235,0.12);
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+      list-style: none;
+      outline: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    .hint {
+      background: #fffaf0;
+      border: 1px solid #e2d9c3;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 8px 0;
+      color: #8b6b2e;
+      font-weight: 600;
+    }
+    .answer {
+      background: var(--blue-soft);
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 8px;
+      color: var(--text);
+    }
+    .answer.brown {
+      background: var(--brown-soft);
+      border-color: var(--brown);
+    }
+    .answer.purple {
+      background: var(--purple-soft);
+      border-color: var(--purple);
+    }
+    .flex {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover {
+      border-color: var(--blue);
+      box-shadow: 0 6px 12px rgba(37,99,235,0.12);
+      transform: translateY(-1px);
+    }
+    .scripture {
+      background: var(--gray-soft);
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      line-height: 1.65;
+      font-size: 0.98rem;
+    }
+    .section-title {
+      margin: 0 0 6px;
+      font-weight: 800;
+      color: var(--teal);
+    }
+    ul, ol { padding-left: 18px; }
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      header, .card { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="pill">提摩太前書 1:12-20 · Lesson 2</div>
+      <h1>罪人蒙恩與美好的仗 — 互動查經頁</h1>
+      <p class="sub">主題：保羅的見證與吩咐（1:12-20）。整合主教材、辛惠蘭參考答案、鮑維均博士進階觀點。</p>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <div class="tab active" data-tab="overview" role="tab" aria-selected="true">概覽 / 經文 & 釋義</div>
+      <div class="tab" data-tab="sun" role="tab" aria-selected="false">辛惠蘭 Q&A（組長本）</div>
+      <div class="tab" data-tab="pao" role="tab" aria-selected="false">鮑維均博士進階 Q&A</div>
+      <div class="tab" data-tab="scripture" role="tab" aria-selected="false">經文</div>
+    </div>
+
+    <!-- Overview -->
+    <section class="panel active" id="overview" role="tabpanel">
+      <div class="card">
+        <span class="tag teal">主教材：提摩太前書 1:12-20 研經筆記</span>
+        <h2>經文結構與概覽</h2>
+        <div class="scripture" style="margin-bottom:10px;">
+          <strong>1:12-17 感謝上帝的憐憫</strong><br/>
+          12 我感謝那賜給我力量的我們的主基督耶穌，因為他認為我可信任，派我服事他。<br/>
+          13 我從前是褻瀆、迫害、侮慢上帝的人；然而我還蒙了憐憫，因為我是在不信、不明白的時候做的。<br/>
+          14 而且我們的主的恩典格外豐盛，使我在基督耶穌裡有信心和愛心。<br/>
+          15 這話可信，值得完全接受：「基督耶穌到世上來是要拯救罪人」，而在罪人中我是個罪魁。<br/>
+          16 然而，我蒙了憐憫，好讓基督耶穌在我這罪魁身上顯明他完全的忍耐，給後來信他得永生的人作榜樣。<br/>
+          17 願尊貴、榮耀歸給永世的君王，那不朽壞、看不見、獨一的上帝，直到永永遠遠。阿們！<br/><br/>
+          <strong>1:18-20 打那美好的仗</strong><br/>
+          18 我兒提摩太啊，我照從前指著你的預言把這命令交託你，使你能藉著這些預言打那美好的仗，<br/>
+          19 常存信心和無愧的良心。有些人丟棄良心，在信仰上觸了礁；<br/>
+          20 其中有許米乃和亞歷山大，我已經把他們交給撒但，讓他們學會不再褻瀆。
+        </div>
+
+        <h3 class="section-title">段落分析</h3>
+        <ul>
+          <li><strong>C 保羅的個人見證 (1:12-17)：</strong> 感恩與蒙召；從褻瀆者到蒙憐憫；核心宣告「基督耶穌降世，為要拯救罪人」；榮耀頌。</li>
+          <li><strong>D 重申對提摩太的囑咐 (1:18-20)：</strong> 命令的交託（基於預言）；爭戰的裝備（信心＋無虧良心）；失敗的鑑戒（許米乃、亞歷山大）。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="tag teal">釋義重點</span>
+        <h2>罪魁蒙恩與恩典的樣板 (1:12-17)</h2>
+        <ul>
+          <li><strong>從「褻瀆者」到「忠心管家」：</strong> 基督先看他「可信任」並加力；忠心是恩典的結果，不是條件。</li>
+          <li><strong>「不信不明白」：</strong> 描述過去屬靈盲目，非開脫罪責；與假教師在認識真道後故意偏離形成對比。</li>
+          <li><strong>恩典「格外豐盛」：</strong> 滿溢並伴隨「信心與愛心」，正是假教師所缺 (1:5)。</li>
+          <li><strong>「罪人中的罪魁」：</strong> 用現在式自稱，凸顯對罪的敏感與恩典的浩大。</li>
+          <li><strong>「榜樣」（範例/樣板）：</strong> 神在頭號罪人身上顯明「完全的忍耐」，使任何人都不致絕望。</li>
+        </ul>
+        <h2>打那美好的仗 (1:18-20)</h2>
+        <ul>
+          <li><strong>預言作為權柄與勇氣的憑據：</strong> 回想按手時的預言，確立呼召，藉此打仗。</li>
+          <li><strong>信心＋無虧的良心：</strong> 神學純正與聖潔生活缺一不可；道德潰敗往往先於教義沉船。</li>
+          <li><strong>沉船的比喻：</strong> 丟棄良心 → 信仰觸礁。</li>
+          <li><strong>交給撒但：</strong> 教會紀律／逐出群體，為管教與挽回，不是最終毀滅。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="tag teal">小組討論與應用</span>
+        <details open>
+          <summary>討論引導</summary>
+          <ul>
+            <li>「罪魁蒙恩」如何塑造我們的事奉心態，避免屬靈優越感？</li>
+            <li>分享一次深刻經歷神「格外豐盛」恩典的時刻，如何面對當下困難？</li>
+            <li>在職場/生活中哪些試探容易讓我們妥協良心？如何保守「無虧的良心」？</li>
+            <li>教會紀律如何平衡愛與真理？逐出群體的挽回性意義。</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- Sun Q&A -->
+    <section class="panel" id="sun" role="tabpanel">
+      <div class="card">
+        <span class="tag brown">辛惠蘭 · 小組查經組長本（參考答案）</span>
+        <div class="flex">
+          <button id="toggle-sun">全部展開 / 摺疊</button>
+        </div>
+
+        <!-- Q&A list -->
+        <details class="qa-sun">
+          <summary>1a. 保羅如何形容自己信主前的身分？他從前有甚麼行徑？</summary>
+          <div class="answer brown">
+            罪魁；褻瀆神、逼迫人、侮慢人、不信（一13、15）。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>1b. 保羅蒙了憐憫是基於甚麼原因（一13）？</summary>
+          <div class="answer brown">
+            因我是不信不明白的時候而做的。並且我主的恩是格外豐盛，顯明祂一切的忍耐（一13、14、16）。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>2a. 他不信和不明白甚麼事（一13）？</summary>
+          <div class="hint">明道提示：參民十五 22～29。</div>
+          <div class="answer brown">
+            「不信不明白」是形容保羅在認識基督耶穌之前的景況，他不相信基督耶穌是神所預備的救主，是成全救贖、那位應許的彌賽亞。他不明白舊約所預言的救贖主，就是他以前迫害的人所相信跟從的基督耶穌；也不明白神的救贖計劃如何在基督耶穌身上得以成全；也缺乏對信仰群體的正確認識。可見，他當時對這些事是無知的。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>2b. 保羅想強調神哪方面的屬性和職事？</summary>
+          <div class="answer brown">
+            保羅藉自己的經歷強調神和基督耶穌莫大的憐憫與慈愛。祂所成全的救贖臨到一切相信祂的人，即使是罪大惡極的人，祂都能拯救到底。另一方面，基督耶穌降世，為要拯救罪人，這救贖職事顯明基督耶穌道成肉身的目的，是拯救迷失的罪人（一15），那些在神面前自覺有罪的人，都可以藉信祂而得到拯救，並在末日時得到祂所應許的永生。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>2c. 作榜樣，他想別人從他身上學習甚麼事？</summary>
+          <div class="answer brown">
+            值得留意的是，一切相信基督耶穌的人，都是得永生的人（一16）。這闡釋了神不以人的背景去衡量他/她是否可以得救。即使是被世人看來是罪大惡極，犯下滔天大罪的罪魁，只要他相信基督耶穌，認罪悔改，神的救贖都會臨到他，使他獲得救恩。另一方面，保羅以自己的經歷表明，神不但拯救罪人，並賜下恩惠、信心與愛心，使信徒過討主喜悅的生活，更會呼召他們去見證祂的榮美。保羅亦想藉此去表達神測不透的忍耐和憐憫。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>3a. 你願意把自己蒙恩得勝罪惡的經歷分享嗎？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>3b. 若十惡不赦或曾傷害你的人信主改變，你會有甚麼感受？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>4. 保羅如何形容基督耶穌和神？</summary>
+          <div class="answer brown">
+            給我力量的；我們主；我主；不能朽壞、不能看見、永世的君王、獨一的神（一12、17）。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>5. 保羅歌頌神與恩典要提醒提摩太什麼？</summary>
+          <div class="answer brown">
+            勿因限制而退縮；呼召的是憐憫人的主，祂賜恩與力，幫助見證祂、完成託付；所事奉的是獨一真神，要忠於所領受的信仰，面對假教師要倚靠超越萬物的神。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>6a. 你仍為基督拯救你而常常感恩嗎？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>6b. 分享一首最喜歡的詩歌，如何幫助你認識神的屬性與恩惠。</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>7. 提摩太應如何打那美好的仗（一18）？</summary>
+          <div class="answer brown">
+            照從前指著你的預言及保羅交託給提摩太的命令；常存信心和無虧的良心（一18～19）。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>8. 解釋「指著你的預言」「這命令」；為何是美好的仗？</summary>
+          <div class="hint">明道提示：保羅與提摩太為誰去爭戰？</div>
+          <div class="answer brown">
+            預言：差派提摩太的按手禮所說的信息（類似徒13:2-3）；命令：對抗假教師與在以弗所教會的職事；美好的仗：使命崇高，神同在，不孤軍奮戰，為真道而戰。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>9. 丟棄良心的人被形容為？（一19）</summary>
+          <div class="answer brown">
+            在真道上如同船破壞了一般（一19）。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>10a. 「交給撒但」是什麼意思（一20）？</summary>
+          <div class="hint">撒但可指敵對神的權勢或不認識神的世界。</div>
+          <div class="answer brown">
+            紀律處分、革除會籍，逐出教會，落入不信的世界，被撒但迷惑與影響。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>10b. 他們受到什麼責罰，使其不再謗瀆？</summary>
+          <div class="hint">「責罰」可解作管教或訓導。</div>
+          <div class="answer brown">
+            紀律處分、逐出教會，目的是醒悟罪、悔改歸正，糾正錯誤不再褻瀆。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>10c. 保羅想藉此提醒提摩太什麼？</summary>
+          <div class="answer brown">
+            要謹守自己，常存信心和愛心去打美好的仗，持守真道、力抗異端；教會紀律是為阻止犯罪並給悔改機會。
+          </div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>11a. 你認識離教者嗎？相處挑戰？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>11b. 面對失業、患病等嚴重問題，如何持守信仰？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>11c. 曾懷疑神或想放棄嗎？為何仍持守？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+
+        <details class="qa-sun">
+          <summary>11d. 若教會有人傳異端或犯罪不悔改，你支持紀律嗎？為什麼？</summary>
+          <div class="answer brown">(自由分享)</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Pao Q&A -->
+    <section class="panel" id="pao" role="tabpanel">
+      <div class="card">
+        <span class="tag purple">鮑維均博士觀點 · 進階參考答案</span>
+        <div class="flex">
+          <button id="toggle-pao">全部展開 / 摺疊</button>
+        </div>
+
+        <details class="qa-pao">
+          <summary>1a. 保羅如何形容自己信主前的身分？行徑？</summary>
+          <div class="answer purple">
+            <strong>三個負面身分（1:13）：</strong><br/>
+            褻瀆神的 βλάσφημος（假教師/末世抵擋真理者用語）；逼迫人的 διώκτης（孤本名詞，動詞常見於保羅見證）；侮慢人的 ὑβριστής（羅1:30 外邦惡行列）。<br/>
+            <strong>屬靈狀態：</strong> 不信與無知；非藉口，乃揭示黑暗光景，與現今假教師同起點。<br/>
+            <strong>總結：</strong> 自認「罪魁」（1:15），彰顯神主權恩典能改變最敵對的人。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>1b. 蒙憐憫的原因（一13）？</summary>
+          <div class="answer purple">
+            不是「不知者無罪」的藉口；「不信不明白」說明他與假教師一樣處於無知黑暗，神主動施恩；介詞 ἐν（在不信中）表明不配；「然而」逆轉應得的懲罰，顯神主權恩典。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>2a. 他不信、不明白什麼（一13）？</summary>
+          <div class="hint">明道提示：參民十五 22～29。</div>
+          <div class="answer purple">
+            無知於彌賽亞耶穌的身分；不是減罪理由，而是承認不配、與假教師的「不明白」對應。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>2b. 他重複自身蒙憐憫，要強調神哪方面？</summary>
+          <div class="answer purple">
+            神的主權、恩典、憐憫；焦點在神救贖行動，不在人的配得。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>2c. 作榜樣，他要人學什麼？</summary>
+          <div class="answer purple">
+            「榜樣」= 救贖範例（非道德模範）：<br/>
+            1) 見證神浩大恩典與極致忍耐——神能憐憫最壞的罪人。<br/>
+            2) 學習作「依靠憐憫的無能罪人」，完全不靠功德。<br/>
+            目的：對抗假教師的功德/律法傾向，宣示救恩唯獨恩典。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>3a. 分享蒙恩見證的掙扎？</summary>
+          <div class="answer purple">
+            （自由分享）<br/>補充：重點在承認無能，將榮耀歸給加力的主（1:12）。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>3b. 十惡不赦者信主改變，你的感受？</summary>
+          <div class="answer purple">(自由分享)</div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>4. 1:12-17 中對基督與神的描述？</summary>
+          <div class="answer purple">
+            基督：加給力量的（v12）、我們的主（v12,14）、降世拯救罪人（v15）、顯明一切忍耐（v16）。<br/>
+            神：永世君王、不能朽壞、看不見、獨一的神（v17）。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>5. 歌頌神與恩典對提摩太的提醒？</summary>
+          <div class="answer purple">
+            頌榮肯定神的至高（獨一真神），也是對挑戰權威者（假教師/帝國）的批評；提摩太要倚靠至高主。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>6a. 你仍為拯救而喜樂感恩嗎？</summary>
+          <div class="answer purple">(自由分享)</div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>6b. 喜愛的詩歌如何加深你對神恩惠的認識？</summary>
+          <div class="answer purple">(自由分享)</div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>7. 提摩太如何打美好的仗（一18-19）？</summary>
+          <div class="answer purple">
+            靠「從前指著你的預言」作權柄憑據；持守信心（真道）與無虧良心（聖潔生活）；反面教材：丟棄良心→信仰沉船。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>8. 「指著你的預言」「這命令」；為何是美好的仗？</summary>
+          <div class="hint">明道提示：保羅與提摩太為誰去爭戰？</div>
+          <div class="answer purple">
+            預言：按手差派時的呼召印證（提前4:14）；命令：1:3 囑咐制止異教，1:5 命令的總歸是愛；美好：為榮耀福音而戰，帶著信心與良心，指向神榮耀與人得救，與虛談/沉船形成對比。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>9. 丟棄良心的人被形容為？</summary>
+          <div class="answer purple">
+            在信仰上如同「船破壞」（觸礁沉船）。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>10a. 「交給撒但」是什麼？目的？</summary>
+          <div class="hint">撒但可指敵對神的權勢或不認識神的世界。</div>
+          <div class="answer purple">
+            教會紀律／逐出教會，移出神家保護；參林前5:5；目的為管教挽回，使其學會不再褻瀆。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>10b. 他們受何責罰使不再謗瀆？</summary>
+          <div class="hint">「責罰」= 管教/訓導。</div>
+          <div class="answer purple">
+            被逐出團契（交給撒但）；παιδεύω=受教導的管教，為醒悟悔改，制止褻瀆。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>10c. 保羅用許米乃、亞歷山大提醒提摩太什麼？</summary>
+          <div class="answer purple">
+            信仰與良心不可分；道德妥協導致神學沉船；屬靈爭戰真實且有代價，要警醒；正反對比：持守 vs 丟棄。
+          </div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>11a. 認識離教者嗎？相處挑戰？</summary>
+          <div class="answer purple">(自由分享)</div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>11b. 嚴重困境時如何持守信仰？</summary>
+          <div class="answer purple">(自由分享)</div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>11c. 曾懷疑神或想放棄？為何仍持守？</summary>
+          <div class="answer purple">(自由分享)</div>
+        </details>
+
+        <details class="qa-pao">
+          <summary>11d. 若有人傳異端或犯罪不悔改，你支持紀律嗎？</summary>
+          <div class="answer purple">
+            （自由分享）<br/>補充：紀律最終目的是管教與挽回（1:20）。
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Scripture panel -->
+    <section class="panel" id="scripture" role="tabpanel">
+      <div class="card">
+        <span class="tag teal">經文原文段落</span>
+        <div class="scripture">
+          <strong>提摩太前書 1:12-20 (和合本修訂版)</strong><br/><br/>
+          12 我感謝那賜給我力量的我們的主基督耶穌，因為他認為我可信任，派我服事他。<br/>
+          13 我從前是褻瀆、迫害、侮慢上帝的人；然而我還蒙了憐憫，因為我是在不信、不明白的時候做的。<br/>
+          14 而且我們的主的恩典格外豐盛，使我在基督耶穌裏有信心和愛心。<br/>
+          15 這話可信，值得完全接受：「基督耶穌到世上來是要拯救罪人」，而在罪人中我是個罪魁。<br/>
+          16 然而，我蒙了憐憫，好讓基督耶穌在我這罪魁身上顯明他完全的忍耐，給後來信他得永生的人作榜樣。<br/>
+          17 願尊貴、榮耀歸給永世的君王，那不朽壞、看不見、獨一的上帝，直到永永遠遠。阿們！<br/><br/>
+          18 我兒提摩太啊，我照從前指著你的預言把這命令交託你，使你能藉著這些預言打那美好的仗，<br/>
+          19 常存信心和無愧的良心。有些人丟棄良心，在信仰上觸了礁；<br/>
+          20 其中有許米乃和亞歷山大，我已經把他們交給撒但，讓他們學會不再褻瀆。
+        </div>
+      </div>
+    </section>
+
+    <footer style="text-align:center;color:var(--muted);font-size:0.95rem;margin-top:12px;">
+      互動頁面 · 可離線使用 · 按「全部展開/摺疊」協助帶領討論
+    </footer>
+  </div>
+
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Toggle all helpers
+    function toggleAll(selector, btn) {
+      const items = document.querySelectorAll(selector);
+      const anyClosed = Array.from(items).some(d => !d.open);
+      items.forEach(d => d.open = anyClosed);
+    }
+    document.getElementById('toggle-sun').addEventListener('click', () => toggleAll('.qa-sun', 'sun'));
+    document.getElementById('toggle-pao').addEventListener('click', () => toggleAll('.qa-pao', 'pao'));
+  </script>
+</body>
+</html>
