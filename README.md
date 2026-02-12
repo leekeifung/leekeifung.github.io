@@ -38,6 +38,7 @@ LEE Kei Fung, Charles’ Github
 - [Matthew Order V1](./MatthewOrderV1.html)
 
 ### 1 Timothy
+- [1 Timothy Lesson 1 (Interactive Study)](./1TimothyLesson1.html)
 - [1 Timothy Lesson 2 (Interactive Study)](./1TimothyLesson2.html)
 
 ### Daniel
