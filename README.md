@@ -37,6 +37,9 @@ LEE Kei Fung, Charles’ Github
 - [Matthew Lesson 1 · Exercises](./MatthewLesson1ex.html)
 - [Matthew Order V1](./MatthewOrderV1.html)
 
+### 1 Timothy
+- [1 Timothy Lesson 2 (Interactive Study)](./1TimothyLesson2.html)
+
 ### Daniel
 - [Daniel Order Ch2](./DanielOrderCh2.html)
 - [Daniel Order Ch2 (V2)](./DanielOrderCh2-V2.html)
@@ -57,7 +60,7 @@ LEE Kei Fung, Charles’ Github
   - https://leekeifung.github.io/AMA3730-complex-ops.html
   - https://leekeifung.github.io/AMA3730-complex-ops-ar.html
   - https://leekeifung.github.io/AMA1751-LinearCombinationR2.html
-  - https://leekeifung.github.io/AMA1751-SpanningSetR2.html
+  - https://leekeifung.github.io/1TimothyLesson2.html
   - …and similarly for the other listed files.
 - AR pages: require HTTPS and a supported device/browser (e.g., Chrome/Android with WebXR). Move the device to detect a surface, then place the plane.
 
