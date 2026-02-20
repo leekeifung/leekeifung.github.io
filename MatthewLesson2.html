@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NT317 · Matthew · Lesson 2 · 登山寶訓——天國子民的品格</title>
+  <style>
+    :root {
+      --bg: #0b1224;
+      --card: #0f1a30;
+      --card-strong: #0c1a2d;
+      --border: #1e293b;
+      --border-strong: #22415f;
+      --text: #e5ecf5;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+      --accent-strong: #0ea5e9;
+      --accent-soft: rgba(34,211,238,0.14);
+      --orange: #f59e0b;
+      --teal: #14b8a6;
+      --blue: #60a5fa;
+      --shadow: 0 18px 40px rgba(0,0,0,0.32);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.08), transparent 30%),
+                  radial-gradient(circle at 80% 0%, rgba(14,165,233,0.08), transparent 25%),
+                  var(--bg);
+      color: var(--text);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .page { width: min(1080px, 100%); }
+    header {
+      background: linear-gradient(135deg, rgba(34,211,238,0.16), rgba(14,165,233,0.08));
+      border: 1px solid rgba(34,211,238,0.15);
+      box-shadow: var(--shadow);
+      border-radius: 20px;
+      padding: 18px 18px 14px;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0 0 6px; font-size: 1.55rem; letter-spacing: 0.2px; }
+    .subtitle { margin: 0; color: var(--muted); line-height: 1.6; }
+    /* Navigation */
+    .nav {
+      margin-top: 14px;
+      background: rgba(10, 19, 36, 0.9);
+      border: 1px solid rgba(34,211,238,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+    }
+    .nav-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #f1f5f9;
+    }
+    .nav-head .icon { font-size: 1.15rem; }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid #2a3a53;
+      background: #111827;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+    .btn:hover { background: #1b283d; border-color: #355075; transform: translateY(-1px); }
+    .btn:active { background: #16314f; transform: translateY(0); }
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(34,211,238,0.16), rgba(14,165,233,0.12));
+      border: 1px solid rgba(34,211,238,0.55);
+      color: #e0f7ff;
+      box-shadow: 0 6px 18px rgba(34,211,238,0.25);
+    }
+    .btn.primary:hover { border-color: rgba(34,211,238,0.8); }
+    /* Pills and badges */
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,211,238,0.35);
+      color: #a5f3fc;
+      background: rgba(34,211,238,0.08);
+      font-size: 0.85rem;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+    }
+    .card h2 { margin: 0 0 8px; font-size: 1.15rem; letter-spacing: 0.2px; color: #e2ecff; }
+    p, li { line-height: 1.65; color: #d7deea; }
+    .muted { color: var(--muted); }
+    ul { padding-left: 18px; margin: 8px 0; }
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+    /* Info boxes */
+    .box {
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      margin-top: 8px;
+    }
+    .box.teal { border-color: rgba(20,184,166,0.45); background: rgba(20,184,166,0.08); }
+    .box.blue { border-color: rgba(96,165,250,0.45); background: rgba(96,165,250,0.08); }
+    .box.orange { border-color: rgba(245,158,11,0.45); background: rgba(245,158,11,0.08); }
+    .box-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .enumerate { margin: 8px 0; padding-left: 18px; }
+    .qa-block {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: rgba(15,23,42,0.6);
+      margin-top: 10px;
+    }
+    .qa-block h3 { margin: 0 0 6px; font-size: 1rem; color: #e2ecff; }
+    .hint {
+      border-left: 3px solid #94a3b8;
+      padding-left: 10px;
+      color: #cbd5e1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+    /* Responsive */
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      header { padding: 16px; }
+      .nav { padding: 12px; }
+      .btn { flex: 1 1 100%; justify-content: center; }
+      .nav-links { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>✨ NT317 · Matthew · Lesson 2</h1>
+      <p class="subtitle">登山寶訓——天國子民的品格 · 馬太福音 5:1–48 · 來源：NT317 (Craig S. Keener)</p>
+      <!-- Navigation Bar -->
+      <div class="nav">
+        <div class="nav-head"><span class="icon">🧭</span>導覽</div>
+        <div class="nav-links">
+          <a class="btn" href="MatthewLesson1.html">← 回到 Lesson 1 簡介</a>
+          <a class="btn primary" href="MatthewLesson2ex.html">前往 Lesson 2 互動版（練習）</a>
+          <a class="btn" href="MatthewLesson3.html">下一步：Lesson 3 →</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Section: 背景與本質 -->
+    <div class="card">
+      <h2>一、登山寶訓的背景與本質 (5:1–2)</h2>
+      <div class="pill">天國倫理</div>
+      <div class="pill">已然未然</div>
+      <p>馬太福音 5–7 章是耶穌五大講論中的第一個，核心主題是天國的倫理。</p>
+      <ul>
+        <li><strong>悔改的呼召：</strong> 4:17 總結耶穌的教導「天國近了，你們應當悔改」，登山寶訓具體展示天國中悔改的生活樣貌。</li>
+        <li><strong>已然未然：</strong> 指向未來的國度，但現在就活出未來的樣式，讓神子民在世上預嘗天國生活。</li>
+      </ul>
+      <div class="box teal">
+        <div class="box-title">耶穌的修辭：誇飾法 (Hyperbole)</div>
+        <p>耶穌使用拉比式誇飾抓住注意力，強調真理嚴肅性，目的是內心順服，不是字面執行（例如「砍手」並非鼓勵自殘）。</p>
+        <ul>
+          <li><strong>目的：</strong> 驅動內心態度轉變。</li>
+          <li><strong>警惕：</strong> 過度字面化會忽略恩典與教牧原則。</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section: 八福與身分 -->
+    <div class="card">
+      <h2>二、天國子民的畫像：八福與身分 (5:3–16)</h2>
+      <div class="pill">八福</div>
+      <div class="pill">鹽與光</div>
+      <div class="box blue">
+        <div class="box-title">八福：價值觀的翻轉</div>
+        <ul>
+          <li><strong>神聖被動語態：</strong>「必得安慰」「必蒙憐恤」暗示行動主體是神。</li>
+          <li><strong>現在與未來：</strong> 溫柔承受地土、清心得見神—末世完全實現，現今已啟動。</li>
+        </ul>
+      </div>
+      <div class="box teal" style="margin-top:10px;">
+        <div class="box-title">鹽與光：身分與使命</div>
+        <ul>
+          <li><strong>鹽失味：</strong> 失去天國特質即失用。</li>
+          <li><strong>動機檢視：</strong> 5:16 行為為榮耀神；6:1 警戒宗教表演—關鍵在動機。</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section: 成全律法 -->
+    <div class="card">
+      <h2>三、成全律法：更高的義 (5:17–48)</h2>
+      <div class="pill">成全律法</div>
+      <div class="pill">內心轉化</div>
+      <div class="box teal">
+        <div class="box-title">耶穌與律法 (5:17–20)</div>
+        <p>耶穌來為成全，不是廢掉。義要「勝於文士和法利賽人」指向內心轉化，而非僅外在合規。</p>
+        <ul>
+          <li>法利賽人：重外在合規（不殺人、不通姦）。</li>
+          <li>耶穌：解決罪的根源（怒、淫念）。</li>
+        </ul>
+      </div>
+      <div class="box blue" style="margin-top:10px;">
+        <div class="box-title">六個例子：由外到內</div>
+        <ol class="enumerate">
+          <li><strong>動怒 vs 殺人：</strong> 內心輕視也受審判。</li>
+          <li><strong>淫念 vs 姦淫：</strong> 為貪戀而注視即心裡犯姦淫。</li>
+          <li><strong>離婚 vs 背約：</strong> 反對隨意休妻，維護婚姻盟約與弱勢配偶。</li>
+          <li><strong>起誓 vs 誠實：</strong> 是就說是，不倚賴誓言包裝。</li>
+          <li><strong>報復 vs 恩典：</strong> 放下報復權，超越「以眼還眼」的最低限度。</li>
+          <li><strong>愛仇敵：</strong> 效法天父的完全，恩雨及於義人與不義的人。</li>
+        </ol>
+      </div>
+      <div class="box orange" style="margin-top:10px;">
+        <div class="box-title">文化背景：打右臉 (5:39)</div>
+        <p>多是羞辱榮譽的手背一擊。耶穌教導不為面子報復，把榮譽交給神，展現對神的信靠而非懦弱。</p>
+      </div>
+    </div>
+
+    <!-- Group Study -->
+    <div class="card">
+      <h2>小組查經討論 (25–30 分鐘)</h2>
+      <div class="qa-block">
+        <h3>一、觀察與經文梳理</h3>
+        <ul>
+          <li>5:13–16 用哪兩個比喻形容門徒？若失去特質會如何？</li>
+          <li>從 5:21–48 找兩個「你們聽見有話說……只是我告訴你們……」的例子，對比外在行為與內在動機。</li>
+          <li>面對惡人（5:38–42），耶穌給了哪些具體行動建議？</li>
+        </ul>
+      </div>
+      <div class="qa-block" style="margin-top:10px;">
+        <h3>二、解釋與深入討論</h3>
+        <ul>
+          <li><strong>勝於文士的義：</strong> 為何必須「勝過」？是數量還是本質？<div class="hint">提示：本質的勝過—從外在合規到內在動機。</div></li>
+          <li><strong>誇飾法的應用：</strong> 「砍手」如何在現代落地？<div class="hint">提示：決心對付罪，切斷試探來源與模式。</div></li>
+          <li><strong>轉過左臉：</strong> 是否無底線軟弱？<div class="hint">提示：不為面子報復，把尊嚴立於神，展現信靠與剛強。</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Application -->
+    <div class="card">
+      <h2>生活應用與反思 (最後 10 分鐘)</h2>
+      <ol class="enumerate">
+        <li><strong>內心的斷捨離：</strong> 本週選一個長期容忍的內在罪，制定「砍手」計畫（移除 App、遠離情境、問責）。</li>
+        <li><strong>言語的誠信：</strong> 練習「是就說是」，不輕易許諾；答應就全力以赴。</li>
+        <li><strong>面對冒犯：</strong> 被「打臉」時先禱告，把價值建立在神，嘗試以出人意料的恩慈回應。</li>
+      </ol>
+    </div>
+
+    <div class="card" style="text-align:center; color: var(--muted); font-size: 0.95rem;">
+      ✨ NT317 · Matthew · Lesson 2 · Introduction
+    </div>
+  </div>
+</body>
+</html>

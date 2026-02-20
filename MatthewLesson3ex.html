@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NT317 · Matthew · Lesson 3 · 互動練習</title>
+  <style>
+    :root {
+      --bg: #0b1224;
+      --card: #0f1a30;
+      --card-strong: #0c1a2d;
+      --border: #1e293b;
+      --border-strong: #22415f;
+      --text: #e5ecf5;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+      --accent-strong: #0ea5e9;
+      --accent-soft: rgba(34,211,238,0.12);
+      --shadow: 0 18px 40px rgba(0,0,0,0.32);
+      --radius: 16px;
+      --btn: #111827;
+      --btn-border: #2a3a53;
+      --btn-hover: #1b283d;
+      --btn-active: #16314f;
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --error: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34,211,238,0.08), transparent 30%),
+        radial-gradient(circle at 80% 0%, rgba(14,165,233,0.08), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .page { width: min(1100px, 100%); }
+    header {
+      background: linear-gradient(135deg, rgba(34,211,238,0.16), rgba(14,165,233,0.08));
+      border: 1px solid rgba(34,211,238,0.15);
+      box-shadow: var(--shadow);
+      border-radius: 20px;
+      padding: 18px 18px 14px;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0 0 6px; font-size: 1.55rem; letter-spacing: 0.2px; }
+    .subtitle { margin: 0; color: var(--muted); line-height: 1.6; }
+    .nav {
+      margin-top: 14px;
+      background: rgba(10, 19, 36, 0.9);
+      border: 1px solid rgba(34,211,238,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+    }
+    .nav-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #f1f5f9;
+    }
+    .nav-head .icon { font-size: 1.15rem; }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      cursor: pointer;
+    }
+    .btn:hover { background: var(--btn-hover); border-color: #355075; transform: translateY(-1px); }
+    .btn:active { background: var(--btn-active); transform: translateY(0); }
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(34,211,238,0.16), rgba(14,165,233,0.12));
+      border: 1px solid rgba(34,211,238,0.55);
+      color: #e0f7ff;
+      box-shadow: 0 6px 18px rgba(34,211,238,0.25);
+    }
+    .btn.primary:hover { border-color: rgba(34,211,238,0.8); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+    }
+    .card h2 { margin: 0 0 8px; font-size: 1.15rem; letter-spacing: 0.2px; color: #e2ecff; }
+    p, li { line-height: 1.65; color: #d7deea; }
+    .muted { color: var(--muted); }
+    ul { padding-left: 18px; margin: 8px 0; }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,211,238,0.35);
+      color: #a5f3fc;
+      background: rgba(34,211,238,0.08);
+      font-size: 0.85rem;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    /* Question blocks */
+    .q-block { margin-top: 10px; }
+    .q-title { font-weight: 700; margin-bottom: 8px; color: #e5ecf7; }
+
+    /* MCQ */
+    .choice-row { display: grid; gap: 8px; }
+    .choice {
+      width: 100%;
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .choice:hover { border-color: rgba(34,211,238,0.45); background: rgba(34,211,238,0.06); }
+    .choice.selected {
+      border-color: rgba(34,211,238,0.9);
+      background: rgba(34,211,238,0.14);
+      box-shadow: 0 0 0 1px rgba(34,211,238,0.5);
+      color: #f0f9ff;
+    }
+
+    .option { margin: 6px 0; }
+    .option input { margin-right: 6px; }
+
+    /* Fill-in drag-drop */
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px dashed rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.02);
+      margin-bottom: 12px;
+    }
+    .token {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,211,238,0.4);
+      background: rgba(34,211,238,0.12);
+      color: #e0f2fe;
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    }
+    .token:active { cursor: grabbing; transform: scale(0.98); }
+    .token.selected {
+      box-shadow: 0 0 0 2px rgba(34,211,238,0.6);
+      border-color: rgba(34,211,238,0.9);
+    }
+    .dropzone {
+      min-height: 46px;
+      padding: 8px 10px;
+      border: 1.5px dashed rgba(255,255,255,0.2);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .dropzone.active {
+      border-color: rgba(34,211,238,0.7);
+      background: rgba(34,211,238,0.06);
+    }
+    .dropzone .placeholder {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .inputs { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .match-row {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 10px;
+      align-items: center;
+      margin: 6px 0;
+    }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .reflection-area textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .ref-list { margin-top: 10px; }
+    .ref-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      margin-bottom: 8px;
+      color: #dbeafe;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .status { margin-top: 8px; font-weight: 700; color: var(--muted); }
+    .score { font-weight: 800; color: #a5f3fc; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #e2e8f0;
+      font-weight: 600;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      header { padding: 16px; }
+      .nav { padding: 12px; }
+      .btn { flex: 1 1 100%; justify-content: center; }
+      .nav-links { flex-direction: column; }
+      .match-row { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>✨ NT317 · Matthew · Lesson 3 · 互動練習</h1>
+      <p class="subtitle">登山寶訓（下）——天國子民的品格 · 馬太福音 5:43–7:27</p>
+      <div class="nav">
+        <div class="nav-head"><span class="icon">🧭</span>導覽</div>
+        <div class="nav-links">
+          <a class="btn" href="MatthewLesson3.html">← 回到 Lesson 3 簡介</a>
+          <a class="btn primary" href="MatthewLesson3ex.html">重新整理本頁</a>
+          <a class="btn" href="MatthewLesson4.html">下一步：Lesson 4 →</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="card">
+      <h2>📝 選擇題 (MCQ)</h2>
+      <div class="q-block" data-q="mcq1">
+        <div class="q-title">1) 「完全」(5:48) 在本段最貼近的意涵是：</div>
+        <div class="choice-row">
+          <button class="choice" data-q="mcq1" data-val="a">道德上毫無可能的絕對無瑕</button>
+          <button class="choice" data-q="mcq1" data-val="b">全心全意、無可指責，效法天父的愛</button>
+          <button class="choice" data-q="mcq1" data-val="c">指只要守住外在律法條文即可</button>
+        </div>
+      </div>
+      <div class="q-block" data-q="mcq2">
+        <div class="q-title">2) 耶穌將財富擬人化為「瑪門」的主題重點是：</div>
+        <div class="choice-row">
+          <button class="choice" data-q="mcq2" data-val="a">提醒猶太人守安息日</button>
+          <button class="choice" data-q="mcq2" data-val="b">說明金錢可與神競爭主權，人不能事奉兩個主</button>
+          <button class="choice" data-q="mcq2" data-val="c">鼓勵人多積財在地上</button>
+        </div>
+      </div>
+      <div class="q-block" data-q="mcq3">
+        <div class="q-title">3) 「不要論斷」與「要分辨」的平衡，最合適的理解是：</div>
+        <div class="choice-row">
+          <button class="choice" data-q="mcq3" data-val="a">放棄一切判斷，完全沉默</button>
+          <button class="choice" data-q="mcq3" data-val="b">帶著優越感定罪他人</button>
+          <button class="choice" data-q="mcq3" data-val="c">不篡奪神的審判，同時按果子有智慧地分辨</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>✔ / ✖ 是非題 (T / F)</h2>
+      <div class="q-block" data-q="tf1">
+        <div class="q-title">1) 愛仇敵等同縱容罪惡，不需要追求公義。</div>
+        <label class="option"><input type="radio" name="tf1" value="T" /> ✔ 是</label>
+        <label class="option"><input type="radio" name="tf1" value="F" /> ✖ 否</label>
+      </div>
+      <div class="q-block" data-q="tf2">
+        <div class="q-title">2) 主禱文先聚焦「你的」祈求（名、國、旨），再轉向「我們的」需要。</div>
+        <label class="option"><input type="radio" name="tf2" value="T" /> ✔ 是</label>
+        <label class="option"><input type="radio" name="tf2" value="F" /> ✖ 否</label>
+      </div>
+      <div class="q-block" data-q="tf3">
+        <div class="q-title">3) 耶穌反對公禱，因為祂只允許私下禱告。</div>
+        <label class="option"><input type="radio" name="tf3" value="T" /> ✔ 是</label>
+        <label class="option"><input type="radio" name="tf3" value="F" /> ✖ 否</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>✏️ 填充題（供詞拖放，精確比對才算）</h2>
+      <p class="muted">提示：從下方 6 個詞語拖曳到各題空格（3 正確 + 3 干擾）。手機可點選詞語再點空格放置。</p>
+
+      <div class="word-bank" id="wordBank">
+        <div class="token" draggable="true" data-token="義">義</div>
+        <div class="token" draggable="true" data-token="心">心</div>
+        <div class="token" draggable="true" data-token="黃金">黃金</div>
+        <div class="token" draggable="true" data-token="律法">律法</div>
+        <div class="token" draggable="true" data-token="眼">眼</div>
+        <div class="token" draggable="true" data-token="門">門</div>
+      </div>
+
+      <div class="inputs">
+        <div>
+          <div class="q-title">1) 「先求祂的國和祂的 ___，這些都要加給你們。」 (6:33)</div>
+          <div class="dropzone" data-blank="fill1">
+            <span class="placeholder">將詞語拖曳到這裡</span>
+          </div>
+        </div>
+        <div>
+          <div class="q-title">2) 「你們的財寶在哪裡，你們的 ___ 也在那裡。」 (6:21)</div>
+          <div class="dropzone" data-blank="fill2">
+            <span class="placeholder">將詞語拖曳到這裡</span>
+          </div>
+        </div>
+        <div>
+          <div class="q-title">3) 「你們願意人怎樣待你們，你們也要怎樣待人」被稱為 ___ 律。</div>
+          <div class="dropzone" data-blank="fill3">
+            <span class="placeholder">將詞語拖曳到這裡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🔗 配對題</h2>
+      <p class="muted">從下拉選單中選出最合適的對應。</p>
+      <div class="match-row">
+        <div class="q-title">「好眼」 (single eye)</div>
+        <select data-match="m1">
+          <option value="">請選擇</option>
+          <option value="a">慷慨、對神專一</option>
+          <option value="b">吝嗇、嫉妒</option>
+          <option value="c">報復心態</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="q-title">「壞眼」 (evil eye)</div>
+        <select data-match="m2">
+          <option value="">請選擇</option>
+          <option value="a">慷慨、對神專一</option>
+          <option value="b">吝嗇、嫉妒</option>
+          <option value="c">報復心態</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="q-title">「不要論斷」的重點</div>
+        <select data-match="m3">
+          <option value="">請選擇</option>
+          <option value="a">奪取神的審判並定罪</option>
+          <option value="b">智慧地分辨果子</option>
+          <option value="c">帶著優越感挑剔</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="q-title">「防備假先知」需要</div>
+        <select data-match="m4">
+          <option value="">請選擇</option>
+          <option value="a">奪取神的審判並定罪</option>
+          <option value="b">智慧地分辨果子</option>
+          <option value="c">帶著優越感挑剔</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>💬 開放反思</h2>
+      <p class="muted">可選填名字以便記錄；本頁不會將資料上傳伺服器。</p>
+      <div class="reflection-area">
+        <input class="text-input" id="refName" placeholder="你的名字（可選，用於標註）" />
+        <textarea id="refText" placeholder="輸入你的反思"></textarea>
+        <div class="actions" style="margin-top:8px;">
+          <button class="btn primary" type="button" id="addRef">新增反思</button>
+          <button class="btn" type="button" id="clearRef">清除反思</button>
+        </div>
+        <div class="ref-list" id="refList"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🏁 分數 & 建議</h2>
+      <div class="badge">MCQ + 是非 + 填充 + 配對</div>
+      <p class="status">分數：<span class="score" id="score">0 / 0</span></p>
+      <p id="advice" class="muted">持續操練：隱密中的敬虔、信靠勝過憂慮、以愛與分辨同行。</p>
+      <div class="actions">
+        <button class="btn primary" type="button" id="checkBtn">批改 / Check</button>
+        <button class="btn" type="button" id="resetBtn">重設全部</button>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center; color: var(--muted); font-size: 0.95rem;">
+      ✨ NT317 · Matthew · Lesson 3 · Interactive
+    </div>
+  </div>
+
+  <script>
+    const mcqAns = { mcq1: 'b', mcq2: 'b', mcq3: 'c' };
+    const tfAns  = { tf1: 'F', tf2: 'T', tf3: 'F' };
+    const fillAns = { fill1: '義', fill2: '心', fill3: '黃金' };
+    const matchAns = { m1: 'a', m2: 'b', m3: 'a', m4: 'b' };
+
+    const norm = (s) => s.trim().replace(/\s+/g, '').toLowerCase();
+
+    // MCQ selection
+    document.querySelectorAll('.choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.dataset.q;
+        document.querySelectorAll(`.choice[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+
+    // Drag & Drop for fill-in
+    let currentDrag = null;
+    let selectedToken = null;
+    const bank = document.getElementById('wordBank');
+    const dropzones = document.querySelectorAll('.dropzone');
+    const tokens = document.querySelectorAll('.token');
+
+    tokens.forEach(tok => {
+      tok.addEventListener('dragstart', (e) => {
+        currentDrag = tok;
+        e.dataTransfer.setData('text/plain', tok.dataset.token);
+      });
+      tok.addEventListener('click', () => {
+        if (selectedToken === tok) {
+          tok.classList.remove('selected');
+          selectedToken = null;
+        } else {
+          tokens.forEach(t => t.classList.remove('selected'));
+          tok.classList.add('selected');
+          selectedToken = tok;
+        }
+      });
+    });
+
+    function moveTokenTo(tokenEl, targetZone) {
+      // If target has a token, return it to bank
+      const existing = targetZone.querySelector('.token');
+      if (existing) bank.appendChild(existing);
+
+      // Clear placeholder
+      const ph = targetZone.querySelector('.placeholder');
+      if (ph) ph.remove();
+
+      targetZone.appendChild(tokenEl);
+      tokenEl.classList.remove('selected');
+      selectedToken = null;
+    }
+
+    function returnTokenToBank(tokenEl) {
+      bank.appendChild(tokenEl);
+      tokenEl.classList.remove('selected');
+      selectedToken = null;
+    }
+
+    dropzones.forEach(zone => {
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('active');
+      });
+      zone.addEventListener('dragleave', () => {
+        zone.classList.remove('active');
+      });
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('active');
+        if (currentDrag) moveTokenTo(currentDrag, zone);
+        currentDrag = null;
+      });
+      zone.addEventListener('click', () => {
+        if (selectedToken) moveTokenTo(selectedToken, zone);
+      });
+    });
+
+    bank.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+    bank.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (currentDrag) returnTokenToBank(currentDrag);
+      currentDrag = null;
+    });
+    bank.addEventListener('click', () => {
+      // clicking bank clears selection
+      if (selectedToken) {
+        selectedToken.classList.remove('selected');
+        selectedToken = null;
+      }
+    });
+
+    function grade() {
+      let total = 0, correct = 0;
+
+      // MCQ
+      Object.keys(mcqAns).forEach(k => {
+        total++;
+        const selected = document.querySelector(`.choice[data-q="${k}"].selected`);
+        const v = selected ? selected.dataset.val : '';
+        if (v === mcqAns[k]) correct++;
+      });
+
+      // TF
+      Object.keys(tfAns).forEach(k => {
+        total++;
+        const v = (document.querySelector(`input[name="${k}"]:checked`)||{}).value;
+        if (v === tfAns[k]) correct++;
+      });
+
+      // Fill (drag tokens)
+      Object.keys(fillAns).forEach(k => {
+        total++;
+        const dz = document.querySelector(`.dropzone[data-blank="${k}"]`);
+        const tok = dz ? dz.querySelector('.token') : null;
+        const v = tok ? tok.dataset.token || tok.textContent : '';
+        if (norm(v) === norm(fillAns[k])) correct++;
+      });
+
+      // Match
+      Object.keys(matchAns).forEach(k => {
+        total++;
+        const v = (document.querySelector(`select[data-match="${k}"]`)||{}).value;
+        if (v === matchAns[k]) correct++;
+      });
+
+      document.getElementById('score').textContent = `${correct} / ${total}`;
+      let tip = '持續操練：隱密中的敬虔、信靠勝過憂慮、以愛與分辨同行。';
+      if (correct === total) tip = '太棒了！你已掌握本課重點，繼續實踐於生活。';
+      else if (correct / total >= 0.7) tip = '不錯！再複習愛仇敵、主禱文結構與「不要憂慮」的核心動機。';
+      else tip = '建議重讀：主禱文（名、國、旨）、瑪門對比神、論斷與分辨的平衡。';
+      document.getElementById('advice').textContent = tip;
+    }
+
+    function resetAll() {
+      // Clear MCQ
+      document.querySelectorAll('.choice').forEach(el => el.classList.remove('selected'));
+      // TF
+      document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+      // Fill drag-drop: move all tokens back to bank
+      dropzones.forEach(zone => {
+        const tok = zone.querySelector('.token');
+        if (tok) bank.appendChild(tok);
+        if (!zone.querySelector('.placeholder')) {
+          const ph = document.createElement('span');
+          ph.className = 'placeholder';
+          ph.textContent = '將詞語拖曳到這裡';
+          zone.appendChild(ph);
+        }
+      });
+      tokens.forEach(t => t.classList.remove('selected'));
+      selectedToken = null;
+      currentDrag = null;
+      // Match
+      document.querySelectorAll('select').forEach(el => el.value = '');
+      // Reflection fields
+      document.getElementById('refName').value = '';
+      document.getElementById('refText').value = '';
+      document.getElementById('refList').innerHTML = '';
+      // Score
+      document.getElementById('score').textContent = '0 / 0';
+      document.getElementById('advice').textContent = '持續操練：隱密中的敬虔、信靠勝過憂慮、以愛與分辨同行。';
+    }
+
+    // Reflections (local only)
+    const refListEl = document.getElementById('refList');
+    document.getElementById('addRef').addEventListener('click', () => {
+      const name = document.getElementById('refName').value.trim();
+      const text = document.getElementById('refText').value.trim();
+      if (!text) return;
+      const div = document.createElement('div');
+      div.className = 'ref-item';
+      div.textContent = (name ? `【${name}】` : '【匿名】') + ' ' + text;
+      refListEl.prepend(div);
+      document.getElementById('refText').value = '';
+    });
+    document.getElementById('clearRef').addEventListener('click', () => {
+      refListEl.innerHTML = '';
+      document.getElementById('refText').value = '';
+    });
+
+    document.getElementById('checkBtn').addEventListener('click', grade);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+  </script>
+</body>
+</html>

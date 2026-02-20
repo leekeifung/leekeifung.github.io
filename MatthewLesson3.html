@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NT317 · Matthew · Lesson 3 · 登山寶訓（下）——天國子民的品格</title>
+  <style>
+    :root {
+      --bg: #0b1224;
+      --card: #0f1a30;
+      --border: #1e293b;
+      --text: #e5ecf5;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+      --shadow: 0 18px 40px rgba(0,0,0,0.32);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34,211,238,0.08), transparent 30%),
+        radial-gradient(circle at 80% 0%, rgba(14,165,233,0.08), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .page { width: min(1080px, 100%); }
+    header {
+      background: linear-gradient(135deg, rgba(34,211,238,0.16), rgba(14,165,233,0.08));
+      border: 1px solid rgba(34,211,238,0.15);
+      box-shadow: var(--shadow);
+      border-radius: 20px;
+      padding: 18px 18px 14px;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0 0 6px; font-size: 1.55rem; letter-spacing: 0.2px; }
+    .subtitle { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    /* Navigation */
+    .nav {
+      margin-top: 14px;
+      background: rgba(10, 19, 36, 0.9);
+      border: 1px solid rgba(34,211,238,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+    }
+    .nav-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #f1f5f9;
+    }
+    .nav-head .icon { font-size: 1.15rem; }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid #2a3a53;
+      background: #111827;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+    .btn:hover { background: #1b283d; border-color: #355075; transform: translateY(-1px); }
+    .btn:active { background: #16314f; transform: translateY(0); }
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(34,211,238,0.16), rgba(14,165,233,0.12));
+      border: 1px solid rgba(34,211,238,0.55);
+      color: #e0f7ff;
+      box-shadow: 0 6px 18px rgba(34,211,238,0.25);
+    }
+    .btn.primary:hover { border-color: rgba(34,211,238,0.8); }
+
+    /* Badges and layout */
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,211,238,0.35);
+      color: #a5f3fc;
+      background: rgba(34,211,238,0.08);
+      font-size: 0.85rem;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+    }
+    .card h2 { margin: 0 0 8px; font-size: 1.15rem; letter-spacing: 0.2px; color: #e2ecff; }
+    p, li { line-height: 1.65; color: #d7deea; }
+    .muted { color: var(--muted); }
+    ul { padding-left: 18px; margin: 8px 0; }
+    .enumerate { margin: 8px 0; padding-left: 18px; }
+
+    .box {
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      margin-top: 8px;
+    }
+    .box.teal { border-color: rgba(20,184,166,0.45); background: rgba(20,184,166,0.08); }
+    .box.blue { border-color: rgba(96,165,250,0.45); background: rgba(96,165,250,0.08); }
+    .box.orange { border-color: rgba(245,158,11,0.45); background: rgba(245,158,11,0.08); }
+    .box-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+
+    .qa-block {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: rgba(15,23,42,0.6);
+      margin-top: 10px;
+    }
+    .qa-block h3 { margin: 0 0 6px; font-size: 1rem; color: #e2ecff; }
+    .hint {
+      border-left: 3px solid #94a3b8;
+      padding-left: 10px;
+      color: #cbd5e1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      header { padding: 16px; }
+      .nav { padding: 12px; }
+      .btn { flex: 1 1 100%; justify-content: center; }
+      .nav-links { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>✨ NT317 · Matthew · Lesson 3</h1>
+      <p class="subtitle">登山寶訓（下）——天國子民的品格 · 馬太福音 5:43–7:27 · 來源：NT317 (Craig S. Keener)</p>
+      <div class="nav">
+        <div class="nav-head"><span class="icon">🧭</span>導覽</div>
+        <div class="nav-links">
+          <a class="btn" href="MatthewLesson2.html">← 回到 Lesson 2 簡介</a>
+          <a class="btn primary" href="MatthewLesson3ex.html">前往 Lesson 3 互動版（練習）</a>
+          <a class="btn" href="MatthewLesson4.html">下一步：Lesson 4 →</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Section 1 -->
+    <div class="card">
+      <h2>一、愛仇敵與完全的標準 (5:43–48)</h2>
+      <div class="pill">愛仇敵</div><div class="pill">效法天父</div><div class="pill">完全</div>
+      <div class="box teal">
+        <div class="box-title">超越常理的愛</div>
+        <ul>
+          <li>昆蘭群體強調「愛鄰舍、恨仇敵」，耶穌卻呼召門徒愛仇敵，為逼迫者禱告。</li>
+          <li><strong>效法神：</strong> 神降雨給義人也給不義的人，愛的理由是像天父。</li>
+          <li><strong>禱告的轉化：</strong> 為逼迫者禱告，不是求報復，而是求神憐憫他們。</li>
+        </ul>
+      </div>
+      <div class="box blue" style="margin-top:10px;">
+        <div class="box-title">「完全」的呼召 (5:48)</div>
+        <p>「完全」在希伯來語境多指全心全意、無可指責。不是靠人力達成道德無瑕，而是領受國度、讓神從內而外轉化，使我們能像祂去愛。</p>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="card">
+      <h2>二、真實的敬虔：不為人見，只為神知 (6:1–18)</h2>
+      <div class="pill">動機</div><div class="pill">施捨</div><div class="pill">禱告</div><div class="pill">禁食</div>
+      <div class="box teal">
+        <div class="box-title">核心原則：觀眾是誰？ (6:1)</div>
+        <p>若為自我榮耀，賞賜已在世人；若為榮耀神，天父在暗中察看並報答。關鍵是動機。</p>
+      </div>
+      <div class="box blue" style="margin-top:10px;">
+        <div class="box-title">三個敬虔操練</div>
+        <ol class="enumerate">
+          <li><strong>施捨 (6:2–4)：</strong> 不像偽善者吹號引人注意。</li>
+          <li><strong>禱告 (6:5–15)：</strong>
+            <ul>
+              <li><strong>私密性：</strong> 進內屋，不為表演。</li>
+              <li><strong>主禱文：</strong> 先「你的」祈求（名、國、旨），後「我們」祈求（日用飲食、免債/饒恕、不遇試探）。</li>
+              <li><strong>饒恕：</strong> 與禱告蒙應允緊密相連。</li>
+            </ul>
+          </li>
+          <li><strong>禁食 (6:16–18)：</strong> 梳頭洗臉，不讓人看出，作為向神的自願獻祭。</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="card">
+      <h2>三、國度的價值觀：財寶與憂慮 (6:19–34)</h2>
+      <div class="pill">財寶</div><div class="pill">瑪門</div><div class="pill">不要憂慮</div>
+      <div class="box teal">
+        <div class="box-title">財寶在哪裡，心也在哪裡</div>
+        <p><strong>眼睛比喻：</strong> 好眼＝慷慨、對神專一；壞眼＝吝嗇、嫉妒。<br><strong>兩個主：</strong> 瑪門被擬人化為與神競爭的主，人不能同時事奉二主。</p>
+      </div>
+      <div class="box blue" style="margin-top:10px;">
+        <div class="box-title">不要憂慮：信心的對象</div>
+        <p>憂慮源自把安全感放在物質。耶穌以飛鳥、百合為例，用「何況」論證：神顧念草木，更顧念你們。先求祂的國和義，這些都要加給你們。這不是拒絕計畫，而是拒絕把依靠放在物質。</p>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="card">
+      <h2>四、國度的判斷與兩條路 (7:1–27)</h2>
+      <div class="pill">不論斷</div><div class="pill">分辨</div><div class="pill">黃金律</div><div class="pill">兩種根基</div>
+      <div class="box teal">
+        <div class="box-title">論斷與分辨 (7:1–6)</div>
+        <p>「不要論斷」：勿篡奪神的審判，也勿帶著樑木去挑人之刺。然仍需分辨——珍珠不丟豬，後文防備假先知。</p>
+      </div>
+      <div class="box blue" style="margin-top:10px;">
+        <div class="box-title">黃金律 (7:12)</div>
+        <p>正面表述的主動愛，超越 Hillel 的負面版本「己所不欲，勿施於人」。總結律法與先知。</p>
+      </div>
+      <div class="box orange" style="margin-top:10px;">
+        <div class="box-title">兩種根基 (7:24–27)</div>
+        <p>聽見並去行耶穌話語的人，將房子建在磐石；不行的建在沙土。耶穌的話等同神的律法與審判標準，隱含祂的神性權威。</p>
+      </div>
+    </div>
+
+    <!-- Group Study -->
+    <div class="card">
+      <h2>小組查經討論 (25–30 分鐘)</h2>
+      <div class="qa-block">
+        <h3>一、觀察與經文梳理</h3>
+        <ul>
+          <li>6:1–6 對比哪兩種行善動機？各自的賞賜是什麼？</li>
+          <li>6:25–33 耶穌用了哪些自然比喻來談憂慮？「何況」論證如何說服門徒？</li>
+          <li>主禱文的「你的」與「我們的」祈求各是什麼？順序有何意義？</li>
+        </ul>
+      </div>
+      <div class="qa-block" style="margin-top:10px;">
+        <h3>二、解釋與深入討論</h3>
+        <ul>
+          <li><strong>愛仇敵：</strong> 現實中愛傷害我們的人具體長什麼樣？與縱容罪惡有何不同？<div class="hint">提示：不尋求報復，交審判給神，為對方悔改禱告；不是忽視公義，而是不讓仇恨主宰。</div></li>
+          <li><strong>財寶與瑪門：</strong> 為何錢財被視為神的對手？如何檢視自己是否在事奉瑪門？<div class="hint">提示：誰決定你的安全感與選擇？金錢與神原則衝突時選誰？憂慮來源揭示主權所屬。</div></li>
+          <li><strong>論斷與分辨：</strong> 如何不論斷卻保持分辨？<div class="hint">提示：論斷是優越與定罪；分辨是按真理看果子。先省察自己的樑木，再用愛心說誠實話。</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Application -->
+    <div class="card">
+      <h2>生活應用與反思 (最後 10 分鐘)</h2>
+      <ol class="enumerate">
+        <li><strong>檢視隱密的動機：</strong> 做一件「隱密的善事」刻意不讓人知道，享受天父的察看。</li>
+        <li><strong>對抗憂慮的操練：</strong> 寫下最憂慮的事，每晨以 6:33 禱告，憂慮時提醒「天父顧念我」。</li>
+        <li><strong>實踐黃金律：</strong> 選一位難相處的人，換位思考後，用你希望他人對待你的方式主動對待他一次。</li>
+      </ol>
+    </div>
+
+    <div class="card" style="text-align:center; color: var(--muted); font-size: 0.95rem;">
+      ✨ NT317 · Matthew · Lesson 3 · Introduction
+    </div>
+  </div>
+</body>
+</html>
