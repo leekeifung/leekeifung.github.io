@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fruit English — Vocabulary & Sentences (Listen & Learn)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --text: #1a202c;
+      --muted: #4a5568;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --shadow: 0 8px 20px rgba(0,0,0,0.06);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 24px;
+    }
+    header {
+      max-width: 960px;
+      margin: 0 auto 24px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      letter-spacing: -0.01em;
+    }
+    p.lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    h2 {
+      max-width: 960px;
+      margin: 24px auto 10px;
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+    .grid {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    }
+    .emoji {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      background: var(--primary-soft);
+      flex-shrink: 0;
+    }
+    .info {
+      flex: 1;
+      min-width: 0;
+    }
+    .word {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin: 0 0 4px;
+    }
+    .note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    button.play {
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      white-space: nowrap;
+    }
+    button.play:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+      background: #1d4ed8;
+    }
+    button.play:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    }
+    .status {
+      max-width: 960px;
+      margin: 18px auto 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    @media (max-width: 480px) {
+      body { padding: 16px; }
+      .card { padding: 14px; }
+      .emoji { width: 52px; height: 52px; font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fruit English — Vocabulary & Sentences</h1>
+    <p class="lead">Tap the play button to hear each word or sentence. Uses your browser's built-in voice.</p>
+  </header>
+
+  <h2>A. Vocabulary</h2>
+  <section class="grid" id="vocab-grid"></section>
+
+  <h2>B. Sentences</h2>
+  <section class="grid" id="sentences-grid"></section>
+
+  <div class="status" id="status">Ready to play pronunciations.</div>
+
+  <script>
+    const vocab = [
+      { label: "an apple", emoji: "🍎" },
+      { label: "an orange", emoji: "🍊" },
+      { label: "a banana", emoji: "🍌" },
+      { label: "mangoes", emoji: "🥭" },
+      { label: "grapes", emoji: "🍇" },
+      { label: "pears", emoji: "🍐" },
+      { label: "lemons", emoji: "🍋" },
+      { label: "cherries", emoji: "🍒" },
+      { label: "blueberries", emoji: "🫐" },
+      { label: "peaches", emoji: "🍑" }
+    ];
+
+    const sentences = [
+      { label: "Where do you buy fruit?", emoji: "🛒" },
+      { label: "They grow strawberries.", emoji: "🌱" },
+      { label: "They are sweet and juicy.", emoji: "🍉" },
+      { label: "How many apples are there?", emoji: "🔢" },
+      { label: "Let's go to pick cherries.", emoji: "🧺" },
+      { label: "I am excited.", emoji: "😊" }
+    ];
+
+    const vocabGrid = document.getElementById("vocab-grid");
+    const sentencesGrid = document.getElementById("sentences-grid");
+    const statusEl = document.getElementById("status");
+
+    function createCard(item) {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const emoji = document.createElement("div");
+      emoji.className = "emoji";
+      emoji.textContent = item.emoji;
+
+      const info = document.createElement("div");
+      info.className = "info";
+
+      const word = document.createElement("p");
+      word.className = "word";
+      word.textContent = item.label;
+
+      const note = document.createElement("p");
+      note.className = "note";
+      note.textContent = "Click play to hear it";
+
+      info.appendChild(word);
+      info.appendChild(note);
+
+      const btn = document.createElement("button");
+      btn.className = "play";
+      btn.type = "button";
+      btn.setAttribute("aria-label", "Play pronunciation for " + item.label);
+      btn.textContent = "▶︎ Play";
+      btn.addEventListener("click", () => speak(item.label));
+
+      card.appendChild(emoji);
+      card.appendChild(info);
+      card.appendChild(btn);
+      return card;
+    }
+
+    function populate() {
+      vocab.forEach(item => vocabGrid.appendChild(createCard(item)));
+      sentences.forEach(item => sentencesGrid.appendChild(createCard(item)));
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        statusEl.textContent = "Speech synthesis is not supported in this browser.";
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      utter.rate = 0.95;
+      utter.pitch = 1.0;
+      utter.onstart = () => { statusEl.textContent = "Playing: " + text; };
+      utter.onend = () => { statusEl.textContent = "Finished: " + text; };
+      utter.onerror = () => { statusEl.textContent = "Error playing: " + text; };
+      window.speechSynthesis.speak(utter);
+    }
+
+    populate();
+  </script>
+</body>
+</html>
