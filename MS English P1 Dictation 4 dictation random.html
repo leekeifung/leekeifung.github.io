@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fruit English — Dictation & Matching</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --primary: #2563eb;
+      --primary-soft: #e0e7ff;
+      --success: #16a34a;
+      --error: #dc2626;
+      --shadow: 0 8px 20px rgba(0,0,0,0.06);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    header {
+      max-width: 1000px;
+      margin: 0 auto 20px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      letter-spacing: -0.01em;
+    }
+    p.lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    section {
+      max-width: 1000px;
+      margin: 0 auto 24px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      letter-spacing: -0.01em;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .row {
+      display: grid;
+      gap: 10px;
+      align-items: center;
+    }
+    .dictation-row {
+      grid-template-columns: 1fr;
+    }
+    .match-row {
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) {
+      .dictation-row { grid-template-columns: auto 1fr auto; }
+      .match-row { grid-template-columns: auto 1fr auto; }
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      white-space: nowrap;
+    }
+    button.play {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    }
+    button.play:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3); background: #1d4ed8; }
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    button.secondary:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font: inherit;
+    }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font: inherit;
+      background: #fff;
+    }
+    .emoji {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .feedback {
+      font-size: 0.95rem;
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+    .feedback.success { color: var(--success); font-weight: 600; }
+    .feedback.error { color: var(--error); font-weight: 600; }
+    .section-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 4px;
+    }
+    .status {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fruit English — Dictation & Matching</h1>
+    <p class="lead">Students can listen, type what they hear, and match items. Uses your browser's speech synthesis.</p>
+  </header>
+
+  <section aria-label="Dictation controls">
+    <div class="card">
+      <h2>Voice Settings</h2>
+      <div class="row" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label for="rate"><strong>Speed</strong>: <span id="rate-value">0.95</span></label>
+          <input id="rate" type="range" min="0.5" max="1.5" step="0.01" value="0.95" />
+        </div>
+        <div>
+          <label for="pitch"><strong>Pitch</strong>: <span id="pitch-value">1.00</span></label>
+          <input id="pitch" type="range" min="0.5" max="2" step="0.01" value="1.00" />
+        </div>
+      </div>
+      <p class="feedback">Tip: If voices are missing, interact with the page or reload. Voice gender depends on your browser voices.</p>
+    </div>
+  </section>
+
+  <section aria-label="Part A Dictation">
+    <h2>A. Vocabulary — Dictation</h2>
+    <div id="dictation-vocab"></div>
+    <div class="section-actions">
+      <button class="secondary" type="button" onclick="checkAll('vocab')">Check all</button>
+      <button class="secondary" type="button" onclick="showAllAnswers('vocab')">Show all answers</button>
+      <button class="secondary" type="button" onclick="resetAll('vocab')">Reset</button>
+    </div>
+  </section>
+
+  <section aria-label="Part A Matching">
+    <h2>A. Vocabulary — Matching (choose the correct word for each picture)</h2>
+    <div id="match-vocab"></div>
+    <div class="section-actions">
+      <button class="secondary" type="button" onclick="checkMatches('vocab')">Check matching</button>
+      <button class="secondary" type="button" onclick="resetMatches('vocab')">Reset</button>
+    </div>
+  </section>
+
+  <section aria-label="Part B Dictation">
+    <h2>B. Sentences — Dictation</h2>
+    <div id="dictation-sentences"></div>
+    <div class="section-actions">
+      <button class="secondary" type="button" onclick="checkAll('sentences')">Check all</button>
+      <button class="secondary" type="button" onclick="showAllAnswers('sentences')">Show all answers</button>
+      <button class="secondary" type="button" onclick="resetAll('sentences')">Reset</button>
+    </div>
+  </section>
+
+  <section aria-label="Part B Matching">
+    <h2>B. Sentences — Matching (listen and choose the correct sentence)</h2>
+    <div id="match-sentences"></div>
+    <div class="section-actions">
+      <button class="secondary" type="button" onclick="checkMatches('sentences')">Check matching</button>
+      <button class="secondary" type="button" onclick="resetMatches('sentences')">Reset</button>
+    </div>
+  </section>
+
+  <div class="status" id="status">Ready.</div>
+
+  <script>
+    const vocab = [
+      "an apple",
+      "an orange",
+      "a banana",
+      "mangoes",
+      "grapes",
+      "pears",
+      "lemons",
+      "cherries",
+      "blueberries",
+      "peaches"
+    ];
+    const vocabWithEmoji = [
+      { text: "an apple", emoji: "🍎" },
+      { text: "an orange", emoji: "🍊" },
+      { text: "a banana", emoji: "🍌" },
+      { text: "mangoes", emoji: "🥭" },
+      { text: "grapes", emoji: "🍇" },
+      { text: "pears", emoji: "🍐" },
+      { text: "lemons", emoji: "🍋" },
+      { text: "cherries", emoji: "🍒" },
+      { text: "blueberries", emoji: "🫐" },
+      { text: "peaches", emoji: "🍑" }
+    ];
+    const sentences = [
+      "Where do you buy fruit?",
+      "They grow strawberries.",
+      "They are sweet and juicy.",
+      "How many apples are there?",
+      "Let's go to pick cherries.",
+      "I am excited."
+    ];
+
+    const rateSlider = document.getElementById("rate");
+    const pitchSlider = document.getElementById("pitch");
+    const rateValue = document.getElementById("rate-value");
+    const pitchValue = document.getElementById("pitch-value");
+    const statusEl = document.getElementById("status");
+
+    function updateSliderLabels() {
+      rateValue.textContent = Number(rateSlider.value).toFixed(2);
+      pitchValue.textContent = Number(pitchSlider.value).toFixed(2);
+    }
+    rateSlider.addEventListener("input", updateSliderLabels);
+    pitchSlider.addEventListener("input", updateSliderLabels);
+    updateSliderLabels();
+
+    function normalize(str) {
+      return str
+        .toLowerCase()
+        .replace(/[\.\?!]$/g, "")   // remove trailing punctuation
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        statusEl.textContent = "Speech synthesis not supported in this browser.";
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US";
+      u.rate = Number(rateSlider.value);
+      u.pitch = Number(pitchSlider.value);
+      u.onstart = () => statusEl.textContent = "Playing: " + text;
+      u.onend = () => statusEl.textContent = "Finished: " + text;
+      u.onerror = () => statusEl.textContent = "Error playing: " + text;
+      window.speechSynthesis.speak(u);
+    }
+
+    // Dictation builders
+    function buildDictation(list, containerId, keyPrefix) {
+      const container = document.getElementById(containerId);
+      list.forEach((text, idx) => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const row = document.createElement("div");
+        row.className = "row dictation-row";
+
+        const playBtn = document.createElement("button");
+        playBtn.type = "button";
+        playBtn.className = "play";
+        playBtn.textContent = "▶︎ Play";
+        playBtn.setAttribute("aria-label", "Play audio for item " + (idx + 1));
+        playBtn.addEventListener("click", () => speak(text));
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Type what you hear";
+        input.id = `${keyPrefix}-input-${idx}`;
+
+        const checkBtn = document.createElement("button");
+        checkBtn.type = "button";
+        checkBtn.className = "secondary";
+        checkBtn.textContent = "Check";
+        checkBtn.addEventListener("click", () => checkOne(keyPrefix, idx, text));
+
+        const feedback = document.createElement("div");
+        feedback.className = "feedback";
+        feedback.id = `${keyPrefix}-fb-${idx}`;
+
+        row.appendChild(playBtn);
+        row.appendChild(input);
+        row.appendChild(checkBtn);
+        card.appendChild(row);
+        card.appendChild(feedback);
+        container.appendChild(card);
+      });
+    }
+
+    function checkOne(prefix, idx, answer) {
+      const input = document.getElementById(`${prefix}-input-${idx}`);
+      const fb = document.getElementById(`${prefix}-fb-${idx}`);
+      const correct = normalize(answer);
+      const user = normalize(input.value || "");
+      if (!user) {
+        fb.textContent = "Please type your answer.";
+        fb.className = "feedback error";
+        return;
+      }
+      if (user === correct) {
+        fb.textContent = "Correct!";
+        fb.className = "feedback success";
+      } else {
+        fb.textContent = "Not yet. Try again.";
+        fb.className = "feedback error";
+      }
+    }
+
+    function checkAll(prefix) {
+      const list = prefix === "vocab" ? vocab : sentences;
+      list.forEach((ans, idx) => checkOne(prefix, idx, ans));
+    }
+
+    function showAllAnswers(prefix) {
+      const list = prefix === "vocab" ? vocab : sentences;
+      list.forEach((ans, idx) => {
+        const fb = document.getElementById(`${prefix}-fb-${idx}`);
+        fb.textContent = "Answer: " + ans;
+        fb.className = "feedback";
+      });
+    }
+
+    function resetAll(prefix) {
+      const list = prefix === "vocab" ? vocab : sentences;
+      list.forEach((_, idx) => {
+        const input = document.getElementById(`${prefix}-input-${idx}`);
+        const fb = document.getElementById(`${prefix}-fb-${idx}`);
+        if (input) input.value = "";
+        if (fb) { fb.textContent = ""; fb.className = "feedback"; }
+      });
+      statusEl.textContent = "Reset completed.";
+    }
+
+    // Matching builders
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildMatchVocab() {
+      const container = document.getElementById("match-vocab");
+      const options = shuffle(vocab);
+      vocabWithEmoji.forEach((item, idx) => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const row = document.createElement("div");
+        row.className = "row match-row";
+
+        const emoji = document.createElement("div");
+        emoji.className = "emoji";
+        emoji.textContent = item.emoji;
+        emoji.setAttribute("aria-label", item.text);
+
+        const select = document.createElement("select");
+        select.id = `match-vocab-${idx}`;
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Choose the word";
+        select.appendChild(placeholder);
+        options.forEach(opt => {
+          const o = document.createElement("option");
+          o.value = opt;
+          o.textContent = opt;
+          select.appendChild(o);
+        });
+
+        const feedback = document.createElement("div");
+        feedback.id = `match-vocab-fb-${idx}`;
+        feedback.className = "feedback";
+
+        row.appendChild(emoji);
+        row.appendChild(select);
+        card.appendChild(row);
+        card.appendChild(feedback);
+        container.appendChild(card);
+      });
+    }
+
+    function buildMatchSentences() {
+      const container = document.getElementById("match-sentences");
+      const options = shuffle(sentences);
+      sentences.forEach((text, idx) => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const row = document.createElement("div");
+        row.className = "row match-row";
+
+        const playBtn = document.createElement("button");
+        playBtn.type = "button";
+        playBtn.className = "play";
+        playBtn.textContent = "▶︎ Listen";
+        playBtn.setAttribute("aria-label", "Play sentence " + (idx + 1));
+        playBtn.addEventListener("click", () => speak(text));
+
+        const select = document.createElement("select");
+        select.id = `match-sent-${idx}`;
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Choose the sentence";
+        select.appendChild(placeholder);
+        options.forEach(opt => {
+          const o = document.createElement("option");
+          o.value = opt;
+          o.textContent = opt;
+          select.appendChild(o);
+        });
+
+        const feedback = document.createElement("div");
+        feedback.id = `match-sent-fb-${idx}`;
+        feedback.className = "feedback";
+
+        row.appendChild(playBtn);
+        row.appendChild(select);
+        card.appendChild(row);
+        card.appendChild(feedback);
+        container.appendChild(card);
+      });
+    }
+
+    function checkMatches(kind) {
+      if (kind === "vocab") {
+        vocabWithEmoji.forEach((item, idx) => {
+          const sel = document.getElementById(`match-vocab-${idx}`);
+          const fb = document.getElementById(`match-vocab-fb-${idx}`);
+          const val = sel.value;
+          if (!val) {
+            fb.textContent = "Please choose an answer.";
+            fb.className = "feedback error";
+          } else if (normalize(val) === normalize(item.text)) {
+            fb.textContent = "Correct!";
+            fb.className = "feedback success";
+          } else {
+            fb.textContent = "Not yet. Try again.";
+            fb.className = "feedback error";
+          }
+        });
+      } else {
+        sentences.forEach((text, idx) => {
+          const sel = document.getElementById(`match-sent-${idx}`);
+          const fb = document.getElementById(`match-sent-fb-${idx}`);
+          const val = sel.value;
+          if (!val) {
+            fb.textContent = "Please choose an answer.";
+            fb.className = "feedback error";
+          } else if (normalize(val) === normalize(text)) {
+            fb.textContent = "Correct!";
+            fb.className = "feedback success";
+          } else {
+            fb.textContent = "Not yet. Try again.";
+            fb.className = "feedback error";
+          }
+        });
+      }
+    }
+
+    function resetMatches(kind) {
+      if (kind === "vocab") {
+        vocabWithEmoji.forEach((_, idx) => {
+          const sel = document.getElementById(`match-vocab-${idx}`);
+          const fb = document.getElementById(`match-vocab-fb-${idx}`);
+          if (sel) sel.value = "";
+          if (fb) { fb.textContent = ""; fb.className = "feedback"; }
+        });
+      } else {
+        sentences.forEach((_, idx) => {
+          const sel = document.getElementById(`match-sent-${idx}`);
+          const fb = document.getElementById(`match-sent-fb-${idx}`);
+          if (sel) sel.value = "";
+          if (fb) { fb.textContent = ""; fb.className = "feedback"; }
+        });
+      }
+      statusEl.textContent = "Matching reset.";
+    }
+
+    // Build UI
+    buildDictation(vocab, "dictation-vocab", "vocab");
+    buildDictation(sentences, "dictation-sentences", "sentences");
+    buildMatchVocab();
+    buildMatchSentences();
+  </script>
+</body>
+</html>
