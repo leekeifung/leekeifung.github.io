@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fruit English — Dictation & Matching</title>
+  <title>Fruit English — Dictation & Matching (Randomized)</title>
   <style>
     :root {
       color-scheme: light;
@@ -63,12 +63,8 @@
       gap: 10px;
       align-items: center;
     }
-    .dictation-row {
-      grid-template-columns: 1fr;
-    }
-    .match-row {
-      grid-template-columns: 1fr;
-    }
+    .dictation-row { grid-template-columns: 1fr; }
+    .match-row { grid-template-columns: 1fr; }
     @media (min-width: 640px) {
       .dictation-row { grid-template-columns: auto 1fr auto; }
       .match-row { grid-template-columns: auto 1fr auto; }
@@ -90,13 +86,20 @@
       color: #fff;
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
     }
-    button.play:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3); background: #1d4ed8; }
+    button.play:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+      background: #1d4ed8;
+    }
     button.secondary {
       background: #e5e7eb;
       color: #111827;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
-    button.secondary:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+    button.secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    }
     input[type="text"] {
       width: 100%;
       padding: 10px 12px;
@@ -104,13 +107,16 @@
       border: 1px solid #d1d5db;
       font: inherit;
     }
+    /* Enlarged dropdowns */
     select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 12px 14px;
       border-radius: 12px;
       border: 1px solid #d1d5db;
       font: inherit;
+      font-size: 1.05rem;
       background: #fff;
+      min-height: 46px;
     }
     .emoji {
       width: 48px;
@@ -145,7 +151,7 @@
 </head>
 <body>
   <header>
-    <h1>Fruit English — Dictation & Matching</h1>
+    <h1>Fruit English — Dictation & Matching (Randomized)</h1>
     <p class="lead">Students can listen, type what they hear, and match items. Uses your browser's speech synthesis.</p>
   </header>
 
@@ -167,7 +173,7 @@
   </section>
 
   <section aria-label="Part A Dictation">
-    <h2>A. Vocabulary — Dictation</h2>
+    <h2>A. Vocabulary — Dictation (random order)</h2>
     <div id="dictation-vocab"></div>
     <div class="section-actions">
       <button class="secondary" type="button" onclick="checkAll('vocab')">Check all</button>
@@ -177,7 +183,7 @@
   </section>
 
   <section aria-label="Part A Matching">
-    <h2>A. Vocabulary — Matching (choose the correct word for each picture)</h2>
+    <h2>A. Vocabulary — Matching (random order, enlarged dropdown)</h2>
     <div id="match-vocab"></div>
     <div class="section-actions">
       <button class="secondary" type="button" onclick="checkMatches('vocab')">Check matching</button>
@@ -196,7 +202,7 @@
   </section>
 
   <section aria-label="Part B Matching">
-    <h2>B. Sentences — Matching (listen and choose the correct sentence)</h2>
+    <h2>B. Sentences — Matching (listen and choose)</h2>
     <div id="match-sentences"></div>
     <div class="section-actions">
       <button class="secondary" type="button" onclick="checkMatches('sentences')">Check matching</button>
@@ -207,7 +213,8 @@
   <div class="status" id="status">Ready.</div>
 
   <script>
-    const vocab = [
+    // Base data
+    const vocabBase = [
       "an apple",
       "an orange",
       "a banana",
@@ -219,7 +226,7 @@
       "blueberries",
       "peaches"
     ];
-    const vocabWithEmoji = [
+    const vocabWithEmojiBase = [
       { text: "an apple", emoji: "🍎" },
       { text: "an orange", emoji: "🍊" },
       { text: "a banana", emoji: "🍌" },
@@ -240,6 +247,22 @@
       "I am excited."
     ];
 
+    // Shuffled (randomized) working lists
+    let vocabDictationList = [];
+    let vocabMatchItems = [];
+    let vocabMatchOptions = [];
+
+    // Utility
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // Speech
     const rateSlider = document.getElementById("rate");
     const pitchSlider = document.getElementById("pitch");
     const rateValue = document.getElementById("rate-value");
@@ -257,7 +280,7 @@
     function normalize(str) {
       return str
         .toLowerCase()
-        .replace(/[\.\?!]$/g, "")   // remove trailing punctuation
+        .replace(/[\.\?!]$/g, "")
         .replace(/\s+/g, " ")
         .trim();
     }
@@ -278,9 +301,10 @@
       window.speechSynthesis.speak(u);
     }
 
-    // Dictation builders
+    // Dictation
     function buildDictation(list, containerId, keyPrefix) {
       const container = document.getElementById(containerId);
+      container.innerHTML = "";
       list.forEach((text, idx) => {
         const card = document.createElement("div");
         card.className = "card";
@@ -339,12 +363,12 @@
     }
 
     function checkAll(prefix) {
-      const list = prefix === "vocab" ? vocab : sentences;
+      const list = prefix === "vocab" ? vocabDictationList : sentences;
       list.forEach((ans, idx) => checkOne(prefix, idx, ans));
     }
 
     function showAllAnswers(prefix) {
-      const list = prefix === "vocab" ? vocab : sentences;
+      const list = prefix === "vocab" ? vocabDictationList : sentences;
       list.forEach((ans, idx) => {
         const fb = document.getElementById(`${prefix}-fb-${idx}`);
         fb.textContent = "Answer: " + ans;
@@ -353,7 +377,7 @@
     }
 
     function resetAll(prefix) {
-      const list = prefix === "vocab" ? vocab : sentences;
+      const list = prefix === "vocab" ? vocabDictationList : sentences;
       list.forEach((_, idx) => {
         const input = document.getElementById(`${prefix}-input-${idx}`);
         const fb = document.getElementById(`${prefix}-fb-${idx}`);
@@ -363,20 +387,14 @@
       statusEl.textContent = "Reset completed.";
     }
 
-    // Matching builders
-    function shuffle(arr) {
-      const a = [...arr];
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
+    // Matching
     function buildMatchVocab() {
       const container = document.getElementById("match-vocab");
-      const options = shuffle(vocab);
-      vocabWithEmoji.forEach((item, idx) => {
+      container.innerHTML = "";
+      vocabMatchItems = shuffle(vocabWithEmojiBase);
+      vocabMatchOptions = shuffle(vocabBase);
+
+      vocabMatchItems.forEach((item, idx) => {
         const card = document.createElement("div");
         card.className = "card";
 
@@ -394,7 +412,7 @@
         placeholder.value = "";
         placeholder.textContent = "Choose the word";
         select.appendChild(placeholder);
-        options.forEach(opt => {
+        vocabMatchOptions.forEach(opt => {
           const o = document.createElement("option");
           o.value = opt;
           o.textContent = opt;
@@ -415,6 +433,7 @@
 
     function buildMatchSentences() {
       const container = document.getElementById("match-sentences");
+      container.innerHTML = "";
       const options = shuffle(sentences);
       sentences.forEach((text, idx) => {
         const card = document.createElement("div");
@@ -457,7 +476,7 @@
 
     function checkMatches(kind) {
       if (kind === "vocab") {
-        vocabWithEmoji.forEach((item, idx) => {
+        vocabMatchItems.forEach((item, idx) => {
           const sel = document.getElementById(`match-vocab-${idx}`);
           const fb = document.getElementById(`match-vocab-fb-${idx}`);
           const val = sel.value;
@@ -493,7 +512,7 @@
 
     function resetMatches(kind) {
       if (kind === "vocab") {
-        vocabWithEmoji.forEach((_, idx) => {
+        vocabMatchItems.forEach((_, idx) => {
           const sel = document.getElementById(`match-vocab-${idx}`);
           const fb = document.getElementById(`match-vocab-fb-${idx}`);
           if (sel) sel.value = "";
@@ -510,11 +529,15 @@
       statusEl.textContent = "Matching reset.";
     }
 
-    // Build UI
-    buildDictation(vocab, "dictation-vocab", "vocab");
-    buildDictation(sentences, "dictation-sentences", "sentences");
-    buildMatchVocab();
-    buildMatchSentences();
+    // Initialize
+    function init() {
+      vocabDictationList = shuffle(vocabBase);
+      buildDictation(vocabDictationList, "dictation-vocab", "vocab");
+      buildDictation(sentences, "dictation-sentences", "sentences");
+      buildMatchVocab();
+      buildMatchSentences();
+    }
+    init();
   </script>
 </body>
 </html>
