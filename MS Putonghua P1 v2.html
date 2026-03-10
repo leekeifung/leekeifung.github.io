@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Putonghua & Cantonese Picture Cards</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --ink: #1f2933;
+      --muted: #4b5563;
+      --accent: #2563eb;
+      --accent-soft: #e0e7ff;
+      --border: #e5e7eb;
+      --shadow: 0 8px 24px rgba(0,0,0,0.06);
+      --canton: #059669;
+      --canton-soft: #d1fae5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 1.5rem;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.9rem;
+      letter-spacing: 0.01em;
+    }
+    p.lead {
+      margin: 0 0 1.25rem;
+      color: var(--muted);
+    }
+    .note {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    .selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .chip {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--ink);
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .chip:hover { background: #f8fafc; }
+    .chip:active { transform: translateY(1px); }
+    .chip.active.putonghua {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .chip.active.cantonese {
+      background: var(--canton);
+      color: white;
+      border-color: var(--canton);
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .card:focus-within,
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    }
+    .art {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(145deg, #f9fafb, #eef2ff);
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    svg { width: 80%; height: 80%; }
+    .hanzi { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.02em; }
+    .pinyin { font-size: 1rem; color: var(--muted); }
+    .meaning {
+      display: inline-flex;
+      align-self: flex-start;
+      padding: 0.35rem 0.6rem;
+      background: #f1f5f9;
+      color: #334155;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      border: 1px solid #e2e8f0;
+    }
+    .actions {
+      margin-top: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--ink);
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    button:hover { background: #f8fafc; border-color: #d7dfe7; }
+    button:active { transform: translateY(1px); }
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    button.primary.cantonese {
+      background: var(--canton);
+      border-color: var(--canton);
+    }
+    .status {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      .art { aspect-ratio: 4 / 3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Picture Cards · 普通话 / 粤语</h1>
+    <p class="lead">Choose a dialect first, then tap play to hear each word. Images are simple inline drawings.</p>
+    <div class="note" aria-live="polite">ℹ️ Speech depends on your browser voices. If it doesn’t play here, try locally.</div>
+
+    <div class="selector" aria-label="Choose dialect">
+      <button class="chip putonghua active" data-dialect="putonghua" aria-pressed="true">🇨🇳 普通话 (Putonghua)</button>
+      <button class="chip cantonese" data-dialect="cantonese" aria-pressed="false">🇭🇰 粤语 (Cantonese)</button>
+    </div>
+
+    <div class="cards" id="cards"></div>
+
+    <div class="status" id="status" aria-live="polite"></div>
+    <span class="sr-only" id="live-region" aria-live="polite"></span>
+  </div>
+
+  <script>
+    const cardsEl = document.getElementById('cards');
+    const statusEl = document.getElementById('status');
+    const liveRegion = document.getElementById('live-region');
+    const selectorButtons = document.querySelectorAll('.chip');
+    let dialect = 'putonghua'; // 'putonghua' | 'cantonese'
+
+    const svgs = {
+      "zhí shù": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <rect x="54" y="55" width="12" height="35" rx="3" fill="#8d5524"/>
+          <circle cx="60" cy="45" r="22" fill="#6cc24a"/>
+          <circle cx="45" cy="50" r="12" fill="#63b93f"/>
+          <circle cx="75" cy="50" r="12" fill="#63b93f"/>
+          <circle cx="60" cy="30" r="10" fill="#5aa73a"/>
+          <rect x="52" y="88" width="16" height="6" rx="2" fill="#a47148"/>
+        </svg>
+      `,
+      "rì chū": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <rect x="10" y="70" width="100" height="25" rx="8" fill="#b3e5fc"/>
+          <path d="M20 78 C40 70 80 70 100 78" fill="#81d4fa"/>
+          <path d="M30 78 Q60 38 90 78 Z" fill="#ffd54f" stroke="#f4b400" stroke-width="3"/>
+          <g stroke="#f4b400" stroke-width="3" stroke-linecap="round">
+            <line x1="60" y1="20" x2="60" y2="34"/>
+            <line x1="35" y1="26" x2="43" y2="38"/>
+            <line x1="85" y1="26" x2="77" y2="38"/>
+            <line x1="25" y1="50" x2="38" y2="54"/>
+            <line x1="95" y1="50" x2="82" y2="54"/>
+          </g>
+        </svg>
+      `,
+      "rè chá": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <rect x="28" y="46" width="52" height="30" rx="8" fill="#90caf9" stroke="#5a91d8" stroke-width="3"/>
+          <path d="M80 52 Q96 56 96 64 Q96 72 80 76" fill="none" stroke="#5a91d8" stroke-width="4" stroke-linecap="round"/>
+          <rect x="36" y="72" width="36" height="8" rx="4" fill="#5a91d8"/>
+          <path d="M46 40 C44 34 48 30 50 24" stroke="#8d6e63" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M58 40 C56 34 60 30 62 24" stroke="#8d6e63" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M70 40 C68 34 72 30 74 24" stroke="#8d6e63" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </svg>
+      `,
+      "zhí chǐ": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <rect x="18" y="48" width="84" height="16" rx="3" fill="#e0e7ff" stroke="#94a3b8" stroke-width="2"/>
+          <g stroke="#64748b" stroke-width="2" stroke-linecap="round">
+            <line x1="26" y1="50" x2="26" y2="62"/>
+            <line x1="34" y1="52" x2="34" y2="60"/>
+            <line x1="42" y1="50" x2="42" y2="62"/>
+            <line x1="50" y1="52" x2="50" y2="60"/>
+            <line x1="58" y1="50" x2="58" y2="62"/>
+            <line x1="66" y1="52" x2="66" y2="60"/>
+            <line x1="74" y1="50" x2="74" y2="62"/>
+            <line x1="82" y1="52" x2="82" y2="60"/>
+            <line x1="90" y1="50" x2="90" y2="62"/>
+            <line x1="98" y1="52" x2="98" y2="60"/>
+          </g>
+        </svg>
+      `,
+      "tú shū": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <path d="M38 30 H82 C88 30 92 34 92 40 V88 C92 92 90 94 86 94 H38 Z" fill="#c7d2fe" stroke="#6366f1" stroke-width="3"/>
+          <path d="M38 30 C32 30 28 34 28 40 V88 C28 94 32 98 38 98 H82" fill="#eef2ff" stroke="#94a3b8" stroke-width="2"/>
+          <line x1="46" y1="40" x2="74" y2="40" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+          <line x1="46" y1="52" x2="74" y2="52" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+          <line x1="46" y1="64" x2="68" y2="64" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      `,
+      "shā fā": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <rect x="22" y="52" width="76" height="30" rx="8" fill="#c5e1a5" stroke="#7cb342" stroke-width="3"/>
+          <rect x="30" y="40" width="24" height="18" rx="6" fill="#aed581"/>
+          <rect x="66" y="40" width="24" height="18" rx="6" fill="#aed581"/>
+          <rect x="26" y="82" width="68" height="8" rx="3" fill="#7cb342"/>
+          <g stroke="#5f6f52" stroke-width="4" stroke-linecap="round">
+            <line x1="32" y1="90" x2="32" y2="98"/>
+            <line x1="88" y1="90" x2="88" y2="98"/>
+          </g>
+        </svg>
+      `,
+      "chú shī": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="46" r="16" fill="#ffe0b2" stroke="#efb07c" stroke-width="3"/>
+          <path d="M44 44 H76 C76 34 70 28 60 28 C50 28 44 34 44 44 Z" fill="#e0e7ff" stroke="#94a3b8" stroke-width="3"/>
+          <rect x="46" y="60" width="28" height="20" rx="6" fill="#cfd8dc" stroke="#90a4ae" stroke-width="2"/>
+          <path d="M74 68 Q88 66 90 72 Q92 78 82 80" fill="none" stroke="#8d6e63" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="82" cy="78" r="4" fill="#8d6e63"/>
+          <line x1="60" y1="80" x2="60" y2="94" stroke="#90a4ae" stroke-width="4" stroke-linecap="round"/>
+          <line x1="54" y1="94" x2="66" y2="94" stroke="#90a4ae" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      `,
+      "là zhú": `
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <rect x="52" y="38" width="16" height="48" rx="4" fill="#ffe0e0" stroke="#fca5a5" stroke-width="3"/>
+          <path d="M52 50 Q60 54 68 50" stroke="#f97316" stroke-width="2" fill="none"/>
+          <path d="M60 32 C64 38 62 42 60 46 C58 42 56 38 60 32 Z" fill "#fb923c" stroke="#ea580c" stroke-width="2"/>
+          <rect x="46" y="86" width="28" height="6" rx="3" fill="#fca5a5"/>
+        </svg>
+      `
+    };
+
+    const words = [
+      { hanzi: "植树", pinyin: "zhí shù", meaning: "plant a tree" },
+      { hanzi: "日出", pinyin: "rì chū", meaning: "sunrise" },
+      { hanzi: "热茶", pinyin: "rè chá", meaning: "hot tea" },
+      { hanzi: "直尺", pinyin: "zhí chǐ", meaning: "ruler" },
+      { hanzi: "图书", pinyin: "tú shū", meaning: "book" },
+      { hanzi: "沙发", pinyin: "shā fā", meaning: "sofa" },
+      { hanzi: "厨师", pinyin: "chú shī", meaning: "chef" },
+      { hanzi: "蜡烛", pinyin: "là zhú", meaning: "candle" },
+    ];
+
+    function setStatus(msg) {
+      statusEl.textContent = msg || "";
+      liveRegion.textContent = msg || "";
+    }
+
+    function buildCards() {
+      const frag = document.createDocumentFragment();
+      words.forEach(({ hanzi, pinyin, meaning }) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="art">${svgs[pinyin] || ""}</div>
+          <div class="hanzi" aria-label="${hanzi}">${hanzi}</div>
+          <div class="pinyin">${pinyin}</div>
+          <span class="meaning">${meaning}</span>
+          <div class="actions">
+            <button class="primary" data-say="${hanzi}" aria-label="Play sound for ${hanzi}">▶ Play</button>
+            <button data-copy="${pinyin}" aria-label="Copy pinyin ${pinyin}">Copy Pinyin</button>
+          </div>
+        `;
+        frag.appendChild(card);
+      });
+      cardsEl.appendChild(frag);
+    }
+
+    function pickVoice(targetDialect) {
+      if (!window.speechSynthesis) return null;
+      const voices = speechSynthesis.getVoices();
+      if (!voices.length) return null;
+
+      const byLang = (v) => (v.lang || '').toLowerCase();
+      const byName = (v) => (v.name || '').toLowerCase();
+
+      if (targetDialect === 'cantonese') {
+        // Prefer Cantonese: zh-HK, yue, zh-yue, zh-hant-hk, name contains "canton"
+        const candidates = voices.filter(v => {
+          const l = byLang(v);
+          const n = byName(v);
+          return l.includes('yue') || l.includes('zh-hk') || l.includes('zh-hant') || n.includes('canton');
+        });
+        return candidates[0] || null;
+      } else {
+        // Putonghua: prefer zh-CN, zh-SG, generic zh but not yue/hk
+        const preferred = voices.filter(v => {
+          const l = byLang(v);
+          return l.startsWith('zh') && !l.includes('yue') && !l.includes('hk');
+        });
+        return preferred[0] || null;
+      }
+    }
+
+    function speak(text) {
+      if (!window.speechSynthesis) {
+        setStatus("Speech not supported in this browser.");
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(text);
+      const voice = pickVoice(dialect);
+      if (voice) {
+        utter.voice = voice;
+        utter.lang = voice.lang || (dialect === 'cantonese' ? 'yue-HK' : 'zh-CN');
+      } else {
+        utter.lang = dialect === 'cantonese' ? 'yue-HK' : 'zh-CN';
+      }
+      utter.rate = dialect === 'cantonese' ? 1.0 : 0.95;
+      utter.pitch = 1.0;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utter);
+      setStatus(`Playing (${dialect === 'cantonese' ? 'Cantonese' : 'Putonghua'}): ${text}`);
+    }
+
+    function copyText(t) {
+      navigator.clipboard?.writeText(t).then(
+        () => setStatus(`Copied: ${t}`),
+        () => setStatus("Copy failed. You can select and copy manually.")
+      );
+    }
+
+    // Initialize cards
+    buildCards();
+
+    // Handle dialect selection
+    selectorButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chosen = btn.getAttribute('data-dialect');
+        if (chosen === dialect) return;
+        dialect = chosen;
+        selectorButtons.forEach(b => {
+          const isActive = b.getAttribute('data-dialect') === dialect;
+          b.classList.toggle('active', isActive);
+          b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+        // Update primary button color hint
+        document.querySelectorAll('.actions .primary').forEach(p => {
+          p.classList.toggle('cantonese', dialect === 'cantonese');
+        });
+        setStatus(`Dialect set to ${dialect === 'cantonese' ? 'Cantonese (粤语)' : 'Putonghua (普通话)'}.`);
+      });
+    });
+
+    // Voice load listener for some browsers
+    if (window.speechSynthesis) {
+      speechSynthesis.onvoiceschanged = () => {};
+    }
+
+    // Card actions
+    cardsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const say = btn.getAttribute('data-say');
+      const copy = btn.getAttribute('data-copy');
+      if (say) {
+        speak(say);
+      } else if (copy) {
+        copyText(copy);
+      }
+    });
+  </script>
+</body>
+</html>
