@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hidden Base Form — Listen & Type (Randomized)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #2563eb;
+      --primary-soft: #e0e7ff;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.09);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      line-height: 1.6;
+    }
+    header {
+      max-width: 1024px;
+      margin: 0 auto 16px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.6rem, 4vw, 2.3rem);
+      letter-spacing: -0.01em;
+    }
+    p.lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .controls-bar {
+      max-width: 1024px;
+      margin: 14px auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.32);
+      background: #1d4ed8;
+    }
+    button.secondary:hover {
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
+    .grid {
+      max-width: 1024px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .emoji {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      display: grid;
+      place-items: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+    .title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .muted { color: var(--muted); }
+    .hidden-label {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+    .play-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      font: inherit;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .feedback {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .feedback.success { color: #16a34a; font-weight: 700; }
+    .feedback.error { color: #dc2626; font-weight: 700; }
+    .status {
+      max-width: 1024px;
+      margin: 14px auto 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hidden Base Form — Listen & Type</h1>
+    <p class="lead">Randomized. The base form is hidden. Listen to the base form and type it.</p>
+  </header>
+
+  <div class="controls-bar">
+    <button type="button" class="secondary" onclick="reshuffle()">🔀 Reshuffle</button>
+    <button type="button" class="secondary" onclick="checkAll()">✅ Check all</button>
+    <button type="button" class="secondary" onclick="showAll()">👀 Show all answers</button>
+    <button type="button" class="secondary" onclick="resetAll()">♻️ Reset</button>
+  </div>
+
+  <div class="grid" id="cards"></div>
+  <div class="status" id="status">Ready. If audio does not play, interact with the page or reload.</div>
+
+  <script>
+    const verbs = [
+      { base: "set", emoji: "🛠️" },
+      { base: "shout", emoji: "📢" },
+      { base: "sit", emoji: "🪑" },
+      { base: "sleep", emoji: "😴" },
+      { base: "solve", emoji: "🧩" },
+      { base: "split", emoji: "✂️" },
+      { base: "spread", emoji: "🍞" },
+      { base: "start", emoji: "⏯️" },
+      { base: "stay", emoji: "📍" },
+      { base: "steal", emoji: "🦹" }
+    ];
+
+    let items = [];
+    const cardsEl = document.getElementById("cards");
+    const statusEl = document.getElementById("status");
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function normalize(str) {
+      return (str || "")
+        .toLowerCase()
+        .replace(/[\.\?!]$/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        statusEl.textContent = "Speech synthesis is not supported in this browser.";
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US";
+      u.onstart = () => statusEl.textContent = "Playing: " + text;
+      u.onend = () => statusEl.textContent = "Finished: " + text;
+      u.onerror = () => statusEl.textContent = "Error playing: " + text;
+      window.speechSynthesis.speak(u);
+    }
+
+    function makeCard(item, idx) {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const top = document.createElement("div");
+      top.className = "top";
+      const emoji = document.createElement("div");
+      emoji.className = "emoji";
+      emoji.textContent = item.emoji;
+      const titleWrap = document.createElement("div");
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = "Base form: (hidden)";
+      const note = document.createElement("div");
+      note.className = "muted";
+      note.textContent = "Listen and type the base form.";
+      titleWrap.appendChild(title);
+      titleWrap.appendChild(note);
+      top.appendChild(emoji);
+      top.appendChild(titleWrap);
+      card.appendChild(top);
+
+      const hiddenLabel = document.createElement("span");
+      hiddenLabel.className = "hidden-label";
+      hiddenLabel.textContent = "Hidden word";
+      card.appendChild(hiddenLabel);
+
+      const playRow = document.createElement("div");
+      playRow.className = "play-row";
+      const playBtn = document.createElement("button");
+      playBtn.type = "button";
+      playBtn.textContent = "▶︎ Play base form";
+      playBtn.addEventListener("click", () => speak(item.base));
+      playRow.appendChild(playBtn);
+      card.appendChild(playRow);
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Type the base form";
+      input.id = `inp-${idx}`;
+      card.appendChild(input);
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      const checkBtn = document.createElement("button");
+      checkBtn.type = "button";
+      checkBtn.className = "secondary";
+      checkBtn.textContent = "Check";
+      checkBtn.addEventListener("click", () => checkOne(idx, item.base));
+      const showBtn = document.createElement("button");
+      showBtn.type = "button";
+      showBtn.className = "secondary";
+      showBtn.textContent = "Show answer";
+      showBtn.addEventListener("click", () => showAnswer(idx, item.base));
+      actions.appendChild(checkBtn);
+      actions.appendChild(showBtn);
+      card.appendChild(actions);
+
+      const fb = document.createElement("div");
+      fb.id = `fb-${idx}`;
+      fb.className = "feedback";
+      card.appendChild(fb);
+
+      return card;
+    }
+
+    function render() {
+      cardsEl.innerHTML = "";
+      items.forEach((item, idx) => {
+        cardsEl.appendChild(makeCard(item, idx));
+      });
+    }
+
+    function checkOne(idx, answer) {
+      const input = document.getElementById(`inp-${idx}`);
+      const fb = document.getElementById(`fb-${idx}`);
+      const user = normalize(input.value);
+      const correct = normalize(answer);
+      if (!user) {
+        fb.textContent = "Please type your answer.";
+        fb.className = "feedback error";
+        return;
+      }
+      if (user === correct) {
+        fb.textContent = "Correct!";
+        fb.className = "feedback success";
+      } else {
+        fb.textContent = "Not yet. Try again.";
+        fb.className = "feedback error";
+      }
+    }
+
+    function showAnswer(idx, answer) {
+      const fb = document.getElementById(`fb-${idx}`);
+      fb.textContent = "Answer: " + answer;
+      fb.className = "feedback";
+    }
+
+    function checkAll() {
+      items.forEach((item, idx) => checkOne(idx, item.base));
+      statusEl.textContent = "Checked all.";
+    }
+
+    function showAll() {
+      items.forEach((item, idx) => showAnswer(idx, item.base));
+      statusEl.textContent = "All answers shown.";
+    }
+
+    function resetAll() {
+      items.forEach((_, idx) => {
+        const input = document.getElementById(`inp-${idx}`);
+        const fb = document.getElementById(`fb-${idx}`);
+        if (input) input.value = "";
+        if (fb) { fb.textContent = ""; fb.className = "feedback"; }
+      });
+      statusEl.textContent = "Reset completed.";
+    }
+
+    function reshuffle() {
+      items = shuffle(verbs);
+      render();
+      statusEl.textContent = "Shuffled!";
+    }
+
+    // Init
+    items = shuffle(verbs);
+    render();
+  </script>
+</body>
+</html>
