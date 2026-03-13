@@ -230,7 +230,7 @@
       { name: "Steak", emoji: "🥩" },
       { name: "Chicken satay skewer", emoji: "🍢" },
       { name: "Matcha doughnut", emoji: "🍩" },
-      { name: "Chichi", emoji: "🥤" },
+      { name: "Khichdi", emoji: "🍲" },
       { name: "Chocolate lava cake", emoji: "🧁" },
       { name: "Grand velas tacos", emoji: "🌮" }
     ];
@@ -403,11 +403,11 @@
 
     function resizePad() {
       const rect = pad.getBoundingClientRect();
-      const data = ctx.getImageData(0, 0, pad.width, pad.height);
-      pad.width = rect.width * window.devicePixelRatio;
-      pad.height = rect.height * window.devicePixelRatio;
-      ctx.putImageData(data, 0, 0);
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const dpr = window.devicePixelRatio || 1;
+      pad.width = rect.width * dpr;
+      pad.height = rect.height * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
       ctx.lineWidth = 4;
       ctx.lineCap = "round";
       ctx.strokeStyle = "#111827";
