@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Spelling & Sounds — Verb Forms</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #2563eb;
+      --primary-soft: #e0e7ff;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      line-height: 1.6;
+    }
+    header {
+      max-width: 960px;
+      margin: 0 auto 18px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.6rem, 4vw, 2.3rem);
+      letter-spacing: -0.01em;
+    }
+    p.lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .grid {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .emoji {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin: 0;
+    }
+    .muted { color: var(--muted); }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .badge {
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    select {
+      flex: 1 1 120px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font: inherit;
+      background: #fff;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.32);
+      background: #1d4ed8;
+    }
+    .status {
+      max-width: 960px;
+      margin: 14px auto 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>English Spelling & Sounds — Verb Forms</h1>
+    <p class="lead">Click to hear each word. Simple emoji icons are used as images.</p>
+  </header>
+
+  <div class="grid" id="cards"></div>
+  <div class="status" id="status">Ready. If audio doesn't play, interact with the page or reload.</div>
+
+  <script>
+    const verbs = [
+      { emoji: "🛠️", label: "set", forms: ["set", "sets", "setting", "set"] },
+      { emoji: "📢", label: "shout", forms: ["shout", "shouts", "shouting", "shouted"] },
+      { emoji: "🪑", label: "sit", forms: ["sit", "sits", "sitting", "sat"] },
+      { emoji: "😴", label: "sleep", forms: ["sleep", "sleeps", "sleeping", "slept"] },
+      { emoji: "🧩", label: "solve", forms: ["solve", "solves", "solving", "solved"] },
+      { emoji: "✂️", label: "split", forms: ["split", "splits", "splitting", "split"] },
+      { emoji: "🍞", label: "spread", forms: ["spread", "spreads", "spreading", "spread"] },
+      { emoji: "⏯️", label: "start", forms: ["start", "starts", "starting", "started"] },
+      { emoji: "📍", label: "stay", forms: ["stay", "stays", "staying", "stayed"] },
+      { emoji: "🦹", label: "steal", forms: ["steal", "steals", "stealing", "stole"] }
+    ];
+
+    const statusEl = document.getElementById("status");
+    const cardsEl = document.getElementById("cards");
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        statusEl.textContent = "Speech synthesis not supported in this browser.";
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US";
+      u.onstart = () => statusEl.textContent = "Playing: " + text;
+      u.onend = () => statusEl.textContent = "Finished: " + text;
+      u.onerror = () => statusEl.textContent = "Error playing: " + text;
+      window.speechSynthesis.speak(u);
+    }
+
+    function createCard(item) {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const top = document.createElement("div");
+      top.className = "top";
+      const emoji = document.createElement("div");
+      emoji.className = "emoji";
+      emoji.textContent = item.emoji;
+      const titleWrap = document.createElement("div");
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = item.label;
+      const note = document.createElement("div");
+      note.className = "muted";
+      note.textContent = "Tap play to hear the word";
+      titleWrap.appendChild(title);
+      titleWrap.appendChild(note);
+      top.appendChild(emoji);
+      top.appendChild(titleWrap);
+      card.appendChild(top);
+
+      const badges = document.createElement("div");
+      badges.className = "badges";
+      item.forms.forEach(f => {
+        const b = document.createElement("span");
+        b.className = "badge";
+        b.textContent = f;
+        badges.appendChild(b);
+      });
+      card.appendChild(badges);
+
+      const controls = document.createElement("div");
+      controls.className = "controls";
+      const select = document.createElement("select");
+      item.forms.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f;
+        opt.textContent = f;
+        select.appendChild(opt);
+      });
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = "▶︎ Play";
+      btn.addEventListener("click", () => speak(select.value));
+      controls.appendChild(select);
+      controls.appendChild(btn);
+      card.appendChild(controls);
+
+      return card;
+    }
+
+    function init() {
+      cardsEl.innerHTML = "";
+      verbs.forEach(v => cardsEl.appendChild(createCard(v)));
+    }
+
+    init();
+  </script>
+</body>
+</html>
