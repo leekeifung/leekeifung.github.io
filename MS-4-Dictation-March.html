@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dictation Helper — Birthday Party Letter</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #2563eb;
+      --primary-2: #1d4ed8;
+      --border: #e2e8f0;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 18px;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      margin: 0 0 6px;
+      letter-spacing: -0.01em;
+    }
+    h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+    h2 { font-size: 1.2rem; }
+    h3 { font-size: 1rem; }
+    p { margin: 0 0 10px; }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto 18px;
+    }
+    .lead { color: var(--muted); }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 12px 0;
+      border: 1px solid var(--border);
+    }
+    .flex {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .controls {
+      margin: 10px 0;
+      gap: 8px;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.32);
+      background: var(--primary-2);
+    }
+    button.secondary:hover {
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      margin: 4px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .grid-words {
+      display: flex;
+      flex-wrap: wrap;
+      margin: -4px;
+    }
+    .textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font: inherit;
+      resize: vertical;
+      background: #fff;
+    }
+    .input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font: inherit;
+    }
+    .status {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .row {
+      display: grid;
+      gap: 8px;
+    }
+    .sentence {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+    .sentence-text {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    input[type="range"] {
+      accent-color: var(--primary);
+    }
+    .timeline-wrap {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    @media (max-width: 640px) {
+      button { width: 100%; justify-content: center; }
+      .sentence { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="card">
+      <h1>Dictation Helper — Birthday Party Letter</h1>
+      <p class="lead">Use this page to memorize words, practice spelling, and run a slow mock dictation of the passage.</p>
+      <div class="slider-wrap" style="margin-top:8px;">
+        <label for="speed"><strong>Voice speed:</strong> <span id="speedVal">0.85×</span></label>
+        <input id="speed" type="range" min="0.6" max="1.2" step="0.05" value="0.85" />
+        <button class="secondary" type="button" onclick="playFull()">▶️ Play full passage (slow)</button>
+        <button class="secondary" type="button" onclick="pauseSpeak()">⏸ Pause</button>
+        <button class="secondary" type="button" onclick="resumeSpeak()">▶️ Resume</button>
+        <button class="secondary" type="button" onclick="stopSpeak()">⏹ Stop</button>
+      </div>
+      <div class="status" id="voiceStatus">Ready. If audio does not play, click once and try again.</div>
+    </header>
+
+    <section class="card">
+      <h2>Passage (show / hide)</h2>
+      <div class="flex controls">
+        <button class="secondary" type="button" onclick="togglePassage()">🙈 Hide / Show text</button>
+        <button class="secondary" type="button" onclick="copyPassage()">📋 Copy passage</button>
+      </div>
+      <div id="passageBox" style="white-space:pre-wrap; border:1px solid var(--border); border-radius:12px; padding:12px; background:#fff;">
+Hi Larry,
+
+Guess what? I can have a birthday party this year!
+I was over the moon when my mum told me that. How wonderful! I can celebrate my tenth birthday with my friends. Will you be free next Saturday afternoon?
+I'll also invite Ricky, Carol, Kelly and a few neighbours.
+
+My uncle from the US will come to Hong Kong to visit us next week. He's a chef at an Italian restaurant in New York. He makes very tasty pizza. His signature dish is ham and pineapple pizza. When I went to visit him last summer, I ate plenty of it. It was so good. Hmm, just thinking about it makes my mouth water. Uncle Ray also makes very good cheesecake. I'm not a big fan of cheese, but I tried a little cheesecake last time. I fell in love with it! I'm asking him to make pizza and cheesecake for the party.
+So, there'll be plenty of homemade food and great games too. I hope you can join us.
+
+Cheers,
+Carson
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Word bank (tap to hear each word)</h2>
+      <p class="lead" id="wordCount"></p>
+      <div class="grid-words" id="wordBank"></div>
+    </section>
+
+    <section class="card">
+      <h2>Word spell drill</h2>
+      <p class="lead">Listen to a random word, type its spelling, then check.</p>
+      <div class="flex controls">
+        <button type="button" onclick="newDrill()">🎲 New word</button>
+        <button class="secondary" type="button" onclick="playDrill()">▶️ Play word</button>
+        <button class="secondary" type="button" onclick="checkDrill()">✅ Check</button>
+        <button class="secondary" type="button" onclick="showDrill()">👀 Show answer</button>
+        <button class="secondary" type="button" onclick="clearDrill()">♻️ Clear</button>
+      </div>
+      <div class="row">
+        <div class="badge">Current word: <span id="drillMask">Press "New word"</span></div>
+        <input id="drillInput" class="input" type="text" placeholder="Type the word you hear" autocomplete="off" />
+        <div class="status" id="drillFeedback"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Sentence-by-sentence listening</h2>
+      <p class="lead">Play any sentence slowly to practice.</p>
+      <div class="row" id="sentences"></div>
+    </section>
+
+    <section class="card">
+      <h2>Mock dictation</h2>
+      <p class="lead">Hide the passage, start dictation (slow), and type what you hear. Then reveal the original to self-check.</p>
+
+      <div class="timeline-wrap">
+        <div class="timeline-labels">
+          <span><strong>Timeline:</strong> sentence <span id="timelineNow">0</span> / <span id="timelineTotal">0</span></span>
+        </div>
+        <input id="timeline" type="range" min="0" max="0" step="1" value="0" />
+        <div class="flex controls">
+          <button type="button" onclick="startDictationFromSlider()">▶️ Play from here</button>
+          <button class="secondary" type="button" onclick="pauseSpeak()">⏸ Pause</button>
+          <button class="secondary" type="button" onclick="resumeSpeak()">▶️ Resume</button>
+          <button class="secondary" type="button" onclick="stopSpeak()">⏹ Stop</button>
+          <button class="secondary" type="button" onclick="clearDict()">🧹 Clear your text</button>
+        </div>
+      </div>
+
+      <textarea id="dictArea" class="textarea" placeholder="Type what you hear..."></textarea>
+      <details>
+        <summary>Show / hide original passage</summary>
+        <div style="white-space:pre-wrap; border:1px solid var(--border); border-radius:12px; padding:10px; background:#fff; margin-top:8px;">
+Hi Larry,
+
+Guess what? I can have a birthday party this year!
+I was over the moon when my mum told me that. How wonderful! I can celebrate my tenth birthday with my friends. Will you be free next Saturday afternoon?
+I'll also invite Ricky, Carol, Kelly and a few neighbours.
+
+My uncle from the US will come to Hong Kong to visit us next week. He's a chef at an Italian restaurant in New York. He makes very tasty pizza. His signature dish is ham and pineapple pizza. When I went to visit him last summer, I ate plenty of it. It was so good. Hmm, just thinking about it makes my mouth water. Uncle Ray also makes very good cheesecake. I'm not a big fan of cheese, but I tried a little cheesecake last time. I fell in love with it! I'm asking him to make pizza and cheesecake for the party.
+So, there'll be plenty of homemade food and great games too. I hope you can join us.
+
+Cheers,
+Carson
+        </div>
+      </details>
+      <div class="status" id="dictStatus">Dictation ready.</div>
+    </section>
+
+    <div class="card footer-note">
+      <strong>Selected:</strong> <span id="selectionPreview">Timeline preview will appear here.</span>
+    </div>
+  </div>
+
+  <script>
+    // Passage and sentences
+    const passageText = `Hi Larry,
+
+Guess what? I can have a birthday party this year!
+I was over the moon when my mum told me that. How wonderful! I can celebrate my tenth birthday with my friends. Will you be free next Saturday afternoon?
+I'll also invite Ricky, Carol, Kelly and a few neighbours.
+
+My uncle from the US will come to Hong Kong to visit us next week. He's a chef at an Italian restaurant in New York. He makes very tasty pizza. His signature dish is ham and pineapple pizza. When I went to visit him last summer, I ate plenty of it. It was so good. Hmm, just thinking about it makes my mouth water. Uncle Ray also makes very good cheesecake. I'm not a big fan of cheese, but I tried a little cheesecake last time. I fell in love with it! I'm asking him to make pizza and cheesecake for the party.
+So, there'll be plenty of homemade food and great games too. I hope you can join us.
+
+Cheers,
+Carson`;
+
+    const sentences = [
+      "Hi Larry,",
+      "Guess what? I can have a birthday party this year!",
+      "I was over the moon when my mum told me that.",
+      "How wonderful!",
+      "I can celebrate my tenth birthday with my friends.",
+      "Will you be free next Saturday afternoon?",
+      "I'll also invite Ricky, Carol, Kelly and a few neighbours.",
+      "My uncle from the US will come to Hong Kong to visit us next week.",
+      "He's a chef at an Italian restaurant in New York.",
+      "He makes very tasty pizza.",
+      "His signature dish is ham and pineapple pizza.",
+      "When I went to visit him last summer, I ate plenty of it.",
+      "It was so good.",
+      "Hmm, just thinking about it makes my mouth water.",
+      "Uncle Ray also makes very good cheesecake.",
+      "I'm not a big fan of cheese, but I tried a little cheesecake last time.",
+      "I fell in love with it!",
+      "I'm asking him to make pizza and cheesecake for the party.",
+      "So, there'll be plenty of homemade food and great games too.",
+      "I hope you can join us.",
+      "Cheers,",
+      "Carson"
+    ];
+
+    // DOM refs
+    const speedEl = document.getElementById("speed");
+    const speedVal = document.getElementById("speedVal");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const passageBox = document.getElementById("passageBox");
+    const wordBank = document.getElementById("wordBank");
+    const wordCount = document.getElementById("wordCount");
+    const sentencesBox = document.getElementById("sentences");
+    const drillMask = document.getElementById("drillMask");
+    const drillInput = document.getElementById("drillInput");
+    const drillFeedback = document.getElementById("drillFeedback");
+    const timeline = document.getElementById("timeline");
+    const timelineNow = document.getElementById("timelineNow");
+    const timelineTotal = document.getElementById("timelineTotal");
+    const selectionPreview = document.getElementById("selectionPreview");
+    const dictArea = document.getElementById("dictArea");
+    const dictStatus = document.getElementById("dictStatus");
+
+    // Passage toggle
+    let passageHidden = false;
+    function togglePassage() {
+      passageHidden = !passageHidden;
+      passageBox.style.display = passageHidden ? "none" : "block";
+    }
+    function copyPassage() {
+      if (!navigator.clipboard) {
+        voiceStatus.textContent = "Clipboard copy is not supported here.";
+        return;
+      }
+      navigator.clipboard.writeText(passageText).then(() => {
+        voiceStatus.textContent = "Passage copied to clipboard.";
+      }).catch(() => {
+        voiceStatus.textContent = "Could not copy.";
+      });
+    }
+
+    // Speech synthesis helpers and queueing
+    speedEl.addEventListener("input", () => {
+      speedVal.textContent = speedEl.value + "×";
+    });
+    function currentRate() {
+      return parseFloat(speedEl.value || "0.85");
+    }
+
+    let queue = [];
+    let currentIdx = -1;
+    let isPlayingSequence = false;
+
+    function stopSpeak() {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      isPlayingSequence = false;
+      queue = [];
+      voiceStatus.textContent = "Stopped.";
+    }
+    function pauseSpeak() {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.pause();
+      voiceStatus.textContent = "Paused.";
+    }
+    function resumeSpeak() {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.resume();
+      voiceStatus.textContent = "Resumed.";
+    }
+
+    function speakText(text, rate) {
+      if (!("speechSynthesis" in window)) {
+        voiceStatus.textContent = "Speech synthesis is not supported in this browser.";
+        return null;
+      }
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US";
+      u.rate = rate ?? currentRate();
+      return u;
+    }
+
+    function playSentence(text) {
+      const u = speakText(text, currentRate());
+      if (!u) return;
+      stopSpeak();
+      u.onstart = () => voiceStatus.textContent = "Playing sentence...";
+      u.onend = () => voiceStatus.textContent = "Finished sentence.";
+      u.onerror = () => voiceStatus.textContent = "Error during playback.";
+      window.speechSynthesis.speak(u);
+    }
+
+    function playSequenceFrom(startIdx = 0) {
+      if (!("speechSynthesis" in window)) {
+        voiceStatus.textContent = "Speech synthesis is not supported in this browser.";
+        return;
+      }
+      stopSpeak();
+      currentIdx = startIdx;
+      queue = sentences.slice(startIdx);
+      timeline.value = startIdx;
+      updateTimelineLabel();
+      isPlayingSequence = true;
+      playNextInQueue();
+    }
+
+    function playNextInQueue() {
+      if (!isPlayingSequence) return;
+      if (queue.length === 0) {
+        isPlayingSequence = false;
+        voiceStatus.textContent = "Finished full passage.";
+        dictStatus.textContent = "Dictation finished.";
+        return;
+      }
+      const text = queue[0];
+      const utter = speakText(text, currentRate());
+      if (!utter) return;
+      utter.onstart = () => {
+        voiceStatus.textContent = "Playing sentence " + (currentIdx + 1) + " of " + sentences.length;
+        timeline.value = currentIdx;
+        updateTimelineLabel();
+      };
+      utter.onend = () => {
+        queue.shift();
+        currentIdx += 1;
+        if (isPlayingSequence) {
+          playNextInQueue();
+        }
+      };
+      utter.onerror = () => {
+        queue.shift();
+        currentIdx += 1;
+        playNextInQueue();
+      };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function playFull() {
+      playSequenceFrom(0);
+    }
+
+    // Timeline control
+    function updateTimelineLabel() {
+      const total = sentences.length;
+      timelineTotal.textContent = total;
+      const val = parseInt(timeline.value, 10) || 0;
+      timelineNow.textContent = Math.min(val + 1, total);
+      const preview = sentences[val] || "";
+      selectionPreview.textContent = preview
+        ? `"${preview.slice(0, 120)}${preview.length > 120 ? "…" : ""}"`
+        : "None selected.";
+    }
+    function startDictationFromSlider() {
+      const idx = parseInt(timeline.value, 10) || 0;
+      dictStatus.textContent = "Dictation playing from sentence " + (idx + 1) + ".";
+      playSequenceFrom(idx);
+      dictArea.focus();
+    }
+    timeline.addEventListener("input", updateTimelineLabel);
+
+    // Mock dictation helpers
+    function clearDict() {
+      dictArea.value = "";
+      dictStatus.textContent = "Cleared.";
+    }
+    function startDictation() {
+      dictStatus.textContent = "Dictation playing (slow)...";
+      playFull();
+      dictArea.focus();
+    }
+
+    // Build word list
+    function buildWords(text) {
+      const matches = text.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || [];
+      const seen = new Set();
+      const words = [];
+      for (const w of matches) {
+        const key = w.toLowerCase();
+        if (!seen.has(key)) {
+          seen.add(key);
+          words.push(w);
+        }
+      }
+      words.sort((a,b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+      return words;
+    }
+    const words = buildWords(passageText);
+    wordCount.textContent = `${words.length} unique words`;
+    words.forEach(w => {
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      pill.textContent = w;
+      pill.title = "Click to hear";
+      pill.addEventListener("click", () => playSentence(w));
+      wordBank.appendChild(pill);
+    });
+
+    // Word drill
+    let drillWord = null;
+    function newDrill() {
+      drillFeedback.textContent = "";
+      drillInput.value = "";
+      drillFeedback.style.color = getComputedStyle(document.documentElement).getPropertyValue("--muted");
+      drillWord = words[Math.floor(Math.random() * words.length)];
+      drillMask.textContent = "•••••• (word selected — press Play)";
+      drillInput.focus();
+    }
+    function playDrill() {
+      if (!drillWord) {
+        drillFeedback.textContent = "Press “New word” first.";
+        drillFeedback.style.color = "#dc2626";
+        return;
+      }
+      playSentence(drillWord);
+    }
+    function checkDrill() {
+      if (!drillWord) {
+        drillFeedback.textContent = "Press “New word” first.";
+        drillFeedback.style.color = "#dc2626";
+        return;
+      }
+      const user = (drillInput.value || "").trim().toLowerCase();
+      const correct = drillWord.toLowerCase();
+      if (!user) {
+        drillFeedback.textContent = "Type your answer first.";
+        drillFeedback.style.color = "#dc2626";
+        return;
+      }
+      if (user === correct) {
+        drillFeedback.textContent = "Correct!";
+        drillFeedback.style.color = "#16a34a";
+      } else {
+        drillFeedback.textContent = "Not yet. Try again.";
+        drillFeedback.style.color = "#dc2626";
+      }
+    }
+    function showDrill() {
+      if (!drillWord) {
+        drillFeedback.textContent = "Press “New word” first.";
+        drillFeedback.style.color = "#dc2626";
+        return;
+      }
+      drillMask.textContent = drillWord;
+      drillFeedback.textContent = "Answer shown.";
+      drillFeedback.style.color = getComputedStyle(document.documentElement).getPropertyValue("--muted");
+    }
+    function clearDrill() {
+      drillWord = null;
+      drillMask.textContent = "Press \"New word\"";
+      drillInput.value = "";
+      drillFeedback.textContent = "";
+      drillFeedback.style.color = getComputedStyle(document.documentElement).getPropertyValue("--muted");
+    }
+
+    // Sentences list
+    sentences.forEach((s, idx) => {
+      const wrap = document.createElement("div");
+      wrap.className = "sentence";
+      const text = document.createElement("div");
+      text.className = "sentence-text";
+      text.textContent = `${idx + 1}. ${s}`;
+      const btn = document.createElement("button");
+      btn.className = "secondary";
+      btn.type = "button";
+      btn.textContent = "▶️ Play";
+      btn.addEventListener("click", () => playSentence(s));
+      wrap.appendChild(text);
+      wrap.appendChild(btn);
+      sentencesBox.appendChild(wrap);
+    });
+
+    // Initialize timeline
+    timeline.max = Math.max(sentences.length - 1, 0);
+    timeline.value = 0;
+    updateTimelineLabel();
+
+    // Initialize
+    speedVal.textContent = speedEl.value + "×";
+    dictStatus.textContent = "Dictation ready.";
+  </script>
+</body>
+</html>
