@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社會選擇理論：投票與決策背後的數學</title>
+    <!-- 引入 Tailwind CSS 作為樣式框架 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 MathJax 以渲染數學公式 -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .bg-myblue { background-color: #3498db; }
+        .text-myblue { color: #3498db; }
+        .border-myblue { border-color: #3498db; }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- 標題區塊 -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-myblue mb-2">社會選擇理論</h1>
+            <h2 class="text-2xl text-gray-600 mb-4">投票與決策背後的數學</h2>
+            <p class="text-gray-500">Social Choice Theory : Mathematics behind Voting and Decision Making</p>
+        </header>
+
+        <!-- 概念介紹區塊 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="card border-t-4 border-myblue">
+                <h3 class="text-xl font-bold mb-3 text-myblue">情境假設</h3>
+                <p class="mb-2">假設一班同學要決定寒假旅行地點：</p>
+                <ul class="list-disc list-inside ml-5 mb-4 font-semibold">
+                    <li>(A) 城門水塘</li>
+                    <li>(B) 濕地公園</li>
+                    <li>(C) 南丫島</li>
+                </ul>
+                <p>每人都對這三個地點有喜好次序，總共有 \( 3! = 6 \) 種排列組合。我們該如何公平地選出一個大家都滿意的地點？</p>
+            </div>
+
+            <div class="card border-t-4 border-green-500">
+                <h3 class="text-xl font-bold mb-3 text-green-600">四種常見的投票制度</h3>
+                <ul class="space-y-2">
+                    <li><strong>1. 多數制 (Plurality)：</strong>只看「首選」，得票最多者勝出。</li>
+                    <li><strong>2. 波達計數法 (Borda Count)：</strong>考慮所有排序，首選得2分，次選得1分，尾選得0分，總分最高者勝出。</li>
+                    <li><strong>3. 黑爾法 (Hare Method)：</strong>不斷淘汰首選得票最低者，並將其選票按次序轉移，直到有人過半數。</li>
+                    <li><strong>4. 孔多塞制 (Condorcet)：</strong>進行單對單比較（單挑），能贏過所有其他對手的人勝出。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 互動模擬器區塊 -->
+        <div class="card border-t-4 border-purple-500 bg-purple-50">
+            <h2 class="text-2xl font-bold mb-2 text-purple-700 text-center">互動投票模擬器</h2>
+            <p class="text-center text-gray-600 mb-6">請在下方表格中修改不同「偏好次序」的人數，觀察不同投票制度下的結果變化！</p>
+
+            <!-- 輸入表格 -->
+            <div class="overflow-x-auto mb-8">
+                <table class="w-full text-center bg-white rounded shadow">
+                    <thead>
+                        <tr class="bg-myblue text-white">
+                            <th class="py-3 px-2">偏好次序</th>
+                            <th class="py-3 px-2">A > B > C</th>
+                            <th class="py-3 px-2">A > C > B</th>
+                            <th class="py-3 px-2">B > A > C</th>
+                            <th class="py-3 px-2">B > C > A</th>
+                            <th class="py-3 px-2">C > A > B</th>
+                            <th class="py-3 px-2">C > B > A</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b bg-gray-50">
+                            <td class="py-4 font-bold text-gray-700">人數設定</td>
+                            <td class="py-2 px-2"><input type="number" id="v_abc" value="4" min="0" oninput="calculate()"></td>
+                            <td class="py-2 px-2"><input type="number" id="v_acb" value="12" min="0" oninput="calculate()"></td>
+                            <td class="py-2 px-2"><input type="number" id="v_bac" value="5" min="0" oninput="calculate()"></td>
+                            <td class="py-2 px-2"><input type="number" id="v_bca" value="9" min="0" oninput="calculate()"></td>
+                            <td class="py-2 px-2"><input type="number" id="v_cab" value="2" min="0" oninput="calculate()"></td>
+                            <td class="py-2 px-2"><input type="number" id="v_cba" value="8" min="0" oninput="calculate()"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 結果展示區 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- 多數制結果 -->
+                <div class="bg-white p-4 rounded shadow border-l-4 border-blue-400">
+                    <h4 class="font-bold text-lg text-blue-600 mb-2">多數制 (Plurality)</h4>
+                    <div id="res_plurality_details" class="text-sm text-gray-600 mb-2 h-16"></div>
+                    <div class="text-xl font-bold">贏家: <span id="res_plurality_winner" class="text-red-500"></span></div>
+                </div>
+
+                <!-- 波達計數法結果 -->
+                <div class="bg-white p-4 rounded shadow border-l-4 border-green-400">
+                    <h4 class="font-bold text-lg text-green-600 mb-2">波達計數法 (Borda)</h4>
+                    <div id="res_borda_details" class="text-sm text-gray-600 mb-2 h-16"></div>
+                    <div class="text-xl font-bold">贏家: <span id="res_borda_winner" class="text-red-500"></span></div>
+                </div>
+
+                <!-- 黑爾法結果 -->
+                <div class="bg-white p-4 rounded shadow border-l-4 border-yellow-400">
+                    <h4 class="font-bold text-lg text-yellow-600 mb-2">黑爾法 (Hare)</h4>
+                    <div id="res_hare_details" class="text-sm text-gray-600 mb-2 h-16 overflow-y-auto"></div>
+                    <div class="text-xl font-bold">贏家: <span id="res_hare_winner" class="text-red-500"></span></div>
+                </div>
+
+                <!-- 孔多塞制結果 -->
+                <div class="bg-white p-4 rounded shadow border-l-4 border-red-400">
+                    <h4 class="font-bold text-lg text-red-600 mb-2">孔多塞制 (Condorcet)</h4>
+                    <div id="res_condorcet_details" class="text-sm text-gray-600 mb-2 h-16"></div>
+                    <div class="text-xl font-bold">贏家: <span id="res_condorcet_winner" class="text-red-500"></span></div>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded text-sm text-gray-700">
+                <p><strong>💡 觀察提示：</strong> 試著調整人數，您會發現有時候四種制度會選出完全不同的贏家！這就是社會選擇理論中最有趣的現象。當孔多塞制顯示「無 (孔多塞悖論)」時，代表 A贏C、C贏B、B贏A，形成像猜拳一樣的無限迴圈。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 核心運算邏輯 (JavaScript) -->
+    <script>
+        function calculate() {
+            // 獲取輸入值
+            const abc = parseInt(document.getElementById('v_abc').value) || 0;
+            const acb = parseInt(document.getElementById('v_acb').value) || 0;
+            const bac = parseInt(document.getElementById('v_bac').value) || 0;
+            const bca = parseInt(document.getElementById('v_bca').value) || 0;
+            const cab = parseInt(document.getElementById('v_cab').value) || 0;
+            const cba = parseInt(document.getElementById('v_cba').value) || 0;
+
+            const totalVotes = abc + acb + bac + bca + cab + cba;
+            if (totalVotes === 0) return;
+
+            // 1. 多數制 (Plurality)
+            const p_A = abc + acb;
+            const p_B = bac + bca;
+            const p_C = cab + cba;
+            
+            document.getElementById('res_plurality_details').innerHTML = `A: ${p_A}票<br>B: ${p_B}票<br>C: ${p_C}票`;
+            let p_winner = getWinner(p_A, p_B, p_C);
+            document.getElementById('res_plurality_winner').innerText = p_winner;
+
+            // 2. 波達計數法 (Borda Count)
+            // 首選2分，次選1分，尾選0分
+            const b_A = (abc + acb) * 2 + (bac + cab) * 1;
+            const b_B = (bac + bca) * 2 + (abc + cba) * 1;
+            const b_C = (cab + cba) * 2 + (acb + bca) * 1;
+
+            document.getElementById('res_borda_details').innerHTML = `A: ${b_A}分<br>B: ${b_B}分<br>C: ${b_C}分`;
+            let b_winner = getWinner(b_A, b_B, b_C);
+            document.getElementById('res_borda_winner').innerText = b_winner;
+
+            // 3. 黑爾法 (Hare Method)
+            let h_details = `第一輪: A=${p_A}, B=${p_B}, C=${p_C}<br>`;
+            let h_winner = "";
+            let majority = Math.floor(totalVotes / 2) + 1;
+
+            if (p_A >= majority) h_winner = "A";
+            else if (p_B >= majority) h_winner = "B";
+            else if (p_C >= majority) h_winner = "C";
+            else {
+                // 找出最低票淘汰
+                let minVotes = Math.min(p_A, p_B, p_C);
+                if (p_C === minVotes && p_C < p_A && p_C < p_B) {
+                    // 淘汰C
+                    let new_A = p_A + cab; // C>A>B 的票給A
+                    let new_B = p_B + cba; // C>B>A 的票給B
+                    h_details += `淘汰C。第二輪: A=${new_A}, B=${new_B}`;
+                    h_winner = new_A > new_B ? "A" : (new_B > new_A ? "B" : "平手");
+                } else if (p_B === minVotes && p_B < p_A && p_B < p_C) {
+                    // 淘汰B
+                    let new_A = p_A + bac; // B>A>C 的票給A
+                    let new_C = p_C + bca; // B>C>A 的票給C
+                    h_details += `淘汰B。第二輪: A=${new_A}, C=${new_C}`;
+                    h_winner = new_A > new_C ? "A" : (new_C > new_A ? "C" : "平手");
+                } else if (p_A === minVotes && p_A < p_B && p_A < p_C) {
+                    // 淘汰A
+                    let new_B = p_B + abc; // A>B>C 的票給B
+                    let new_C = p_C + acb; // A>C>B 的票給C
+                    h_details += `淘汰A。第二輪: B=${new_B}, C=${new_C}`;
+                    h_winner = new_B > new_C ? "B" : (new_C > new_B ? "C" : "平手");
+                } else {
+                    h_details += "最低票平手，需特殊規則(此處略)";
+                    h_winner = "平手";
+                }
+            }
+            document.getElementById('res_hare_details').innerHTML = h_details;
+            document.getElementById('res_hare_winner').innerText = h_winner;
+
+            // 4. 孔多塞制 (Condorcet Method)
+            // 單對單比較
+            const AvsB_A = abc + acb + cab;
+            const AvsB_B = bac + bca + cba;
+            const a_beats_b = AvsB_A > AvsB_B;
+
+            const AvsC_A = abc + acb + bac;
+            const AvsC_C = bca + cab + cba;
+            const a_beats_c = AvsC_A > AvsC_C;
+
+            const BvsC_B = abc + bac + bca;
+            const BvsC_C = acb + cab + cba;
+            const b_beats_c = BvsC_B > BvsC_C;
+
+            let c_details = `A對B: ${AvsB_A}:${AvsB_B} (${a_beats_b ? 'A勝' : 'B勝'})<br>`;
+            c_details += `A對C: ${AvsC_A}:${AvsC_C} (${a_beats_c ? 'A勝' : 'C勝'})<br>`;
+            c_details += `B對C: ${BvsC_B}:${BvsC_C} (${b_beats_c ? 'B勝' : 'C勝'})`;
+            
+            let c_winner = "無 (孔多塞悖論)";
+            if (a_beats_b && a_beats_c) c_winner = "A";
+            else if (!a_beats_b && b_beats_c) c_winner = "B";
+            else if (!a_beats_c && !b_beats_c) c_winner = "C";
+
+            document.getElementById('res_condorcet_details').innerHTML = c_details;
+            document.getElementById('res_condorcet_winner').innerText = c_winner;
+        }
+
+        // 輔助函數：找出最高分/票的贏家
+        function getWinner(a, b, c) {
+            let max = Math.max(a, b, c);
+            let winners = [];
+            if (a === max) winners.push("A");
+            if (b === max) winners.push("B");
+            if (c === max) winners.push("C");
+            return winners.join(" & ");
+        }
+
+        // 頁面載入時執行一次計算
+        window.onload = calculate;
+    </script>
+</body>
+</html>
