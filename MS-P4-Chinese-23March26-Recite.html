@@ -6,20 +6,22 @@
   <title>默寫練習｜半句朗讀停頓再續句（早發白帝城）</title>
   <style>
     :root { color-scheme: light; font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; }
+    * { box-sizing: border-box; }
     body {
       margin: 0; padding: 1rem;
       background: #f8fafc; color: #0f172a; line-height: 1.6;
     }
     .container {
-      max-width: 720px; margin: 0 auto;
-      background: #fff; border: 1px solid #e2e8f0;
-      border-radius: 12px; box-shadow: 0 12px 30px rgba(15,23,42,0.08);
-      padding: 1.1rem;
+      max-width: 960px; margin: 0 auto;
+      background: #ffffff; border: 1px solid #e2e8f0;
+      border-radius: 14px; box-shadow: 0 10px 28px rgba(15,23,42,0.08);
+      padding: 1.15rem;
     }
-    h1 { margin: 0 0 0.35rem; font-size: 1.4rem; font-weight: 700; }
+    h1 { margin: 0 0 0.35rem; font-size: 1.45rem; font-weight: 700; }
     .sub { margin: 0 0 1rem; color: #475569; }
     .controls {
-      display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-bottom: 1rem;
+      display: flex; flex-wrap: wrap; gap: 0.6rem;
+      align-items: center; margin-bottom: 1rem;
     }
     .controls label { font-size: 0.95rem; color: #334155; }
     select, button {
@@ -38,23 +40,32 @@
     .pill {
       display: inline-flex; align-items: center; gap: 0.35rem;
       padding: 0.3rem 0.65rem; border-radius: 999px;
-      background: #e0f2fe; border: 1px solid #bae6fd; color: #0369a1; font-size: 0.9rem;
+      background: #e0f2fe; border: 1px solid #bae6fd;
+      color: #0369a1; font-size: 0.9rem;
     }
-    .list { display: grid; gap: 0.9rem; }
+    .list { display: grid; gap: 1rem; }
     .card {
       border: 1px solid #e2e8f0; border-radius: 10px;
-      padding: 0.85rem; background: #f8fafc;
+      padding: 0.9rem; background: #f8fafc;
     }
     .card-header {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      display: flex; flex-wrap: wrap; gap: 0.6rem;
       align-items: center; justify-content: space-between;
     }
     .card h3 { margin: 0; font-size: 1.02rem; }
-    .input-row {
-      margin-top: 0.55rem; display: grid; gap: 0.35rem;
+    .chunk-bar {
+      margin-top: 0.55rem; display: flex; flex-wrap: wrap; gap: 0.45rem;
     }
+    .chunk-btn {
+      background: #e2e8f0; color: #0f172a;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px; padding: 0.35rem 0.6rem;
+      font-size: 0.9rem; cursor: pointer;
+    }
+    .chunk-btn:hover { background: #d9e4f5; }
+    .input-row { margin-top: 0.55rem; display: grid; gap: 0.35rem; }
     textarea {
-      width: 100%; min-height: 68px; padding: 0.55rem 0.65rem;
+      width: 100%; min-height: 70px; padding: 0.55rem 0.65rem;
       border-radius: 8px; border: 1px solid #cbd5e1;
       font-size: 1rem; resize: vertical;
     }
@@ -62,14 +73,13 @@
     .status.correct { color: #16a34a; }
     .status.wrong { color: #dc2626; }
     details {
-      margin-top: 0.3rem; background: #fff;
+      margin-top: 0.35rem; background: #fff;
       border: 1px dashed #cbd5e1; border-radius: 8px;
       padding: 0.45rem 0.65rem;
     }
     details summary { cursor: pointer; color: #0ea5e9; font-weight: 600; }
     .ans-text { color: #0f172a; white-space: pre-line; }
-    .note { font-size: 0.92rem; color: #475569; margin: 0.25rem 0 0.8rem; }
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       .controls { flex-direction: column; align-items: flex-start; }
       .card-header { flex-direction: column; align-items: flex-start; }
     }
@@ -106,7 +116,7 @@
     <details style="margin-top:1rem;">
       <summary>教師預覽全文（不建議課堂顯示給學生）</summary>
       <div class="ans-text" style="margin-top:0.5rem; font-size:0.98rem;">
-早發白帝城 
+早發白帝城
 李白
 朝辭白帝彩雲間，千里江陵一日還。
 兩岸猿聲啼不住，輕舟已過萬重山。
@@ -115,10 +125,10 @@
   </div>
 
   <script>
-    // 半句拆分
+    // 詩句資料：每行分成兩半（以逗號或頓號切），若無逗號則平均切半
     const LINES = [
-      { a: "朝辭白帝彩雲間，", b: "千里江陵一日還。" },
-      { a: "兩岸猿聲啼不住，", b: "輕舟已過萬重山。" }
+      { full: "朝辭白帝彩雲間，千里江陵一日還。", first: "朝辭白帝彩雲間，", second: "千里江陵一日還。" },
+      { full: "兩岸猿聲啼不住，輕舟已過萬重山。", first: "兩岸猿聲啼不住，", second: "輕舟已過萬重山。" }
     ];
 
     const rateSelect = document.getElementById('rateSelect');
@@ -130,7 +140,7 @@
     const resetBtn = document.getElementById('resetBtn');
     const globalStatus = document.getElementById('globalStatus');
 
-    let playAllCancel = false;
+    let cancelAll = false;
 
     function buildUI() {
       listEl.innerHTML = '';
@@ -142,23 +152,40 @@
         header.className = 'card-header';
 
         const h3 = document.createElement('h3');
-        h3.textContent = `句子 ${idx + 1}`;
+        h3.textContent = `第 ${idx + 1} 行`;
         header.appendChild(h3);
 
-        const btn = document.createElement('button');
-        btn.className = 'play';
-        btn.textContent = '🔊 播放（半句＋半句）';
-        btn.addEventListener('click', () => speakLine(line));
-        header.appendChild(btn);
+        const wholeBtn = document.createElement('button');
+        wholeBtn.className = 'play';
+        wholeBtn.textContent = '🔊 半句 + 半句播放';
+        wholeBtn.addEventListener('click', () => playLine(line));
+        header.appendChild(wholeBtn);
 
         card.appendChild(header);
+
+        const chunkBar = document.createElement('div');
+        chunkBar.className = 'chunk-bar';
+
+        const btn1 = document.createElement('button');
+        btn1.className = 'chunk-btn';
+        btn1.textContent = '第 1 段（前半句）';
+        btn1.addEventListener('click', () => speakText(line.first));
+        chunkBar.appendChild(btn1);
+
+        const btn2 = document.createElement('button');
+        btn2.className = 'chunk-btn';
+        btn2.textContent = '第 2 段（後半句）';
+        btn2.addEventListener('click', () => speakText(line.second));
+        chunkBar.appendChild(btn2);
+
+        card.appendChild(chunkBar);
 
         const row = document.createElement('div');
         row.className = 'input-row';
 
         const ta = document.createElement('textarea');
-        ta.placeholder = '聽後默寫完整句子';
-        ta.dataset.answer = line.a + line.b;
+        ta.placeholder = '聽後默寫完整一行';
+        ta.dataset.answer = line.full;
         row.appendChild(ta);
 
         const status = document.createElement('span');
@@ -174,7 +201,7 @@
 
         const ans = document.createElement('div');
         ans.className = 'ans-text';
-        ans.textContent = line.a + line.b;
+        ans.textContent = line.full;
         det.appendChild(ans);
 
         card.appendChild(det);
@@ -183,57 +210,62 @@
       });
     }
 
-    // 語音：半句→停頓→後半
-    function speakLine(line) {
-      if (!('speechSynthesis' in window)) {
-        console.warn('此瀏覽器不支援語音合成');
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const rate = parseFloat(rateSelect.value || '1');
-
-      const u1 = new SpeechSynthesisUtterance(line.a);
-      const u2 = new SpeechSynthesisUtterance(line.b);
-      u1.lang = u2.lang = 'zh-TW';
-      u1.rate = u2.rate = rate;
-
-      u1.onend = () => setTimeout(() => window.speechSynthesis.speak(u2), 520);
-      window.speechSynthesis.speak(u1);
-    }
-
-    // 播放全詩
-    async function playAll() {
-      if (!('speechSynthesis' in window)) return;
-      playAllCancel = false;
-      window.speechSynthesis.cancel();
-      for (const line of LINES) {
-        if (playAllCancel) break;
-        await speakLineAsync(line);
-        if (playAllCancel) break;
-        await wait(700);
-      }
-    }
-    function speakLineAsync(line) {
-      return new Promise(resolve => {
-        if (!('speechSynthesis' in window)) { resolve(); return; }
-        const rate = parseFloat(rateSelect.value || '1');
-        const u1 = new SpeechSynthesisUtterance(line.a);
-        const u2 = new SpeechSynthesisUtterance(line.b);
-        u1.lang = u2.lang = 'zh-TW';
-        u1.rate = u2.rate = rate;
-        u2.onend = () => resolve();
-        u1.onend = () => setTimeout(() => window.speechSynthesis.speak(u2), 520);
-        window.speechSynthesis.speak(u1);
-      });
-    }
     function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    // 控制事件
-    stopBtn.addEventListener('click', () => {
-      playAllCancel = true;
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    });
-    playAllBtn.addEventListener('click', () => { playAllCancel = false; playAll(); });
+    function speakUtterance(text, rate) {
+      return new Promise(resolve => {
+        if (!('speechSynthesis' in window)) { resolve(); return; }
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'zh-TW';
+        u.rate = rate;
+        u.onend = () => resolve();
+        u.onerror = () => resolve();
+        window.speechSynthesis.speak(u);
+      });
+    }
+
+    async function speakText(text) {
+      if (!('speechSynthesis' in window)) return;
+      cancelAll = false;
+      window.speechSynthesis.cancel();
+      const rate = parseFloat(rateSelect.value || '1');
+      await speakUtterance(text, rate);
+    }
+
+    async function playLine(line) {
+      if (!('speechSynthesis' in window)) return;
+      cancelAll = false;
+      window.speechSynthesis.cancel();
+      const rate = parseFloat(rateSelect.value || '1');
+      await speakUtterance(line.first, rate);
+      if (cancelAll) return;
+      await wait(320);
+      if (cancelAll) return;
+      await speakUtterance(line.second, rate);
+    }
+
+    async function playAll() {
+      if (!('speechSynthesis' in window)) return;
+      cancelAll = false;
+      window.speechSynthesis.cancel();
+      const rate = parseFloat(rateSelect.value || '1');
+      for (const line of LINES) {
+        if (cancelAll) break;
+        await speakUtterance(line.first, rate);
+        if (cancelAll) break;
+        await wait(320);
+        if (cancelAll) break;
+        await speakUtterance(line.second, rate);
+        if (cancelAll) break;
+        await wait(600);
+      }
+    }
+
+    function normalize(str) {
+      return (str || '')
+        .replace(/[\s\u3000]/g, '')
+        .replace(/[，。！？、：「」『』（）《》〈〉—…．,.;:!?'"\(\)﹐﹑﹒﹔﹕﹖﹗﹙﹚﹜﹝]/g, '');
+    }
 
     checkBtn.addEventListener('click', () => {
       let allCorrect = true;
@@ -267,7 +299,7 @@
 
     resetBtn.addEventListener('click', () => {
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      playAllCancel = true;
+      cancelAll = true;
       document.querySelectorAll('.card').forEach(card => {
         const ta = card.querySelector('textarea');
         const status = card.querySelector('.status');
@@ -278,15 +310,20 @@
       globalStatus.textContent = '尚未批改。';
     });
 
-    // 去除空白與標點以比較
-    function normalize(str) {
-      return (str || '')
-        .replace(/[\s\u3000]/g, '')
-        .replace(/[，。！？、：「」『』（）《》〈〉—…．,.;:!?'"\(\)﹐﹑﹒﹔﹕﹖﹗﹙﹚﹜﹝]/g, '');
-    }
+    stopBtn.addEventListener('click', () => {
+      cancelAll = true;
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    });
+
+    playAllBtn.addEventListener('click', () => {
+      cancelAll = false;
+      playAll();
+    });
+
+    // iOS 需互動解鎖音訊
+    document.body.addEventListener('click', () => {}, { once: true });
 
     buildUI();
-    document.body.addEventListener('click', () => {}, { once: true }); // iOS 需互動
   </script>
 </body>
 </html>
