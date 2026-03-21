@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>默寫練習｜半句朗讀停頓再續句（早發白帝城）</title>
+  <style>
+    :root { color-scheme: light; font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; }
+    body {
+      margin: 0; padding: 1rem;
+      background: #f8fafc; color: #0f172a; line-height: 1.6;
+    }
+    .container {
+      max-width: 720px; margin: 0 auto;
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 12px; box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+      padding: 1.1rem;
+    }
+    h1 { margin: 0 0 0.35rem; font-size: 1.4rem; font-weight: 700; }
+    .sub { margin: 0 0 1rem; color: #475569; }
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-bottom: 1rem;
+    }
+    .controls label { font-size: 0.95rem; color: #334155; }
+    select, button {
+      font-size: 0.95rem; padding: 0.45rem 0.75rem;
+      border-radius: 8px; border: 1px solid #cbd5e1;
+      background: #fff; cursor: pointer;
+    }
+    button {
+      border: none; background: #e2e8f0; color: #0f172a;
+      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    }
+    button.primary { background: #2563eb; color: #fff; box-shadow: 0 6px 14px rgba(37,99,235,0.2); }
+    button.play { background: #22c55e; color: #fff; box-shadow: 0 6px 14px rgba(34,197,94,0.2); }
+    button.stop { background: #f97316; color: #fff; box-shadow: 0 6px 14px rgba(249,115,22,0.2); }
+    button:active { transform: translateY(1px); box-shadow: none; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.3rem 0.65rem; border-radius: 999px;
+      background: #e0f2fe; border: 1px solid #bae6fd; color: #0369a1; font-size: 0.9rem;
+    }
+    .list { display: grid; gap: 0.9rem; }
+    .card {
+      border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 0.85rem; background: #f8fafc;
+    }
+    .card-header {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      align-items: center; justify-content: space-between;
+    }
+    .card h3 { margin: 0; font-size: 1.02rem; }
+    .input-row {
+      margin-top: 0.55rem; display: grid; gap: 0.35rem;
+    }
+    textarea {
+      width: 100%; min-height: 68px; padding: 0.55rem 0.65rem;
+      border-radius: 8px; border: 1px solid #cbd5e1;
+      font-size: 1rem; resize: vertical;
+    }
+    .status { font-size: 0.9rem; color: #1e293b; }
+    .status.correct { color: #16a34a; }
+    .status.wrong { color: #dc2626; }
+    details {
+      margin-top: 0.3rem; background: #fff;
+      border: 1px dashed #cbd5e1; border-radius: 8px;
+      padding: 0.45rem 0.65rem;
+    }
+    details summary { cursor: pointer; color: #0ea5e9; font-weight: 600; }
+    .ans-text { color: #0f172a; white-space: pre-line; }
+    .note { font-size: 0.92rem; color: #475569; margin: 0.25rem 0 0.8rem; }
+    @media (max-width: 600px) {
+      .controls { flex-direction: column; align-items: flex-start; }
+      .card-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>默寫練習｜半句朗讀停頓再續句（早發白帝城）</h1>
+    <p class="sub">老師朗讀：先半句，停頓，再後半句；學生聽後默寫，平時不顯示文字，僅在「顯示答案」時才露出。</p>
+
+    <div class="controls">
+      <label>語速：
+        <select id="rateSelect">
+          <option value="0.9">0.90×</option>
+          <option value="0.95" selected>0.95×</option>
+          <option value="1">1.00×</option>
+          <option value="1.05">1.05×</option>
+        </select>
+      </label>
+      <button id="playAllBtn" class="play">▶ 播放全詩（半句＋半句）</button>
+      <button id="stopBtn" class="stop">⏹ 停止語音</button>
+      <span class="pill">若未出聲，請先點擊頁面；iOS 需互動後才可播放。</span>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="controls" style="margin-top:1rem;">
+      <button id="checkBtn" class="primary">✅ 批改</button>
+      <button id="showBtn">👀 顯示全部答案</button>
+      <button id="resetBtn">♻️ 重設</button>
+      <span id="globalStatus" class="pill">尚未批改。</span>
+    </div>
+
+    <details style="margin-top:1rem;">
+      <summary>教師預覽全文（不建議課堂顯示給學生）</summary>
+      <div class="ans-text" style="margin-top:0.5rem; font-size:0.98rem;">
+早發白帝城 
+李白
+朝辭白帝彩雲間，千里江陵一日還。
+兩岸猿聲啼不住，輕舟已過萬重山。
+      </div>
+    </details>
+  </div>
+
+  <script>
+    // 半句拆分
+    const LINES = [
+      { a: "朝辭白帝彩雲間，", b: "千里江陵一日還。" },
+      { a: "兩岸猿聲啼不住，", b: "輕舟已過萬重山。" }
+    ];
+
+    const rateSelect = document.getElementById('rateSelect');
+    const listEl = document.getElementById('list');
+    const playAllBtn = document.getElementById('playAllBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    const showBtn = document.getElementById('showBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const globalStatus = document.getElementById('globalStatus');
+
+    let playAllCancel = false;
+
+    function buildUI() {
+      listEl.innerHTML = '';
+      LINES.forEach((line, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+
+        const h3 = document.createElement('h3');
+        h3.textContent = `句子 ${idx + 1}`;
+        header.appendChild(h3);
+
+        const btn = document.createElement('button');
+        btn.className = 'play';
+        btn.textContent = '🔊 播放（半句＋半句）';
+        btn.addEventListener('click', () => speakLine(line));
+        header.appendChild(btn);
+
+        card.appendChild(header);
+
+        const row = document.createElement('div');
+        row.className = 'input-row';
+
+        const ta = document.createElement('textarea');
+        ta.placeholder = '聽後默寫完整句子';
+        ta.dataset.answer = line.a + line.b;
+        row.appendChild(ta);
+
+        const status = document.createElement('span');
+        status.className = 'status';
+        row.appendChild(status);
+
+        card.appendChild(row);
+
+        const det = document.createElement('details');
+        const sum = document.createElement('summary');
+        sum.textContent = '顯示答案（僅教師/檢查）';
+        det.appendChild(sum);
+
+        const ans = document.createElement('div');
+        ans.className = 'ans-text';
+        ans.textContent = line.a + line.b;
+        det.appendChild(ans);
+
+        card.appendChild(det);
+
+        listEl.appendChild(card);
+      });
+    }
+
+    // 語音：半句→停頓→後半
+    function speakLine(line) {
+      if (!('speechSynthesis' in window)) {
+        console.warn('此瀏覽器不支援語音合成');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const rate = parseFloat(rateSelect.value || '1');
+
+      const u1 = new SpeechSynthesisUtterance(line.a);
+      const u2 = new SpeechSynthesisUtterance(line.b);
+      u1.lang = u2.lang = 'zh-TW';
+      u1.rate = u2.rate = rate;
+
+      u1.onend = () => setTimeout(() => window.speechSynthesis.speak(u2), 520);
+      window.speechSynthesis.speak(u1);
+    }
+
+    // 播放全詩
+    async function playAll() {
+      if (!('speechSynthesis' in window)) return;
+      playAllCancel = false;
+      window.speechSynthesis.cancel();
+      for (const line of LINES) {
+        if (playAllCancel) break;
+        await speakLineAsync(line);
+        if (playAllCancel) break;
+        await wait(700);
+      }
+    }
+    function speakLineAsync(line) {
+      return new Promise(resolve => {
+        if (!('speechSynthesis' in window)) { resolve(); return; }
+        const rate = parseFloat(rateSelect.value || '1');
+        const u1 = new SpeechSynthesisUtterance(line.a);
+        const u2 = new SpeechSynthesisUtterance(line.b);
+        u1.lang = u2.lang = 'zh-TW';
+        u1.rate = u2.rate = rate;
+        u2.onend = () => resolve();
+        u1.onend = () => setTimeout(() => window.speechSynthesis.speak(u2), 520);
+        window.speechSynthesis.speak(u1);
+      });
+    }
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    // 控制事件
+    stopBtn.addEventListener('click', () => {
+      playAllCancel = true;
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    });
+    playAllBtn.addEventListener('click', () => { playAllCancel = false; playAll(); });
+
+    checkBtn.addEventListener('click', () => {
+      let allCorrect = true;
+      document.querySelectorAll('.card').forEach(card => {
+        const ta = card.querySelector('textarea');
+        const status = card.querySelector('.status');
+        const ans = normalize(ta.dataset.answer || '');
+        const val = normalize(ta.value || '');
+        if (val && val === ans) {
+          status.textContent = '✔ 正確';
+          status.className = 'status correct';
+        } else {
+          status.textContent = val ? '✘ 再試一次' : '✎ 請先作答';
+          status.className = 'status wrong';
+          allCorrect = false;
+        }
+      });
+      globalStatus.textContent = allCorrect ? '全部正確！' : '已批改，尚有錯誤。';
+    });
+
+    showBtn.addEventListener('click', () => {
+      document.querySelectorAll('.card').forEach(card => {
+        const ta = card.querySelector('textarea');
+        const status = card.querySelector('.status');
+        ta.value = ta.dataset.answer || '';
+        status.textContent = '✔ 已顯示答案';
+        status.className = 'status correct';
+      });
+      globalStatus.textContent = '已顯示答案。';
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      playAllCancel = true;
+      document.querySelectorAll('.card').forEach(card => {
+        const ta = card.querySelector('textarea');
+        const status = card.querySelector('.status');
+        ta.value = '';
+        status.textContent = '';
+        status.className = 'status';
+      });
+      globalStatus.textContent = '尚未批改。';
+    });
+
+    // 去除空白與標點以比較
+    function normalize(str) {
+      return (str || '')
+        .replace(/[\s\u3000]/g, '')
+        .replace(/[，。！？、：「」『』（）《》〈〉—…．,.;:!?'"\(\)﹐﹑﹒﹔﹕﹖﹗﹙﹚﹜﹝]/g, '');
+    }
+
+    buildUI();
+    document.body.addEventListener('click', () => {}, { once: true }); // iOS 需互動
+  </script>
+</body>
+</html>
