@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>四年級中文｜《智慧型機器人》聽詞填寫＋筆順動畫</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 1rem;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      padding: 1.25rem;
+    }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .sub { margin: 0 0 1rem; color: #475569; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .controls label { font-size: 0.95rem; color: #334155; }
+    .controls select, .controls button {
+      font-size: 0.95rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    .controls button {
+      border: none;
+      color: #0f172a;
+      background: #e2e8f0;
+      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    }
+    .controls button.primary { background: #2563eb; color: #ffffff; box-shadow: 0 6px 16px rgba(37,99,235,0.2); }
+    .controls button:active { transform: translateY(1px); box-shadow: none; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.9rem;
+      border: 1px solid #bae6fd;
+    }
+    .list { display: grid; gap: 1rem; }
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      background: #f8fafc;
+    }
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card h3 { margin: 0; font-size: 1.05rem; color: #0f172a; }
+    .btn {
+      padding: 0.35rem 0.7rem;
+      font-size: 0.92rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #e2e8f0;
+      color: #0f172a;
+      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    }
+    .btn:active { transform: translateY(1px); box-shadow: none; }
+    .btn.play { background: #22c55e; color: #ffffff; box-shadow: 0 6px 14px rgba(34,197,94,0.25); }
+    .btn.show { background: #6366f1; color: #ffffff; box-shadow: 0 6px 14px rgba(99,102,241,0.25); }
+    .btn.stroke { background: #0ea5e9; color: #ffffff; box-shadow: 0 6px 14px rgba(14,165,233,0.25); }
+    .input-row {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    input[type="text"] {
+      flex: 1 1 220px;
+      padding: 0.5rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 1rem;
+    }
+    .status { font-size: 0.9rem; color: #1e293b; }
+    .status.correct { color: #16a34a; }
+    .status.wrong { color: #dc2626; }
+    .answer {
+      font-size: 0.95rem;
+      color: #0f172a;
+      background: #eef2ff;
+      padding: 0.35rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid #c7d2fe;
+    }
+    details {
+      margin-top: 0.5rem;
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+    }
+    details summary {
+      cursor: pointer;
+      color: #0ea5e9;
+      font-weight: 600;
+      outline: none;
+    }
+    .stroke-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .char-box {
+      width: 90px;
+      height: 90px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .section-title {
+      margin: 1.25rem 0 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .note { font-size: 0.92rem; color: #475569; margin: 0.25rem 0 0.75rem; }
+    @media (max-width: 600px) {
+      .controls { flex-direction: column; align-items: flex-start; }
+      .card-header { flex-direction: column; align-items: flex-start; }
+      input[type="text"] { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>四年級中文｜《智慧型機器人》聽詞填寫＋筆順動畫</h1>
+    <p class="sub">聽到字詞後，將正確的詞語寫在空格中。每次載入皆隨機排序；提供筆順動畫以助認讀。</p>
+
+    <div class="controls">
+      <label>語速：
+        <select id="rateSelect">
+          <option value="0.9">0.90×</option>
+          <option value="0.95" selected>0.95×</option>
+          <option value="1">1.00×</option>
+          <option value="1.05">1.05×</option>
+        </select>
+      </label>
+      <span class="pill">語音</span>
+      <button id="shuffleBtn" class="controls-btn">🔀 重新隨機</button>
+      <button id="stopBtn" class="controls-btn">⏹ 停止語音</button>
+      <span id="voiceHint" class="sub" style="margin:0;">提示：若未出聲，請先點擊頁面，再按播放；iPad / iOS 會使用系統語音。</span>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="controls" style="margin-top:1.25rem;">
+      <button id="checkBtn" class="controls-btn primary">✅ 批改</button>
+      <button id="showBtn" class="controls-btn show">👀 顯示答案</button>
+      <button id="resetBtn" class="controls-btn">♻️ 重設</button>
+      <span id="globalStatus" class="pill">尚未批改。</span>
+    </div>
+
+    <h2 class="section-title">全部筆順（總覽）</h2>
+    <p class="note">若學生未能作答，可直接參考以下筆順。資料由 jsDelivr / HanziWriter 提供，建議配合香港小學習字表筆畫序觀察。</p>
+    <div id="allStrokes" class="stroke-box"></div>
+
+    <p class="note" style="margin-top:1rem;">筆順動畫載入自 jsDelivr；若 CDN 失敗會自動退回本地 <code>vendor/hanzi-writer.min.js</code>。如學校網路封鎖 CDN，請確保本地檔案已隨頁部署。</p>
+  </div>
+
+  <!-- 先載 CDN，失敗時退回本地 vendor/hanzi-writer.min.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.1.2/dist/hanzi-writer.min.js"
+    onerror="(function(){console.warn('CDN 載入失敗，改用本地 hanzi-writer');var s=document.createElement('script');s.src='vendor/hanzi-writer.min.js';document.head.appendChild(s);})();"
+    defer>
+  </script>
+
+  <script>
+    // 詞語資料集（可依需要調整或擴充）
+    const WORDS = [
+      { text: "智慧型機器人", clue: "用人工智慧控制的機器人" },
+      { text: "人工智慧", clue: "讓電腦模擬人類思考與學習的技術" },
+      { text: "感應器", clue: "偵測外界資訊的裝置" },
+      { text: "資料分析", clue: "整理與解讀資訊的過程" },
+      { text: "語音指令", clue: "用說話來控制的指令" }
+    ];
+
+    // 洗牌
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    const listEl = document.getElementById('list');
+    const rateSelect = document.getElementById('rateSelect');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    const showBtn = document.getElementById('showBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const globalStatus = document.getElementById('globalStatus');
+    const allStrokes = document.getElementById('allStrokes');
+
+    let current = [];
+
+    function renderList() {
+      listEl.innerHTML = '';
+      current.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+
+        const title = document.createElement('h3');
+        title.textContent = `題目 ${idx + 1}`;
+        header.appendChild(title);
+
+        const btnPlay = document.createElement('button');
+        btnPlay.className = 'btn play';
+        btnPlay.textContent = '🔊 播放';
+        btnPlay.addEventListener('click', () => speak(item.text));
+        header.appendChild(btnPlay);
+
+        card.appendChild(header);
+
+        const clue = document.createElement('p');
+        clue.style.margin = '0.35rem 0';
+        clue.style.color = '#475569';
+        clue.textContent = `提示：${item.clue}`;
+        card.appendChild(clue);
+
+        const row = document.createElement('div');
+        row.className = 'input-row';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = '請填寫詞語';
+        input.dataset.answer = item.text;
+        input.autocomplete = 'off';
+        row.appendChild(input);
+
+        const status = document.createElement('span');
+        status.className = 'status';
+        status.textContent = '';
+        row.appendChild(status);
+
+        card.appendChild(row);
+
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '筆順';
+        details.appendChild(summary);
+
+        const strokeBox = document.createElement('div');
+        strokeBox.className = 'stroke-box';
+        strokeBox.dataset.word = item.text;
+        details.appendChild(strokeBox);
+
+        details.addEventListener('toggle', () => {
+          if (details.open) renderStrokes(strokeBox, item.text);
+        });
+
+        card.appendChild(details);
+
+        listEl.appendChild(card);
+      });
+    }
+
+    function init() {
+      current = shuffle(WORDS);
+      renderList();
+      globalStatus.textContent = '尚未批改。';
+      renderAllStrokes();
+    }
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) {
+        console.warn('此瀏覽器不支援語音合成');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-TW';
+      u.rate = parseFloat(rateSelect.value || '1');
+      window.speechSynthesis.speak(u);
+    }
+
+    stopBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    });
+
+    shuffleBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      init();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.querySelectorAll('input[type="text"]').forEach(i => {
+        i.value = '';
+        i.disabled = false;
+      });
+      document.querySelectorAll('.status').forEach(s => {
+        s.textContent = '';
+        s.className = 'status';
+      });
+      globalStatus.textContent = '尚未批改。';
+    });
+
+    checkBtn.addEventListener('click', () => {
+      let allCorrect = true;
+      document.querySelectorAll('.card').forEach(card => {
+        const input = card.querySelector('input[type="text"]');
+        const status = card.querySelector('.status');
+        const ans = input.dataset.answer.trim();
+        const val = input.value.trim();
+        if (val === ans) {
+          status.textContent = '✔ 正確';
+          status.className = 'status correct';
+          input.disabled = true;
+        } else {
+          status.textContent = '✘ 再試試';
+          status.className = 'status wrong';
+          allCorrect = false;
+        }
+      });
+      globalStatus.textContent = allCorrect ? '全部正確！' : '已批改，尚有錯誤。';
+    });
+
+    showBtn.addEventListener('click', () => {
+      document.querySelectorAll('.card').forEach(card => {
+        const input = card.querySelector('input[type="text"]');
+        const ans = input.dataset.answer;
+        input.value = ans;
+        input.disabled = true;
+        const status = card.querySelector('.status');
+        status.textContent = '✔ 已顯示答案';
+        status.className = 'status correct';
+      });
+      globalStatus.textContent = '已顯示答案。';
+    });
+
+    // 單詞筆順渲染
+    function renderStrokes(container, word) {
+      container.innerHTML = '';
+      const chars = Array.from(word);
+      chars.forEach((ch, idx) => {
+        const box = document.createElement('div');
+        box.className = 'char-box';
+        box.id = `char-${word}-${idx}-${Math.random().toString(36).slice(2,7)}`;
+        container.appendChild(box);
+
+        if (window.HanziWriter) {
+          const writer = HanziWriter.create(box.id, ch, {
+            width: 90,
+            height: 90,
+            padding: 8,
+            showOutline: true,
+            showCharacter: false,
+            strokeAnimationSpeed: 1,
+            delayBetweenStrokes: 150
+          });
+          writer.animateCharacter();
+        } else {
+          box.textContent = ch;
+        }
+      });
+    }
+
+    // 全部筆順總覽
+    function renderAllStrokes() {
+      allStrokes.innerHTML = '';
+      const uniqChars = Array.from(new Set(WORDS.map(w => w.text).join('').split('')));
+      uniqChars.forEach((ch, idx) => {
+        const box = document.createElement('div');
+        box.className = 'char-box';
+        box.id = `all-${idx}-${Math.random().toString(36).slice(2,7)}`;
+        allStrokes.appendChild(box);
+
+        if (window.HanziWriter) {
+          const writer = HanziWriter.create(box.id, ch, {
+            width: 90,
+            height: 90,
+            padding: 8,
+            showOutline: true,
+            showCharacter: false,
+            strokeAnimationSpeed: 1,
+            delayBetweenStrokes: 120
+          });
+          writer.animateCharacter();
+        } else {
+          box.textContent = ch;
+        }
+      });
+    }
+
+    // 初始化
+    init();
+
+    // iOS 需互動觸發語音
+    document.body.addEventListener('click', () => {}, { once: true });
+  </script>
+</body>
+</html>
