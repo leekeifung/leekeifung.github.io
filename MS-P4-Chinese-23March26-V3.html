@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>四年級中文｜《智慧型機器人》聽詞填寫＋筆順動畫</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #2563eb;
+      --primary-2: #1d4ed8;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 18px;
+      line-height: 1.65;
+    }
+    h1,h2 { margin: 0 0 8px; letter-spacing: -0.01em; }
+    h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); }
+    h2 { font-size: clamp(1.2rem, 3vw, 1.6rem); }
+    p { margin: 0 0 10px; }
+    .container { max-width: 980px; margin: 0 auto; }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin: 12px 0;
+      border: 1px solid var(--border);
+    }
+    .lead { color: var(--muted); }
+    .flex { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.22);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    button:hover { transform: translateY(-1px); background: var(--primary-2); box-shadow: 0 8px 22px rgba(37,99,235,0.3); }
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    button.secondary:hover { box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+    label.badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    select, input[type="range"] {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font: inherit;
+      background: #fff;
+    }
+    .list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+    .item-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: #e0f2fe;
+      color: #0f172a;
+      font-weight: 800;
+    }
+    .item input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+    }
+    .hint {
+      grid-column: 1 / -1;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      display: none;
+    }
+    .hint-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+    .hw-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: stretch;
+    }
+    .hw-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .hw-meta {
+      font-size: 0.9rem;
+      color: #475569;
+    }
+    .hw-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hw-btn {
+      border-radius: 10px;
+      padding: 8px;
+      font-weight: 700;
+      border: 1px solid #cbd5e1;
+      background: #eef2ff;
+      color: #1f2937;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    }
+    .hw-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
+    .status { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
+    .result-ok { color: #16a34a; font-weight: 800; }
+    .result-bad { color: #dc2626; font-weight: 800; }
+    .note { font-size: 0.9rem; color: #475569; margin-top: 6px; }
+    @media (max-width: 640px) {
+      button { width: 100%; justify-content: center; }
+      .item { grid-template-columns: 1fr; }
+      .item-head { justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="card">
+      <h1>四年級中文科｜《智慧型機器人》聽詞填寫</h1>
+      <p class="lead">聽到字詞後，將正確的詞語寫在空格中。每次載入皆隨機排序；提供筆順動畫以助認讀。</p>
+      <div class="flex" style="margin-top:8px; gap:12px;">
+        <label class="badge">
+          語速 <span id="speedVal">0.95×</span>
+          <input id="speed" type="range" min="0.65" max="1.2" step="0.05" value="0.95" style="width:160px" />
+        </label>
+        <label class="badge">
+          語音
+          <select id="voiceSelect"></select>
+        </label>
+        <button type="button" onclick="reshuffle()">🔀 重新隨機</button>
+        <button class="secondary" type="button" onclick="stopSpeak()">⏹ 停止語音</button>
+      </div>
+      <div class="status" id="voiceStatus">提示：若未出聲，請先點擊頁面，再按播放；iPad / iOS 會使用系統語音。</div>
+    </header>
+
+    <section class="card">
+      <h2>聽詞填空</h2>
+      <p class="lead">點擊 🔊 播放該詞語，聽後在空格填寫。需要時可展開「筆順」查看每個字的筆順動畫（載入自 jsDelivr）。</p>
+
+      <div id="list" class="list"></div>
+
+      <div class="flex" style="margin-top:12px;">
+        <button type="button" onclick="checkAnswers()">✅ 批改</button>
+        <button class="secondary" type="button" onclick="showAnswers()">👀 顯示答案</button>
+        <button class="secondary" type="button" onclick="resetAll()">♻️ 重設</button>
+      </div>
+      <div class="status" id="checkStatus">尚未批改。</div>
+      <div class="note hz-status">筆順動畫載入中…</div>
+    </section>
+  </div>
+
+  <!-- Hanzi Writer (approved CDN) -->
+  <script>
+    let hanziReady = false;
+    let hanziLoadError = false;
+    const hanziReadyPromise = new Promise((resolve) => { window.__hanziResolve = resolve; });
+    function markHanziReady() {
+      hanziReady = true;
+      document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫已載入，可播放。");
+      window.__hanziResolve();
+    }
+    function markHanziError() {
+      hanziLoadError = true;
+      document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫無法載入，可能網路封鎖 cdn.jsdelivr.net。");
+      window.__hanziResolve();
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.1.2/dist/hanzi-writer.min.js" onload="markHanziReady()" onerror="markHanziError()" defer></script>
+
+  <script>
+    // ====== 字詞資料 ======
+    const WORDS = [
+      { term:"控制", chars:["控","制"] },
+      { term:"系統", chars:["系","統"] },
+      { term:"感應", chars:["感","應"] },
+      { term:"指令", chars:["指","令"] },
+      { term:"綜合", chars:["綜","合"] },
+      { term:"結晶", chars:["結","晶"] },
+      { term:"提升", chars:["提","升"] },
+      { term:"效能", chars:["效","能"] },
+      { term:"企業", chars:["企","業"] },
+      { term:"精密", chars:["精","密"] },
+      { term:"繁複", chars:["繁","複"] },
+      { term:"靈活自如", chars:["靈","活","自","如"] },
+      { term:"節省", chars:["節","省"] },
+      { term:"品質", chars:["品","質"] },
+      { term:"傳統", chars:["傳","統"] },
+      { term:"調劑", chars:["調","劑"] },
+      { term:"支援", chars:["支","援"] },
+      { term:"普及", chars:["普","及"] }
+    ];
+
+    // ====== 語音合成（iPad 友善） ======
+    const speedEl = document.getElementById("speed");
+    const speedVal = document.getElementById("speedVal");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const voiceStatus = document.getElementById("voiceStatus");
+    let voices = [];
+    let chosenVoice = null;
+
+    speedEl.addEventListener("input", () => {
+      speedVal.textContent = speedEl.value + "×";
+    });
+
+    function populateVoices() {
+      voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+      voiceSelect.innerHTML = "";
+      const prefer = ["zh-HK","yue-HK","zh-TW","zh-CN","zh","yue","cmn-Hant-HK","cmn-Hant-TW"];
+      const fallback = ["ja-JP","en-US"];
+      const pick = langs => voices.find(v => langs.some(l => (v.lang||"").toLowerCase().startsWith(l.toLowerCase())));
+      chosenVoice = pick(prefer) || pick(fallback) || voices[0] || null;
+      voices.slice().sort((a,b)=>(a.lang||"").localeCompare(b.lang||"")).forEach((v,i)=>{
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `${v.name} (${v.lang})`;
+        voiceSelect.appendChild(opt);
+      });
+      if (chosenVoice) {
+        const idx = voices.indexOf(chosenVoice);
+        if (idx >= 0) voiceSelect.value = String(idx);
+      }
+      voiceStatus.textContent = voices.length
+        ? `已載入語音 ${voices.length} 種；預設：${chosenVoice ? chosenVoice.name + " (" + chosenVoice.lang + ")" : "系統預設"}`
+        : "尚未取得語音，若無聲音請稍後再按播放（iOS 可能需要等候）。";
+    }
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = populateVoices;
+      setTimeout(populateVoices, 300);
+    } else {
+      voiceStatus.textContent = "此瀏覽器不支援語音合成。";
+    }
+    voiceSelect.addEventListener("change", () => {
+      const idx = Number(voiceSelect.value);
+      chosenVoice = voices[idx] || null;
+      voiceStatus.textContent = `已選語音：${chosenVoice ? chosenVoice.name + " (" + chosenVoice.lang + ")" : "系統預設"}`;
+    });
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        voiceStatus.textContent = "瀏覽器不支援語音合成。";
+        return;
+      }
+      stopSpeak();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = parseFloat(speedEl.value || "0.95");
+      u.pitch = 1.0;
+      u.volume = 1.0;
+      u.lang = chosenVoice?.lang || "zh-HK";
+      if (chosenVoice) u.voice = chosenVoice;
+      u.onstart = () => voiceStatus.textContent = "播放中…";
+      u.onend   = () => voiceStatus.textContent = "播放完畢。";
+      u.onerror = () => voiceStatus.textContent = "播放時發生問題。";
+      window.speechSynthesis.speak(u);
+    }
+    function stopSpeak() {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      voiceStatus.textContent = "已停止。";
+    }
+
+    // ====== Hanzi Writer helper ======
+    const writerCache = new Map(); // key: container id -> writer instance
+
+    function ensureWriter(container, char) {
+      if (!hanziReady || typeof HanziWriter === "undefined") return null;
+      const id = container.dataset.writerId;
+      if (writerCache.has(id)) return writerCache.get(id);
+      const size = container.clientWidth || 120;
+      const writer = HanziWriter.create(container, char, {
+        width: size,
+        height: size,
+        padding: 6,
+        strokeAnimationSpeed: 1.1,
+        delayBetweenStrokes: 300,
+        showCharacter: true,
+        showOutline: true,
+        showHintAfterMisses: 1
+      });
+      writerCache.set(id, writer);
+      return writer;
+    }
+
+    // ====== UI ======
+    const listEl = document.getElementById("list");
+    const checkStatus = document.getElementById("checkStatus");
+    let currentOrder = [];
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function renderList() {
+      listEl.innerHTML = "";
+      writerCache.clear();
+      currentOrder = shuffle(WORDS);
+      currentOrder.forEach((item, idx) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "item";
+
+        const head = document.createElement("div");
+        head.className = "item-head";
+        const num = document.createElement("span");
+        num.className = "num";
+        num.textContent = idx + 1;
+
+        const btnPlay = document.createElement("button");
+        btnPlay.type = "button";
+        btnPlay.textContent = "🔊 播放";
+        btnPlay.addEventListener("click", () => speak(item.term));
+
+        const btnHint = document.createElement("button");
+        btnHint.type = "button";
+        btnHint.className = "secondary";
+        btnHint.textContent = "✏️ 筆順";
+        btnHint.setAttribute("aria-expanded", "false");
+
+        head.appendChild(num);
+        head.appendChild(btnPlay);
+        head.appendChild(btnHint);
+
+        const inp = document.createElement("input");
+        inp.placeholder = "聽後填寫此詞語";
+        inp.dataset.answer = item.term;
+
+        const hintBox = document.createElement("div");
+        hintBox.className = "hint";
+
+        const row = document.createElement("div");
+        row.className = "hint-row";
+
+        item.chars.forEach((ch, cidx) => {
+          const card = document.createElement("div");
+          card.className = "hw-card";
+
+          const title = document.createElement("div");
+          title.className = "hw-title";
+          title.innerHTML = `<span>${ch}</span><span class="hw-meta">筆順動畫</span>`;
+          card.appendChild(title);
+
+          const box = document.createElement("div");
+          box.className = "hw-box";
+          const wid = Math.floor(Math.random()*1e9);
+          const boxId = `hw-${idx}-${cidx}-${wid}`;
+          box.id = boxId;
+          box.dataset.writerId = boxId;
+          card.appendChild(box);
+
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "hw-btn";
+          btn.textContent = "▶ 播放筆順";
+          btn.addEventListener("click", async () => {
+            if (hanziLoadError || typeof HanziWriter === "undefined") {
+              document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫未載入，可能網路封鎖 cdn.jsdelivr.net。");
+              return;
+            }
+            if (!hanziReady) {
+              document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫仍在載入，請稍候再試。");
+              return;
+            }
+            const writer = ensureWriter(box, ch);
+            if (writer) writer.animateCharacter();
+          });
+          card.appendChild(btn);
+
+          row.appendChild(card);
+        });
+
+        hintBox.appendChild(row);
+        const note = document.createElement("div");
+        note.className = "note";
+        note.textContent = "若無法載入，可能是網路封鎖 jsDelivr。";
+        hintBox.appendChild(note);
+
+        btnHint.addEventListener("click", () => {
+          const showing = hintBox.style.display === "block";
+          hintBox.style.display = showing ? "none" : "block";
+          btnHint.setAttribute("aria-expanded", showing ? "false" : "true");
+        });
+
+        wrapper.appendChild(head);
+        wrapper.appendChild(inp);
+        wrapper.appendChild(hintBox);
+        listEl.appendChild(wrapper);
+      });
+      checkStatus.textContent = "已重新隨機排列，尚未作答。";
+    }
+
+    function checkAnswers() {
+      const inputs = listEl.querySelectorAll("input");
+      let correct = 0;
+      inputs.forEach(inp => {
+        const ans = (inp.dataset.answer || "").trim();
+        const val = (inp.value || "").trim();
+        if (val === ans) {
+          inp.style.borderColor = "#16a34a";
+          inp.style.background = "#ecfdf3";
+          correct++;
+        } else {
+          inp.style.borderColor = "#dc2626";
+          inp.style.background = "#fef2f2";
+        }
+      });
+      checkStatus.innerHTML = `結果：<span class="${correct === inputs.length ? "result-ok" : "result-bad"}">${correct} / ${inputs.length}</span>`;
+    }
+
+    function showAnswers() {
+      const inputs = listEl.querySelectorAll("input");
+      inputs.forEach(inp => {
+        inp.value = inp.dataset.answer || "";
+        inp.style.borderColor = "#16a34a";
+        inp.style.background = "#ecfdf3";
+      });
+      checkStatus.textContent = "已顯示答案。";
+    }
+
+    function resetAll() {
+      const inputs = listEl.querySelectorAll("input");
+      inputs.forEach(inp => {
+        inp.value = "";
+        inp.style.borderColor = "var(--border)";
+        inp.style.background = "#fff";
+      });
+      checkStatus.textContent = "已重設，請重新作答。";
+    }
+
+    function reshuffle() {
+      renderList();
+    }
+
+    // init
+    renderList();
+  </script>
+</body>
+</html>
