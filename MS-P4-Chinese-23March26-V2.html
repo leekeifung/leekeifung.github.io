@@ -3,20 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>小火車｜認讀與聽寫練習（改良語音兼容 iPad）</title>
+  <title>四年級中文｜《智慧型機器人》聽詞填寫＋筆順動畫</title>
   <style>
     :root {
       color-scheme: light;
-      --bg: #f7fafc;
+      --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
       --muted: #475569;
       --primary: #2563eb;
       --primary-2: #1d4ed8;
-      --accent: #f59e0b;
       --border: #e2e8f0;
-      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
       --radius: 14px;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
     }
     * { box-sizing: border-box; }
     body {
@@ -25,14 +24,13 @@
       background: var(--bg);
       color: var(--text);
       padding: 18px;
-      line-height: 1.7;
-      font-size: 18px; /* 提升字體大小 */
+      line-height: 1.65;
     }
-    h1,h2,h3 { margin: 0 0 8px; letter-spacing: -0.01em; }
-    h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
-    h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); }
+    h1,h2 { margin: 0 0 8px; letter-spacing: -0.01em; }
+    h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); }
+    h2 { font-size: clamp(1.2rem, 3vw, 1.6rem); }
     p { margin: 0 0 10px; }
-    .container { max-width: 1100px; margin: 0 auto; }
+    .container { max-width: 980px; margin: 0 auto; }
     .card {
       background: var(--card);
       border-radius: var(--radius);
@@ -51,23 +49,30 @@
       cursor: pointer;
       background: var(--primary);
       color: #fff;
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.22);
       transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       white-space: nowrap;
-      font-size: 16px;
     }
+    button:hover { transform: translateY(-1px); background: var(--primary-2); box-shadow: 0 8px 22px rgba(37,99,235,0.3); }
     button.secondary {
       background: #e2e8f0;
       color: #0f172a;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    button.accent { background: var(--accent); color: #1f2937; }
-    button:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(37, 99, 235, 0.32); background: var(--primary-2); }
     button.secondary:hover { box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
-    button.accent:hover { box-shadow: 0 8px 18px rgba(245, 158, 11, 0.28); }
+    label.badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 700;
+    }
     select, input[type="range"] {
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -75,473 +80,402 @@
       font: inherit;
       background: #fff;
     }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #e2e8f0;
-      color: #0f172a;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 12px;
-      border-radius: 12px;
-      background: #eef2ff;
-      color: #1e293b;
-      border: 1px solid #cbd5e1;
-      margin: 4px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.12s ease;
-    }
-    .pill:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
-    .text-block {
-      white-space: pre-wrap;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+    .list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
       padding: 12px;
-      line-height: 1.75;
-      font-size: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
     }
-    .fill-line { margin: 8px 0; }
-    .blank {
+    .item-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .num {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      margin: 2px 4px;
-    }
-    .blank input {
-      width: 150px;
-      max-width: 50vw;
-      padding: 8px 10px;
+      justify-content: center;
+      width: 36px; height: 36px;
       border-radius: 10px;
-      border: 1px solid var(--border);
-      font-size: 18px; /* 提升字體大小 */
-      font-family: inherit;
-    }
-    .blank .play-btn {
       background: #e0f2fe;
-      border: 1px solid #bae6fd;
       color: #0f172a;
-      padding: 6px 8px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 15px;
+      font-weight: 800;
     }
-    .blank .play-btn:hover { background: #bae6fd; }
-    .status { color: var(--muted); font-size: 0.95rem; margin-top: 6px; }
-    .result-ok { color: #16a34a; font-weight: 700; }
-    .result-bad { color: #dc2626; font-weight: 700; }
-    .grid-words { display: flex; flex-wrap: wrap; margin: -4px; gap: 8px; }
-    .chip {
-      padding: 8px 11px;
+    .item input {
+      width: 100%;
+      padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid var(--border);
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+    }
+    .hint {
+      grid-column: 1 / -1;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      display: none;
+    }
+    .hint-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+    .hw-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px;
       background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: stretch;
+    }
+    .hw-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .hw-meta {
+      font-size: 0.9rem;
+      color: #475569;
+    }
+    .hw-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hw-btn {
+      border-radius: 10px;
+      padding: 8px;
+      font-weight: 700;
+      border: 1px solid #cbd5e1;
+      background: #eef2ff;
+      color: #1f2937;
       cursor: pointer;
       transition: transform 0.08s ease, box-shadow 0.12s ease;
-      font-weight: 700;
     }
-    .chip.selected {
-      background: #fee2e2;
-      border-color: #fecaca;
-      color: #b91c1c;
-      box-shadow: 0 6px 14px rgba(185, 28, 28, 0.12);
-    }
-    .chip:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
-    .section-title { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .small { font-size: 0.92rem; color: var(--muted); }
+    .hw-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
+    .status { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
+    .result-ok { color: #16a34a; font-weight: 800; }
+    .result-bad { color: #dc2626; font-weight: 800; }
+    .note { font-size: 0.9rem; color: #475569; margin-top: 6px; }
     @media (max-width: 640px) {
       button { width: 100%; justify-content: center; }
-      .blank input { width: 120px; }
-      select { width: 100%; }
+      .item { grid-template-columns: 1fr; }
+      .item-head { justify-content: space-between; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="card">
-      <h1>第十三課｜小火車｜認讀與聽寫練習</h1>
-      <p class="lead">已改良語音相容性：在 iPad / iOS 上也應可正常播放（使用較短分段、語音自動挑選）。</p>
+      <h1>四年級中文科｜《智慧型機器人》聽詞填寫</h1>
+      <p class="lead">聽到字詞後，將正確的詞語寫在空格中。每次載入皆隨機排序；提供筆順動畫以助認讀。</p>
       <div class="flex" style="margin-top:8px; gap:12px;">
-        <label class="badge">語速：
-          <span id="speedVal">0.9×</span>
-          <input id="speed" type="range" min="0.65" max="1.2" step="0.05" value="0.9" style="width:160px" />
+        <label class="badge">
+          語速 <span id="speedVal">0.95×</span>
+          <input id="speed" type="range" min="0.65" max="1.2" step="0.05" value="0.95" style="width:160px" />
         </label>
-        <label class="badge">語音：
+        <label class="badge">
+          語音
           <select id="voiceSelect"></select>
         </label>
-        <button type="button" onclick="playFull()">▶️ 整篇朗讀</button>
-        <button class="secondary" type="button" onclick="pauseSpeak()">⏸ 暫停</button>
-        <button class="secondary" type="button" onclick="resumeSpeak()">▶️ 繼續</button>
-        <button class="secondary" type="button" onclick="stopSpeak()">⏹ 停止</button>
+        <button type="button" onclick="reshuffle()">🔀 重新隨機</button>
+        <button class="secondary" type="button" onclick="stopSpeak()">⏹ 停止語音</button>
       </div>
-      <div class="status" id="voiceStatus">提示：若未出聲，請先點擊頁面，再按播放；iOS Chrome 會使用系統語音。</div>
+      <div class="status" id="voiceStatus">提示：若未出聲，請先點擊頁面，再按播放；iPad / iOS 會使用系統語音。</div>
     </header>
 
     <section class="card">
-      <div class="section-title">
-        <h2>課文（參考版，可全篇播放）</h2>
-        <button class="secondary" type="button" onclick="togglePassage()">🙈 顯示 / 隱藏</button>
-      </div>
-      <div id="passageBox" class="text-block">
-第十三課
-小火車
+      <h2>聽詞填空</h2>
+      <p class="lead">點擊 🔊 播放該詞語，聽後在空格填寫。需要時可展開「筆順」查看每個字的筆順動畫（載入自 jsDelivr）。</p>
 
-轟隆隆，轟隆隆。
-火車來了，火車來了。
-
-早晨的時候，火車穿過山洞，經過小橋。
-
-小火車，請你不要慢下來，開得快一點，
-開得小心點，把布娃娃準時又安全地送到學校去，別遲到啊！
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>聽詞填空（聽後填寫的字詞寫進空格）</h2>
-      <p class="lead">點擊 🔊 聽字詞，寫入空格，再按「批改」檢查；如需可「顯示答案」。所有輸入框皆標示為「聽後填寫」。</p>
-
-      <div class="text-block" style="background:#f8fafc;">
-        <div class="fill-line">第十三課<br>小火車</div>
-
-        <div class="fill-line">
-          <span class="blank">
-            <input data-answer="轟隆隆" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="轟隆隆">🔊</button>
-          </span>
-          ，
-          <span class="blank">
-            <input data-answer="轟隆隆" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="轟隆隆">🔊</button>
-          </span>
-          。<br>
-          火車來了，火車來了。
-        </div>
-
-        <div class="fill-line">
-          <span class="blank">
-            <input data-answer="早晨" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="早晨">🔊</button>
-          </span>
-          的
-          <span class="blank">
-            <input data-answer="時候" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="時候">🔊</button>
-          </span>
-          ，火車
-          <span class="blank">
-            <input data-answer="穿過" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="穿過">🔊</button>
-          </span>
-          <span class="blank">
-            <input data-answer="山洞" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="山洞">🔊</button>
-          </span>
-          ，
-          <span class="blank">
-            <input data-answer="經過" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="經過">🔊</button>
-          </span>
-          <span class="blank">
-            <input data-answer="小橋" placeholder="聽後填寫" aria-label="聽後填寫" />
-            <button class="play-btn" type="button" data-word="小橋">🔊</button>
-          </span>
-          。
-        </div>
-
-        <div class="fill-line">
-          小火車，請你不要慢下來，開得快一點，<br>
-          開得小心點，把布娃娃準時又安全地送到學校去，別遲到啊！
-        </div>
-      </div>
+      <div id="list" class="list"></div>
 
       <div class="flex" style="margin-top:12px;">
-        <button type="button" onclick="checkBlanks()">✅ 批改</button>
+        <button type="button" onclick="checkAnswers()">✅ 批改</button>
         <button class="secondary" type="button" onclick="showAnswers()">👀 顯示答案</button>
-        <button class="secondary" type="button" onclick="resetBlanks()">♻️ 重設</button>
+        <button class="secondary" type="button" onclick="resetAll()">♻️ 重設</button>
       </div>
-      <div class="status" id="blankStatus">尚未批改。</div>
-    </section>
-
-    <section class="card">
-      <div class="section-title">
-        <h2>重點字詞｜點擊可聽讀音</h2>
-        <span class="small">目標字詞：轟隆隆、早晨、時候、穿過、山洞、經過、小橋</span>
+      <div class="status" id="checkStatus">尚未批改。</div>
+      <div class="note">
+        筆順動畫使用 Hanzi Writer，筆畫資料由 jsDelivr 提供（cdn.jsdelivr.net，已在允許清單）。若學校網路封鎖外部 CDN，筆順可能無法載入，請改用本機或家用網路。
       </div>
-      <div id="wordBank" class="grid-words"></div>
-    </section>
-
-    <section class="card">
-      <div class="section-title">
-        <h2>「火／灬」部首認讀小測驗</h2>
-        <span class="small">請選出含有「火」或「灬」部件的字，再按「批改」。</span>
-      </div>
-      <div id="radicalGrid" class="grid-words" style="margin-top:6px;"></div>
-      <div class="flex" style="margin-top:10px;">
-        <button type="button" class="accent" onclick="checkRadicals()">✅ 批改</button>
-        <button class="secondary" type="button" onclick="showRadicalAns()">👀 顯示答案</button>
-        <button class="secondary" type="button" onclick="resetRadicals()">♻️ 重選</button>
-      </div>
-      <div class="status" id="radicalStatus">尚未作答。</div>
     </section>
   </div>
 
+  <!-- Hanzi Writer (approved CDN: jsdelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.1.2/dist/hanzi-writer.min.js"></script>
+
   <script>
-    // ================= Speech Manager (improved for iPad/iOS) =================
+    // ====== 字詞資料 ======
+    const WORDS = [
+      { term:"控制", chars:["控","制"] },
+      { term:"系統", chars:["系","統"] },
+      { term:"感應", chars:["感","應"] },
+      { term:"指令", chars:["指","令"] },
+      { term:"綜合", chars:["綜","合"] },
+      { term:"結晶", chars:["結","晶"] },
+      { term:"提升", chars:["提","升"] },
+      { term:"效能", chars:["效","能"] },
+      { term:"企業", chars:["企","業"] },
+      { term:"精密", chars:["精","密"] },
+      { term:"繁複", chars:["繁","複"] },
+      { term:"靈活自如", chars:["靈","活","自","如"] },
+      { term:"節省", chars:["節","省"] },
+      { term:"品質", chars:["品","質"] },
+      { term:"傳統", chars:["傳","統"] },
+      { term:"調劑", chars:["調","劑"] },
+      { term:"支援", chars:["支","援"] },
+      { term:"普及", chars:["普","及"] }
+    ];
+
+    // ====== 語音合成（iPad 友善） ======
     const speedEl = document.getElementById("speed");
     const speedVal = document.getElementById("speedVal");
-    const voiceStatus = document.getElementById("voiceStatus");
     const voiceSelect = document.getElementById("voiceSelect");
-    let voiceList = [];
-    let selectedVoice = null;
-    let isSpeaking = false;
-    let queue = [];
-    let currentUtterance = null;
+    const voiceStatus = document.getElementById("voiceStatus");
+    let voices = [];
+    let chosenVoice = null;
 
     speedEl.addEventListener("input", () => {
       speedVal.textContent = speedEl.value + "×";
     });
 
-    function listVoices() {
-      voiceList = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    function populateVoices() {
+      voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
       voiceSelect.innerHTML = "";
       const prefer = ["zh-HK","yue-HK","zh-TW","zh-CN","zh","yue","cmn-Hant-HK","cmn-Hant-TW"];
       const fallback = ["ja-JP","en-US"];
-      const sorted = [...voiceList].sort((a,b)=> (a.lang||"").localeCompare(b.lang||""));
-      sorted.forEach((v,i)=>{
+      const pick = langs => voices.find(v => langs.some(l => (v.lang||"").toLowerCase().startsWith(l.toLowerCase())));
+      chosenVoice = pick(prefer) || pick(fallback) || voices[0] || null;
+      voices.slice().sort((a,b)=>(a.lang||"").localeCompare(b.lang||"")).forEach((v,i)=>{
         const opt = document.createElement("option");
         opt.value = i;
         opt.textContent = `${v.name} (${v.lang})`;
         voiceSelect.appendChild(opt);
       });
-      selectedVoice = pickVoice(prefer, fallback);
-      if (selectedVoice) {
-        const idx = voiceList.indexOf(selectedVoice);
+      if (chosenVoice) {
+        const idx = voices.indexOf(chosenVoice);
         if (idx >= 0) voiceSelect.value = String(idx);
       }
-      voiceStatus.textContent = voiceList.length
-        ? `已載入語音 ${voiceList.length} 種；預設：${selectedVoice ? selectedVoice.name+" ("+selectedVoice.lang+")" : "系統預設"}`
+      voiceStatus.textContent = voices.length
+        ? `已載入語音 ${voices.length} 種；預設：${chosenVoice ? chosenVoice.name + " (" + chosenVoice.lang + ")" : "系統預設"}`
         : "尚未取得語音，若無聲音請稍後再按播放（iOS 可能需要等候）。";
     }
-
-    function pickVoice(preferLangs, fallbackLangs) {
-      if (!voiceList.length) return null;
-      const byLang = (langs)=> voiceList.find(v=> langs.some(l=> (v.lang||"").toLowerCase().startsWith(l.toLowerCase())));
-      return byLang(preferLangs) || byLang(fallbackLangs) || voiceList[0];
-    }
-
     if ("speechSynthesis" in window) {
-      window.speechSynthesis.onvoiceschanged = () => listVoices();
-      // In case voiceschanged doesn't fire (some iOS), try polling once after short delay
-      setTimeout(()=> listVoices(), 500);
+      window.speechSynthesis.onvoiceschanged = populateVoices;
+      setTimeout(populateVoices, 300);
     } else {
       voiceStatus.textContent = "此瀏覽器不支援語音合成。";
     }
-
     voiceSelect.addEventListener("change", () => {
       const idx = Number(voiceSelect.value);
-      selectedVoice = voiceList[idx] || null;
-      voiceStatus.textContent = `已選語音：${selectedVoice ? selectedVoice.name+" ("+selectedVoice.lang+")" : "系統預設"}`;
+      chosenVoice = voices[idx] || null;
+      voiceStatus.textContent = `已選語音：${chosenVoice ? chosenVoice.name + " (" + chosenVoice.lang + ")" : "系統預設"}`;
     });
 
-    function makeUtterance(text) {
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = parseFloat(speedEl.value || "0.9");
-      u.pitch = 1.0;
-      u.volume = 1.0;
-      if (selectedVoice) u.voice = selectedVoice;
-      // fallback lang if none
-      u.lang = selectedVoice?.lang || "zh-HK";
-      u.onstart = () => { isSpeaking = true; voiceStatus.textContent = "播放中…"; };
-      u.onend = () => { handleNext(); };
-      u.onerror = () => { voiceStatus.textContent = "播放時發生問題。"; handleNext(); };
-      return u;
-    }
-
-    function splitText(text) {
-      // split by punctuation or newline into shorter chunks to avoid iOS immediate end
-      const parts = text
-        .split(/(?<=[。！？!?；;，,、]|…|\n)/)
-        .map(s => s.trim())
-        .filter(Boolean);
-      return parts.length ? parts : [text];
-    }
-
-    function speakText(text) {
+    function speak(text) {
       if (!("speechSynthesis" in window)) {
         voiceStatus.textContent = "瀏覽器不支援語音合成。";
         return;
       }
       stopSpeak();
-      const parts = splitText(text);
-      queue = parts;
-      handleNext();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = parseFloat(speedEl.value || "0.95");
+      u.pitch = 1.0;
+      u.volume = 1.0;
+      u.lang = chosenVoice?.lang || "zh-HK";
+      if (chosenVoice) u.voice = chosenVoice;
+      u.onstart = () => voiceStatus.textContent = "播放中…";
+      u.onend   = () => voiceStatus.textContent = "播放完畢。";
+      u.onerror = () => voiceStatus.textContent = "播放時發生問題。";
+      window.speechSynthesis.speak(u);
     }
-
-    function handleNext() {
-      if (currentUtterance) {
-        currentUtterance = null;
-      }
-      if (!queue.length) {
-        isSpeaking = false;
-        voiceStatus.textContent = "播放完畢。";
-        return;
-      }
-      const next = queue.shift();
-      currentUtterance = makeUtterance(next);
-      window.speechSynthesis.speak(currentUtterance);
-    }
-
     function stopSpeak() {
       if (!("speechSynthesis" in window)) return;
-      queue = [];
-      isSpeaking = false;
       window.speechSynthesis.cancel();
       voiceStatus.textContent = "已停止。";
     }
-    function pauseSpeak() {
-      if (!("speechSynthesis" in window)) return;
-      window.speechSynthesis.pause();
-      voiceStatus.textContent = "已暫停。";
-    }
-    function resumeSpeak() {
-      if (!("speechSynthesis" in window)) return;
-      window.speechSynthesis.resume();
-      voiceStatus.textContent = "繼續播放。";
+
+    // ====== Hanzi Writer helper ======
+    const writerCache = new Map(); // key: container id -> writer instance
+
+    function ensureWriter(container, char) {
+      const id = container.dataset.writerId;
+      if (writerCache.has(id)) return writerCache.get(id);
+      const writer = HanziWriter.create(container, char, {
+        width: container.clientWidth,
+        height: container.clientWidth,
+        padding: 6,
+        strokeAnimationSpeed: 1.1,
+        delayBetweenStrokes: 300,
+        showCharacter: true,
+        showOutline: true,
+        showHintAfterMisses: 1
+      });
+      writerCache.set(id, writer);
+      return writer;
     }
 
-    function playFull(){
-      const fullText = `第十三課 小火車。轟隆隆，轟隆隆。火車來了，火車來了。早晨的時候，火車穿過山洞，經過小橋。小火車，請你不要慢下來，開得快一點，開得小心點，把布娃娃準時又安全地送到學校去，別遲到啊！`;
-      speakText(fullText);
+    // ====== UI ======
+    const listEl = document.getElementById("list");
+    const checkStatus = document.getElementById("checkStatus");
+    let currentOrder = [];
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
 
-    // ================ Passage toggle =================
-    const passageBox = document.getElementById("passageBox");
-    function togglePassage(){
-      passageBox.style.display = passageBox.style.display === "none" ? "block" : "none";
+    function renderList() {
+      listEl.innerHTML = "";
+      writerCache.clear();
+      currentOrder = shuffle(WORDS);
+      currentOrder.forEach((item, idx) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "item";
+
+        const head = document.createElement("div");
+        head.className = "item-head";
+        const num = document.createElement("span");
+        num.className = "num";
+        num.textContent = idx + 1;
+
+        const btnPlay = document.createElement("button");
+        btnPlay.type = "button";
+        btnPlay.textContent = "🔊 播放";
+        btnPlay.addEventListener("click", () => speak(item.term));
+
+        const btnHint = document.createElement("button");
+        btnHint.type = "button";
+        btnHint.className = "secondary";
+        btnHint.textContent = "✏️ 筆順";
+        btnHint.setAttribute("aria-expanded", "false");
+
+        head.appendChild(num);
+        head.appendChild(btnPlay);
+        head.appendChild(btnHint);
+
+        const inp = document.createElement("input");
+        inp.placeholder = "聽後填寫此詞語";
+        inp.dataset.answer = item.term;
+
+        const hintBox = document.createElement("div");
+        hintBox.className = "hint";
+
+        const row = document.createElement("div");
+        row.className = "hint-row";
+
+        item.chars.forEach((ch, cidx) => {
+          const card = document.createElement("div");
+          card.className = "hw-card";
+
+          const title = document.createElement("div");
+          title.className = "hw-title";
+          title.innerHTML = `<span>${ch}</span><span class="hw-meta">筆順動畫</span>`;
+          card.appendChild(title);
+
+          const box = document.createElement("div");
+          box.className = "hw-box";
+          const wid = Math.floor(Math.random()*1e9);
+          const boxId = `hw-${idx}-${cidx}-${wid}`;
+          box.id = boxId;
+          box.dataset.writerId = boxId;
+          card.appendChild(box);
+
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "hw-btn";
+          btn.textContent = "▶ 播放筆順";
+          btn.addEventListener("click", () => {
+            const writer = ensureWriter(box, ch);
+            writer.animateCharacter();
+          });
+          card.appendChild(btn);
+
+          row.appendChild(card);
+        });
+
+        hintBox.appendChild(row);
+        const note = document.createElement("div");
+        note.className = "note";
+        note.innerHTML = `若無法載入，可能是網路封鎖 jsDelivr。`;
+        hintBox.appendChild(note);
+
+        btnHint.addEventListener("click", () => {
+          const showing = hintBox.style.display === "block";
+          hintBox.style.display = showing ? "none" : "block";
+          btnHint.setAttribute("aria-expanded", showing ? "false" : "true");
+        });
+
+        wrapper.appendChild(head);
+        wrapper.appendChild(inp);
+        wrapper.appendChild(hintBox);
+        listEl.appendChild(wrapper);
+      });
+      checkStatus.textContent = "已重新隨機排列，尚未作答。";
     }
 
-    // ================ Fill-in-the-blanks ================
-    const blankStatus = document.getElementById("blankStatus");
-    const blankInputs = Array.from(document.querySelectorAll('.blank input'));
-    document.querySelectorAll('.blank .play-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=> speakText(btn.dataset.word));
-    });
-    function checkBlanks(){
+    function checkAnswers() {
+      const inputs = listEl.querySelectorAll("input");
       let correct = 0;
-      blankInputs.forEach(inp=>{
-        const user = (inp.value||"").trim();
-        const ans = (inp.dataset.answer||"").trim();
-        if(user === ans){
+      inputs.forEach(inp => {
+        const ans = (inp.dataset.answer || "").trim();
+        const val = (inp.value || "").trim();
+        if (val === ans) {
           inp.style.borderColor = "#16a34a";
           inp.style.background = "#ecfdf3";
           correct++;
-        }else{
+        } else {
           inp.style.borderColor = "#dc2626";
           inp.style.background = "#fef2f2";
         }
       });
-      blankStatus.innerHTML = `已批改：<span class="${correct===blankInputs.length?'result-ok':'result-bad'}">${correct} / ${blankInputs.length}</span>`;
+      checkStatus.innerHTML = `結果：<span class="${correct === inputs.length ? "result-ok" : "result-bad"}">${correct} / ${inputs.length}</span>`;
     }
-    function showAnswers(){
-      blankInputs.forEach(inp=>{
+
+    function showAnswers() {
+      const inputs = listEl.querySelectorAll("input");
+      inputs.forEach(inp => {
         inp.value = inp.dataset.answer || "";
         inp.style.borderColor = "#16a34a";
         inp.style.background = "#ecfdf3";
       });
-      blankStatus.innerHTML = `已顯示答案。`;
+      checkStatus.textContent = "已顯示答案。";
     }
-    function resetBlanks(){
-      blankInputs.forEach(inp=>{
+
+    function resetAll() {
+      const inputs = listEl.querySelectorAll("input");
+      inputs.forEach(inp => {
         inp.value = "";
         inp.style.borderColor = "var(--border)";
         inp.style.background = "#fff";
       });
-      blankStatus.textContent = "已重設，請重新作答。";
+      checkStatus.textContent = "已重設，請重新作答。";
     }
 
-    // ================ Word bank =================
-    const targetWords = ["轟隆隆","早晨","時候","穿過","山洞","經過","小橋"];
-    const wordBank = document.getElementById("wordBank");
-    targetWords.forEach(w=>{
-      const pill=document.createElement("span");
-      pill.className="pill";
-      pill.textContent=w + " 🔊";
-      pill.title="點擊播放讀音";
-      pill.addEventListener("click", ()=> speakText(w));
-      wordBank.appendChild(pill);
-    });
+    function reshuffle() {
+      renderList();
+    }
 
-    // ================ Radical quiz =================
-    const radicalGrid = document.getElementById("radicalGrid");
-    const radicalStatus = document.getElementById("radicalStatus");
-    const correctSet = new Set(["熱","燃","燈","然","炒","炮","熔","爆","熊","煙","爐","燒","灶","熄","熬","煤","烤","烘"]);
-    const distract = ["想","語","喝","渴","游","海","湖","蛋","窗","陽","除","雪","冰","空","院","笑","甜","福"];
-    const pool = [...correctSet, ...distract].map(ch=>({ ch, isCorrect: correctSet.has(ch) }));
-    pool.sort(()=>Math.random()-0.5);
-    pool.forEach(item=>{
-      const chip=document.createElement("span");
-      chip.className="chip";
-      chip.textContent=item.ch;
-      chip.dataset.correct = item.isCorrect ? "1":"0";
-      chip.addEventListener("click", ()=> chip.classList.toggle("selected"));
-      radicalGrid.appendChild(chip);
-    });
-    function checkRadicals(){
-      const chips = Array.from(radicalGrid.querySelectorAll(".chip"));
-      let ok = 0, total = correctSet.size;
-      chips.forEach(chip=>{
-        const should = chip.dataset.correct === "1";
-        const picked = chip.classList.contains("selected");
-        if(should && picked){ ok++; }
-        if(should && !picked){
-          chip.style.borderColor = "#dc2626";
-          chip.style.background = "#fef2f2";
-        } else if(!should && picked){
-          chip.style.borderColor = "#f59e0b";
-          chip.style.background = "#fffbeb";
-        } else {
-          chip.style.borderColor = "var(--border)";
-          chip.style.background = "#f8fafc";
-        }
-      });
-      radicalStatus.innerHTML = `結果：<span class="${ok===total?'result-ok':'result-bad'}">${ok} / ${total}</span>`;
-    }
-    function showRadicalAns(){
-      const chips = Array.from(radicalGrid.querySelectorAll(".chip"));
-      chips.forEach(chip=>{
-        const should = chip.dataset.correct === "1";
-        if(should){
-          chip.classList.add("selected");
-          chip.style.borderColor = "#16a34a";
-          chip.style.background = "#ecfdf3";
-        }else{
-          chip.classList.remove("selected");
-          chip.style.borderColor = "var(--border)";
-          chip.style.background = "#f8fafc";
-        }
-      });
-      radicalStatus.textContent = "已顯示正確選項（含火／灬的字）。";
-    }
-    function resetRadicals(){
-      const chips = Array.from(radicalGrid.querySelectorAll(".chip"));
-      chips.forEach(chip=>{
-        chip.classList.remove("selected");
-        chip.style.borderColor = "var(--border)";
-        chip.style.background = "#f8fafc";
-      });
-      radicalStatus.textContent = "已重設，請重新選擇。";
-    }
+    // init
+    renderList();
   </script>
 </body>
 </html>
