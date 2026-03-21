@@ -7,348 +7,235 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #475569;
-      --primary: #2563eb;
-      --primary-2: #1d4ed8;
-      --border: #e2e8f0;
-      --radius: 14px;
-      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
     }
-    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 18px;
-      line-height: 1.65;
-    }
-    h1,h2 { margin: 0 0 8px; letter-spacing: -0.01em; }
-    h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); }
-    h2 { font-size: clamp(1.2rem, 3vw, 1.6rem); }
-    p { margin: 0 0 10px; }
-    .container { max-width: 980px; margin: 0 auto; }
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px;
-      margin: 12px 0;
-      border: 1px solid var(--border);
-    }
-    .lead { color: var(--muted); }
-    .flex { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-weight: 700;
-      cursor: pointer;
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.22);
-      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-    }
-    button:hover { transform: translateY(-1px); background: var(--primary-2); box-shadow: 0 8px 22px rgba(37,99,235,0.3); }
-    button.secondary {
-      background: #e2e8f0;
-      color: #0f172a;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    button.secondary:hover { box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
-    label.badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 12px;
-      background: #e2e8f0;
-      color: #0f172a;
-      font-weight: 700;
-    }
-    select, input[type="range"] {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 10px;
-      font: inherit;
-      background: #fff;
-    }
-    .list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-    .item {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 10px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      padding: 1rem;
       background: #f8fafc;
-    }
-    .item-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: #e0f2fe;
       color: #0f172a;
-      font-weight: 800;
+      line-height: 1.6;
     }
-    .item input {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      font-size: 1rem;
-      font-family: inherit;
-      background: #fff;
-    }
-    .hint {
-      grid-column: 1 / -1;
-      margin-top: 6px;
-      padding: 10px;
-      border-radius: 10px;
-      background: #fff;
-      border: 1px dashed #cbd5e1;
-      display: none;
-    }
-    .hint-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 10px;
-      align-items: start;
-    }
-    .hw-card {
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 8px;
-      background: #f8fafc;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: stretch;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      padding: 1.5rem;
     }
-    .hw-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    h1 {
+      margin: 0 0 0.25rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: #0f172a;
     }
-    .hw-meta {
-      font-size: 0.9rem;
+    .sub {
+      margin: 0 0 1rem;
       color: #475569;
     }
-    .hw-box {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .controls label {
+      font-size: 0.95rem;
+      color: #334155;
+    }
+    .controls select, .controls button {
+      font-size: 0.95rem;
+      padding: 0.45rem 0.75rem;
       border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    .controls button {
+      border: none;
+      color: #0f172a;
+      background: #e2e8f0;
+      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    }
+    .controls button.primary {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+    }
+    .controls button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.9rem;
+      border: 1px solid #bae6fd;
+    }
+    .list {
+      display: grid;
+      gap: 1rem;
+    }
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      background: #f8fafc;
+    }
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: #0f172a;
+    }
+    .btn {
+      padding: 0.35rem 0.7rem;
+      font-size: 0.92rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #e2e8f0;
+      color: #0f172a;
+      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    }
+    .btn:active { transform: translateY(1px); box-shadow: none; }
+    .btn.play { background: #22c55e; color: #ffffff; box-shadow: 0 6px 14px rgba(34, 197, 94, 0.25); }
+    .btn.show { background: #6366f1; color: #ffffff; box-shadow: 0 6px 14px rgba(99, 102, 241, 0.25); }
+    .btn.stroke { background: #0ea5e9; color: #ffffff; box-shadow: 0 6px 14px rgba(14, 165, 233, 0.25); }
+    .input-row {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    input[type="text"] {
+      flex: 1 1 220px;
+      padding: 0.5rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 1rem;
+    }
+    .status {
+      font-size: 0.9rem;
+      color: #1e293b;
+    }
+    .status.correct { color: #16a34a; }
+    .status.wrong { color: #dc2626; }
+    .answer {
+      font-size: 0.95rem;
+      color: #0f172a;
+      background: #eef2ff;
+      padding: 0.35rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid #c7d2fe;
+    }
+    details {
+      margin-top: 0.5rem;
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+    }
+    details summary {
+      cursor: pointer;
+      color: #0ea5e9;
+      font-weight: 600;
+      outline: none;
+    }
+    .stroke-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .char-box {
+      width: 90px;
+      height: 90px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #fff;
+      display: grid;
+      place-items: center;
       position: relative;
       overflow: hidden;
     }
-    .hw-btn {
-      border-radius: 10px;
-      padding: 8px;
-      font-weight: 700;
-      border: 1px solid #cbd5e1;
-      background: #eef2ff;
-      color: #1f2937;
-      cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.12s ease;
+    .footer-note {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #475569;
     }
-    .hw-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
-    .status { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
-    .result-ok { color: #16a34a; font-weight: 800; }
-    .result-bad { color: #dc2626; font-weight: 800; }
-    .note { font-size: 0.9rem; color: #475569; margin-top: 6px; }
-    @media (max-width: 640px) {
-      button { width: 100%; justify-content: center; }
-      .item { grid-template-columns: 1fr; }
-      .item-head { justify-content: space-between; }
+    @media (max-width: 600px) {
+      .controls { flex-direction: column; align-items: flex-start; }
+      .card-header { flex-direction: column; align-items: flex-start; }
+      input[type="text"] { flex: 1 1 100%; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header class="card">
-      <h1>四年級中文科｜《智慧型機器人》聽詞填寫</h1>
-      <p class="lead">聽到字詞後，將正確的詞語寫在空格中。每次載入皆隨機排序；提供筆順動畫以助認讀。</p>
-      <div class="flex" style="margin-top:8px; gap:12px;">
-        <label class="badge">
-          語速 <span id="speedVal">0.95×</span>
-          <input id="speed" type="range" min="0.65" max="1.2" step="0.05" value="0.95" style="width:160px" />
-        </label>
-        <label class="badge">
-          語音
-          <select id="voiceSelect"></select>
-        </label>
-        <button type="button" onclick="reshuffle()">🔀 重新隨機</button>
-        <button class="secondary" type="button" onclick="stopSpeak()">⏹ 停止語音</button>
-      </div>
-      <div class="status" id="voiceStatus">提示：若未出聲，請先點擊頁面，再按播放；iPad / iOS 會使用系統語音。</div>
-    </header>
+    <h1>四年級中文｜《智慧型機器人》聽詞填寫＋筆順動畫</h1>
+    <p class="sub">聽到字詞後，將正確的詞語寫在空格中。每次載入皆隨機排序；提供筆順動畫以助認讀。</p>
 
-    <section class="card">
-      <h2>聽詞填空</h2>
-      <p class="lead">點擊 🔊 播放該詞語，聽後在空格填寫。需要時可展開「筆順」查看每個字的筆順動畫（載入自 jsDelivr）。</p>
+    <div class="controls">
+      <label>語速：
+        <select id="rateSelect">
+          <option value="0.9">0.90×</option>
+          <option value="0.95" selected>0.95×</option>
+          <option value="1">1.00×</option>
+          <option value="1.05">1.05×</option>
+        </select>
+      </label>
+      <span class="pill">語音</span>
+      <button id="shuffleBtn" class="controls-btn">🔀 重新隨機</button>
+      <button id="stopBtn" class="controls-btn">⏹ 停止語音</button>
+      <span id="voiceHint" class="sub" style="margin:0;">提示：若未出聲，請先點擊頁面，再按播放；iPad / iOS 會使用系統語音。</span>
+    </div>
 
-      <div id="list" class="list"></div>
+    <div class="list" id="list"></div>
 
-      <div class="flex" style="margin-top:12px;">
-        <button type="button" onclick="checkAnswers()">✅ 批改</button>
-        <button class="secondary" type="button" onclick="showAnswers()">👀 顯示答案</button>
-        <button class="secondary" type="button" onclick="resetAll()">♻️ 重設</button>
-      </div>
-      <div class="status" id="checkStatus">尚未批改。</div>
-      <div class="note hz-status">筆順動畫載入中…</div>
-    </section>
+    <div class="controls" style="margin-top:1.25rem;">
+      <button id="checkBtn" class="controls-btn primary">✅ 批改</button>
+      <button id="showBtn" class="controls-btn show">👀 顯示答案</button>
+      <button id="resetBtn" class="controls-btn">♻️ 重設</button>
+      <span id="globalStatus" class="pill">尚未批改。</span>
+    </div>
+
+    <p class="footer-note">筆順動畫來自 jsDelivr；若 CDN 失敗會自動退回本地 <code>vendor/hanzi-writer.min.js</code>。如需離線，請將該檔放在相同目錄。</p>
   </div>
 
-  <!-- Hanzi Writer (approved CDN) -->
-  <script>
-    let hanziReady = false;
-    let hanziLoadError = false;
-    const hanziReadyPromise = new Promise((resolve) => { window.__hanziResolve = resolve; });
-    function markHanziReady() {
-      hanziReady = true;
-      document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫已載入，可播放。");
-      window.__hanziResolve();
-    }
-    function markHanziError() {
-      hanziLoadError = true;
-      document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫無法載入，可能網路封鎖 cdn.jsdelivr.net。");
-      window.__hanziResolve();
-    }
+  <!-- 先載 CDN，失敗時退回本地 vendor/hanzi-writer.min.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.1.2/dist/hanzi-writer.min.js"
+    onerror="(function(){console.warn('CDN 載入失敗，改用本地 hanzi-writer');var s=document.createElement('script');s.src='vendor/hanzi-writer.min.js';document.head.appendChild(s);})();"
+    defer>
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.1.2/dist/hanzi-writer.min.js" onload="markHanziReady()" onerror="markHanziError()" defer></script>
 
   <script>
-    // ====== 字詞資料 ======
+    // 簡易資料集：可按需擴充
     const WORDS = [
-      { term:"控制", chars:["控","制"] },
-      { term:"系統", chars:["系","統"] },
-      { term:"感應", chars:["感","應"] },
-      { term:"指令", chars:["指","令"] },
-      { term:"綜合", chars:["綜","合"] },
-      { term:"結晶", chars:["結","晶"] },
-      { term:"提升", chars:["提","升"] },
-      { term:"效能", chars:["效","能"] },
-      { term:"企業", chars:["企","業"] },
-      { term:"精密", chars:["精","密"] },
-      { term:"繁複", chars:["繁","複"] },
-      { term:"靈活自如", chars:["靈","活","自","如"] },
-      { term:"節省", chars:["節","省"] },
-      { term:"品質", chars:["品","質"] },
-      { term:"傳統", chars:["傳","統"] },
-      { term:"調劑", chars:["調","劑"] },
-      { term:"支援", chars:["支","援"] },
-      { term:"普及", chars:["普","及"] }
+      { text: "智慧型機器人", clue: "用人工智慧控制的機器人" },
+      { text: "人工智慧", clue: "讓電腦模擬人類思考與學習的技術" },
+      { text: "感應器", clue: "偵測外界資訊的裝置" },
+      { text: "資料分析", clue: "整理與解讀資訊的過程" },
+      { text: "語音指令", clue: "用說話來控制的指令" }
     ];
 
-    // ====== 語音合成（iPad 友善） ======
-    const speedEl = document.getElementById("speed");
-    const speedVal = document.getElementById("speedVal");
-    const voiceSelect = document.getElementById("voiceSelect");
-    const voiceStatus = document.getElementById("voiceStatus");
-    let voices = [];
-    let chosenVoice = null;
-
-    speedEl.addEventListener("input", () => {
-      speedVal.textContent = speedEl.value + "×";
-    });
-
-    function populateVoices() {
-      voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-      voiceSelect.innerHTML = "";
-      const prefer = ["zh-HK","yue-HK","zh-TW","zh-CN","zh","yue","cmn-Hant-HK","cmn-Hant-TW"];
-      const fallback = ["ja-JP","en-US"];
-      const pick = langs => voices.find(v => langs.some(l => (v.lang||"").toLowerCase().startsWith(l.toLowerCase())));
-      chosenVoice = pick(prefer) || pick(fallback) || voices[0] || null;
-      voices.slice().sort((a,b)=>(a.lang||"").localeCompare(b.lang||"")).forEach((v,i)=>{
-        const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = `${v.name} (${v.lang})`;
-        voiceSelect.appendChild(opt);
-      });
-      if (chosenVoice) {
-        const idx = voices.indexOf(chosenVoice);
-        if (idx >= 0) voiceSelect.value = String(idx);
-      }
-      voiceStatus.textContent = voices.length
-        ? `已載入語音 ${voices.length} 種；預設：${chosenVoice ? chosenVoice.name + " (" + chosenVoice.lang + ")" : "系統預設"}`
-        : "尚未取得語音，若無聲音請稍後再按播放（iOS 可能需要等候）。";
-    }
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.onvoiceschanged = populateVoices;
-      setTimeout(populateVoices, 300);
-    } else {
-      voiceStatus.textContent = "此瀏覽器不支援語音合成。";
-    }
-    voiceSelect.addEventListener("change", () => {
-      const idx = Number(voiceSelect.value);
-      chosenVoice = voices[idx] || null;
-      voiceStatus.textContent = `已選語音：${chosenVoice ? chosenVoice.name + " (" + chosenVoice.lang + ")" : "系統預設"}`;
-    });
-
-    function speak(text) {
-      if (!("speechSynthesis" in window)) {
-        voiceStatus.textContent = "瀏覽器不支援語音合成。";
-        return;
-      }
-      stopSpeak();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = parseFloat(speedEl.value || "0.95");
-      u.pitch = 1.0;
-      u.volume = 1.0;
-      u.lang = chosenVoice?.lang || "zh-HK";
-      if (chosenVoice) u.voice = chosenVoice;
-      u.onstart = () => voiceStatus.textContent = "播放中…";
-      u.onend   = () => voiceStatus.textContent = "播放完畢。";
-      u.onerror = () => voiceStatus.textContent = "播放時發生問題。";
-      window.speechSynthesis.speak(u);
-    }
-    function stopSpeak() {
-      if (!("speechSynthesis" in window)) return;
-      window.speechSynthesis.cancel();
-      voiceStatus.textContent = "已停止。";
-    }
-
-    // ====== Hanzi Writer helper ======
-    const writerCache = new Map(); // key: container id -> writer instance
-
-    function ensureWriter(container, char) {
-      if (!hanziReady || typeof HanziWriter === "undefined") return null;
-      const id = container.dataset.writerId;
-      if (writerCache.has(id)) return writerCache.get(id);
-      const size = container.clientWidth || 120;
-      const writer = HanziWriter.create(container, char, {
-        width: size,
-        height: size,
-        padding: 6,
-        strokeAnimationSpeed: 1.1,
-        delayBetweenStrokes: 300,
-        showCharacter: true,
-        showOutline: true,
-        showHintAfterMisses: 1
-      });
-      writerCache.set(id, writer);
-      return writer;
-    }
-
-    // ====== UI ======
-    const listEl = document.getElementById("list");
-    const checkStatus = document.getElementById("checkStatus");
-    let currentOrder = [];
-
+    // 洗牌
     function shuffle(arr) {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
@@ -358,147 +245,191 @@
       return a;
     }
 
+    const listEl = document.getElementById('list');
+    const rateSelect = document.getElementById('rateSelect');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    const showBtn = document.getElementById('showBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const globalStatus = document.getElementById('globalStatus');
+
+    let current = [];
+
     function renderList() {
-      listEl.innerHTML = "";
-      writerCache.clear();
-      currentOrder = shuffle(WORDS);
-      currentOrder.forEach((item, idx) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "item";
+      listEl.innerHTML = '';
+      current.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
 
-        const head = document.createElement("div");
-        head.className = "item-head";
-        const num = document.createElement("span");
-        num.className = "num";
-        num.textContent = idx + 1;
+        const header = document.createElement('div');
+        header.className = 'card-header';
 
-        const btnPlay = document.createElement("button");
-        btnPlay.type = "button";
-        btnPlay.textContent = "🔊 播放";
-        btnPlay.addEventListener("click", () => speak(item.term));
+        const title = document.createElement('h3');
+        title.textContent = `題目 ${idx + 1}`;
+        header.appendChild(title);
 
-        const btnHint = document.createElement("button");
-        btnHint.type = "button";
-        btnHint.className = "secondary";
-        btnHint.textContent = "✏️ 筆順";
-        btnHint.setAttribute("aria-expanded", "false");
+        const btnPlay = document.createElement('button');
+        btnPlay.className = 'btn play';
+        btnPlay.textContent = '🔊 播放';
+        btnPlay.addEventListener('click', () => speak(item.text));
+        header.appendChild(btnPlay);
 
-        head.appendChild(num);
-        head.appendChild(btnPlay);
-        head.appendChild(btnHint);
+        card.appendChild(header);
 
-        const inp = document.createElement("input");
-        inp.placeholder = "聽後填寫此詞語";
-        inp.dataset.answer = item.term;
+        const clue = document.createElement('p');
+        clue.style.margin = '0.35rem 0';
+        clue.style.color = '#475569';
+        clue.textContent = `提示：${item.clue}`;
+        card.appendChild(clue);
 
-        const hintBox = document.createElement("div");
-        hintBox.className = "hint";
+        const row = document.createElement('div');
+        row.className = 'input-row';
 
-        const row = document.createElement("div");
-        row.className = "hint-row";
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = '請填寫詞語';
+        input.dataset.answer = item.text;
+        input.autocomplete = 'off';
+        row.appendChild(input);
 
-        item.chars.forEach((ch, cidx) => {
-          const card = document.createElement("div");
-          card.className = "hw-card";
+        const status = document.createElement('span');
+        status.className = 'status';
+        status.textContent = '';
+        row.appendChild(status);
 
-          const title = document.createElement("div");
-          title.className = "hw-title";
-          title.innerHTML = `<span>${ch}</span><span class="hw-meta">筆順動畫</span>`;
-          card.appendChild(title);
+        card.appendChild(row);
 
-          const box = document.createElement("div");
-          box.className = "hw-box";
-          const wid = Math.floor(Math.random()*1e9);
-          const boxId = `hw-${idx}-${cidx}-${wid}`;
-          box.id = boxId;
-          box.dataset.writerId = boxId;
-          card.appendChild(box);
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '筆順';
+        details.appendChild(summary);
 
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "hw-btn";
-          btn.textContent = "▶ 播放筆順";
-          btn.addEventListener("click", async () => {
-            if (hanziLoadError || typeof HanziWriter === "undefined") {
-              document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫未載入，可能網路封鎖 cdn.jsdelivr.net。");
-              return;
-            }
-            if (!hanziReady) {
-              document.querySelectorAll('.hz-status').forEach(n => n.textContent = "筆順動畫仍在載入，請稍候再試。");
-              return;
-            }
-            const writer = ensureWriter(box, ch);
-            if (writer) writer.animateCharacter();
-          });
-          card.appendChild(btn);
+        const strokeBox = document.createElement('div');
+        strokeBox.className = 'stroke-box';
+        strokeBox.dataset.word = item.text;
+        details.appendChild(strokeBox);
 
-          row.appendChild(card);
+        details.addEventListener('toggle', () => {
+          if (details.open) {
+            renderStrokes(strokeBox, item.text);
+          }
         });
 
-        hintBox.appendChild(row);
-        const note = document.createElement("div");
-        note.className = "note";
-        note.textContent = "若無法載入，可能是網路封鎖 jsDelivr。";
-        hintBox.appendChild(note);
+        card.appendChild(details);
 
-        btnHint.addEventListener("click", () => {
-          const showing = hintBox.style.display === "block";
-          hintBox.style.display = showing ? "none" : "block";
-          btnHint.setAttribute("aria-expanded", showing ? "false" : "true");
-        });
-
-        wrapper.appendChild(head);
-        wrapper.appendChild(inp);
-        wrapper.appendChild(hintBox);
-        listEl.appendChild(wrapper);
+        listEl.appendChild(card);
       });
-      checkStatus.textContent = "已重新隨機排列，尚未作答。";
     }
 
-    function checkAnswers() {
-      const inputs = listEl.querySelectorAll("input");
-      let correct = 0;
-      inputs.forEach(inp => {
-        const ans = (inp.dataset.answer || "").trim();
-        const val = (inp.value || "").trim();
+    function init() {
+      current = shuffle(WORDS);
+      renderList();
+      globalStatus.textContent = '尚未批改。';
+    }
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) {
+        alert('此瀏覽器不支援語音合成');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-TW';
+      u.rate = parseFloat(rateSelect.value || '1');
+      window.speechSynthesis.speak(u);
+    }
+
+    stopBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    });
+
+    shuffleBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      init();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.querySelectorAll('input[type="text"]').forEach(i => {
+        i.value = '';
+        i.disabled = false;
+      });
+      document.querySelectorAll('.status').forEach(s => s.textContent = '');
+      globalStatus.textContent = '尚未批改。';
+    });
+
+    checkBtn.addEventListener('click', () => {
+      let allCorrect = true;
+      document.querySelectorAll('.card').forEach(card => {
+        const input = card.querySelector('input[type="text"]');
+        const status = card.querySelector('.status');
+        const ans = input.dataset.answer.trim();
+        const val = input.value.trim();
         if (val === ans) {
-          inp.style.borderColor = "#16a34a";
-          inp.style.background = "#ecfdf3";
-          correct++;
+          status.textContent = '✔ 正確';
+          status.className = 'status correct';
+          input.disabled = true;
         } else {
-          inp.style.borderColor = "#dc2626";
-          inp.style.background = "#fef2f2";
+          status.textContent = '✘ 再試試';
+          status.className = 'status wrong';
+          allCorrect = false;
         }
       });
-      checkStatus.innerHTML = `結果：<span class="${correct === inputs.length ? "result-ok" : "result-bad"}">${correct} / ${inputs.length}</span>`;
-    }
+      globalStatus.textContent = allCorrect ? '全部正確！' : '已批改，尚有錯誤。';
+    });
 
-    function showAnswers() {
-      const inputs = listEl.querySelectorAll("input");
-      inputs.forEach(inp => {
-        inp.value = inp.dataset.answer || "";
-        inp.style.borderColor = "#16a34a";
-        inp.style.background = "#ecfdf3";
+    showBtn.addEventListener('click', () => {
+      document.querySelectorAll('.card').forEach(card => {
+        const input = card.querySelector('input[type="text"]');
+        const ans = input.dataset.answer;
+        input.value = ans;
+        input.disabled = true;
+        const status = card.querySelector('.status');
+        status.textContent = '✔ 已顯示答案';
+        status.className = 'status correct';
       });
-      checkStatus.textContent = "已顯示答案。";
-    }
+      globalStatus.textContent = '已顯示答案。';
+    });
 
-    function resetAll() {
-      const inputs = listEl.querySelectorAll("input");
-      inputs.forEach(inp => {
-        inp.value = "";
-        inp.style.borderColor = "var(--border)";
-        inp.style.background = "#fff";
+    // 筆順渲染（使用 HanziWriter）
+    function renderStrokes(container, word) {
+      // 清空舊的
+      container.innerHTML = '';
+      const chars = Array.from(word);
+      chars.forEach((ch, idx) => {
+        const box = document.createElement('div');
+        box.className = 'char-box';
+        box.id = `char-${word}-${idx}-${Math.random().toString(36).slice(2, 7)}`;
+        container.appendChild(box);
+
+        // 等 HanziWriter 載入
+        if (window.HanziWriter) {
+          const writer = HanziWriter.create(box.id, ch, {
+            width: 90,
+            height: 90,
+            padding: 8,
+            showOutline: true,
+            showCharacter: false,
+            strokeAnimationSpeed: 1,
+            delayBetweenStrokes: 150
+          });
+          writer.animateCharacter();
+        } else {
+          box.textContent = ch;
+        }
       });
-      checkStatus.textContent = "已重設，請重新作答。";
     }
 
-    function reshuffle() {
-      renderList();
-    }
+    // 初始化
+    init();
 
-    // init
-    renderList();
+    // 若語音第一次需互動
+    document.body.addEventListener('click', () => {
+      if ('speechSynthesis' in window) {
+        // 啟動權限
+      }
+    }, { once: true });
   </script>
 </body>
 </html>
