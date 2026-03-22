@@ -3,140 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>默寫練習｜逐段（每 5 字）播放</title>
+  <title>默寫練習｜整句與分句播放（逐句顯示答案＋分句按鈕）</title>
   <style>
     :root { color-scheme: light; font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; }
-    body {
-      margin: 0; padding: 1rem;
-      background: #f8fafc; color: #0f172a; line-height: 1.6;
-    }
-    .container {
-      max-width: 1080px; margin: 0 auto;
-      background: #fff; border: 1px solid #e2e8f0;
-      border-radius: 14px; box-shadow: 0 12px 30px rgba(15,23,42,0.08);
-      padding: 1.15rem;
-    }
-    h1 { margin: 0 0 0.35rem; font-size: 1.45rem; font-weight: 700; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 1rem; background: #f8fafc; color: #0f172a; line-height: 1.6; }
+    .container { max-width: 1080px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 12px 30px rgba(15,23,42,0.08); padding: 1.1rem; }
+    h1 { margin: 0 0 0.35rem; font-size: 1.5rem; font-weight: 800; }
     .sub { margin: 0 0 1rem; color: #475569; }
-    .controls {
-      display: flex; flex-wrap: wrap; gap: 0.6rem;
-      align-items: center; margin-bottom: 1rem;
-    }
-    .controls label { font-size: 0.95rem; color: #334155; }
-    select, button {
-      font-size: 0.95rem; padding: 0.45rem 0.75rem;
-      border-radius: 8px; border: 1px solid #cbd5e1;
-      background: #fff; cursor: pointer;
-    }
-    button {
-      border: none; background: #e2e8f0; color: #0f172a;
-      transition: transform 0.08s ease, box-shadow 0.12s ease;
-    }
+    .controls { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 0.6rem 0 0.9rem; }
+    label { font-size: 0.95rem; color: #334155; }
+    select, button { font-size: 0.95rem; padding: 0.45rem 0.75rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; }
+    button { border: none; background: #e2e8f0; color: #0f172a; transition: transform 0.08s ease, box-shadow 0.12s ease; }
     button.primary { background: #2563eb; color: #fff; box-shadow: 0 6px 14px rgba(37,99,235,0.2); }
     button.play { background: #22c55e; color: #fff; box-shadow: 0 6px 14px rgba(34,197,94,0.2); }
     button.stop { background: #f97316; color: #fff; box-shadow: 0 6px 14px rgba(249,115,22,0.2); }
+    button.warn { background: #f59e0b; color: #fff; box-shadow: 0 6px 14px rgba(245,158,11,0.25); }
     button:active { transform: translateY(1px); box-shadow: none; }
-    .pill {
-      display: inline-flex; align-items: center; gap: 0.35rem;
-      padding: 0.3rem 0.65rem; border-radius: 999px;
-      background: #e0f2fe; border: 1px solid #bae6fd;
-      color: #0369a1; font-size: 0.9rem;
-    }
-    .list { display: grid; gap: 1rem; }
-    .card {
-      border: 1px solid #e2e8f0; border-radius: 10px;
-      padding: 0.9rem; background: #f8fafc;
-    }
-    .card-header {
-      display: flex; flex-wrap: wrap; gap: 0.6rem;
-      align-items: center; justify-content: space-between;
-    }
-    .card h3 { margin: 0; font-size: 1.02rem; }
-    .chunk-bar {
-      margin-top: 0.55rem; display: flex; flex-wrap: wrap; gap: 0.45rem;
-    }
-    .chunk-btn {
-      background: #e2e8f0; color: #0f172a;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px; padding: 0.35rem 0.6rem;
-      font-size: 0.9rem; cursor: pointer;
-    }
-    .chunk-btn:hover { background: #d9e4f5; }
-    .input-row { margin-top: 0.55rem; display: grid; gap: 0.35rem; }
-    textarea {
-      width: 100%; min-height: 70px; padding: 0.55rem 0.65rem;
-      border-radius: 8px; border: 1px solid #cbd5e1;
-      font-size: 1rem; resize: vertical;
-    }
-    .status { font-size: 0.9rem; color: #1e293b; }
-    .status.correct { color: #16a34a; }
-    .status.wrong { color: #dc2626; }
-    details {
-      margin-top: 0.35rem; background: #fff;
-      border: 1px dashed #cbd5e1; border-radius: 8px;
-      padding: 0.45rem 0.65rem;
-    }
-    details summary { cursor: pointer; color: #0ea5e9; font-weight: 600; }
-    .ans-text { color: #0f172a; white-space: pre-line; }
+    .pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.38rem 0.75rem; border-radius: 999px; background: #e0f2fe; border: 1px solid #bae6fd; color: #0369a1; font-size: 0.92rem; }
+    .pill.warn { background: #fef9c3; border-color: #fcd34d; color: #a16207; }
+    .sentence-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.75rem; margin-bottom: 0.65rem; background: #fff; box-shadow: 0 6px 14px rgba(15,23,42,0.05); }
+    .sentence-head { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: space-between; }
+    .sentence-title { font-weight: 700; color: #0f172a; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.4rem; }
+    .clause-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.4rem; }
+    .clause-row button { padding: 0.32rem 0.6rem; font-size: 0.9rem; border-radius: 8px; }
+    textarea { width: 100%; min-height: 90px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.6rem; font-size: 1rem; resize: vertical; background: #fff; }
+    .answer { margin-top: 0.35rem; padding: 0.5rem 0.65rem; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; color: #0f172a; display: none; }
+    details { border: 1px dashed #cbd5e1; border-radius: 10px; padding: 0.6rem 0.75rem; background: #f8fafc; margin-top: 1rem; }
+    details summary { cursor: pointer; font-weight: 700; color: #0ea5e9; }
     @media (max-width: 640px) {
       .controls { flex-direction: column; align-items: flex-start; }
-      .card-header { flex-direction: column; align-items: flex-start; }
+      .sentence-head { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>默寫練習｜逐段（每 5 字）播放</h1>
-    <p class="sub">每句切成 5 字一段，學生可依序按「第 1 段、第 2 段...」聽取。學生畫面不顯示課文文字，只在「顯示答案」時露出。</p>
+    <h1>默寫練習｜整句與分句播放（標點分段｜逐句顯示答案）</h1>
+    <p class="sub">每句可整句播放，亦可按標點分句播放；分句有獨立按鈕。學生端僅能逐句顯示答案。</p>
 
     <div class="controls">
       <label>語速：
         <select id="rateSelect">
-          <option value="0.9">0.90×</option>
-          <option value="0.95" selected>0.95×</option>
-          <option value="1">1.00×</option>
+          <option value="0.9" selected>0.90×</option>
+          <option value="0.95">0.95×</option>
+          <option value="1.0">1.00×</option>
           <option value="1.05">1.05×</option>
         </select>
       </label>
-      <button id="playAllBtn" class="play">▶ 播放全篇（分段依序）</button>
+      <button id="voiceInitBtn" class="warn">🔈 啟用語音</button>
+      <button id="playAllSent" class="play">▶ 播放全篇（整句）</button>
+      <button id="playAllClauses">▶ 播放全篇（分句）</button>
       <button id="stopBtn" class="stop">⏹ 停止語音</button>
-      <span class="pill">每段 5 字；若未出聲，請先點擊頁面（iOS 需互動）。</span>
+      <span id="voiceStatus" class="pill warn">若未出聲，請先點擊頁面（iOS 需互動啟動音訊）。</span>
     </div>
 
-    <div class="list" id="list"></div>
+    <div id="sentences"></div>
 
-    <div class="controls" style="margin-top:1rem;">
+    <div class="controls" style="margin-top:0.8rem;">
       <button id="checkBtn" class="primary">✅ 批改</button>
-      <button id="showBtn">👀 顯示全部答案</button>
       <button id="resetBtn">♻️ 重設</button>
-      <span id="globalStatus" class="pill">尚未批改。</span>
+      <span id="checkStatus" class="pill">尚未批改。</span>
     </div>
 
-    <details style="margin-top:1rem;">
+    <details>
       <summary>教師預覽全文（請勿在學生端展開）</summary>
-      <div class="ans-text" style="margin-top:0.5rem; font-size:0.98rem;">
-在短時間內處理大量訂單，更知道「工餘」時自行回到指定地方充電。
-除了工作上，智慧型機器人對提升生活品質也有貢獻。
-隨著科技不斷發展，機器人的應用範圍從工業環境，進一步走進我們的家居生活。
-其中，服務型機器人有分析、判斷、推理，決策和學習的能力，能因應人們的需求作出不同的回應。
-它們不僅提供打掃、看護、影音娛樂等服務，而且能像人類般與用家聊天，一改傳統生硬的機械式對話。
-換言之，智慧型機器人是家居的好幫手，幫助我們建立舒適愉快的生活環境。
-
-智慧型機器人更可以為人們調劑生活，提供娛樂。
-現在，不少智慧型機器人模式的玩具陸續面世，例如日本玩具公司生產的機器玩具狗，能支援一百八十條語音指令，內置二十八個四色燈，可通過不同閃亮模式來表達感情。
-這款玩具讓家居不適合飼養寵物的人也能體驗動物作伴的樂趣。
-由此可見，智慧型機器人既能協助人類工作，又能提升我們的生活素質和提供娛樂。
-也許，將來這些機器人可能像智能手機一樣普及，每個人身邊都有智慧型機器人提供不同的服務。
-      </div>
+      <div id="fullText" style="margin-top:0.6rem; white-space:pre-line; color:#0f172a;"></div>
     </details>
   </div>
 
   <script>
-    // 課文句子（學生端不顯示文字，只存為答案）
-    const SENTENCES = [
+    // =============== 課文資料 ===============
+    const sentences = [
       "在短時間內處理大量訂單，更知道「工餘」時自行回到指定地方充電。",
       "除了工作上，智慧型機器人對提升生活品質也有貢獻。",
-      "隨著科技不斷發展，機器人的應用範圍從工業環境，進一步走進我們的家居生活。",
+      "隨着科技不斷發展，機器人的應用範圍從工業環境，進一步走進我們的家居生活。",
       "其中，服務型機器人有分析、判斷、推理，決策和學習的能力，能因應人們的需求作出不同的回應。",
       "它們不僅提供打掃、看護、影音娛樂等服務，而且能像人類般與用家聊天，一改傳統生硬的機械式對話。",
       "換言之，智慧型機器人是家居的好幫手，幫助我們建立舒適愉快的生活環境。",
@@ -147,203 +89,295 @@
       "也許，將來這些機器人可能像智能手機一樣普及，每個人身邊都有智慧型機器人提供不同的服務。"
     ];
 
-    const rateSelect = document.getElementById('rateSelect');
-    const listEl = document.getElementById('list');
-    const playAllBtn = document.getElementById('playAllBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const checkBtn = document.getElementById('checkBtn');
-    const showBtn = document.getElementById('showBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const globalStatus = document.getElementById('globalStatus');
+    // =============== 工具與語音 ===============
+    const rateSelect = document.getElementById("rateSelect");
+    const sentencesWrap = document.getElementById("sentences");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const checkStatus = document.getElementById("checkStatus");
+    const voiceInitBtn = document.getElementById("voiceInitBtn");
+    const playAllSentBtn = document.getElementById("playAllSent");
+    const playAllClausesBtn = document.getElementById("playAllClauses");
+    const stopBtn = document.getElementById("stopBtn");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const fullText = document.getElementById("fullText");
 
-    let cancelAll = false;
+    let voiceReady = false;
+    let warmupRunning = false;
+    let cachedVoices = [];
+    let selectedVoice = null;
 
-    function chunkText(str, size = 5) {
-      const chunks = [];
-      let i = 0;
-      while (i < str.length) {
-        chunks.push(str.slice(i, i + size));
-        i += size;
-      }
-      return chunks;
+    function setVoiceStatus(text, ok) {
+      voiceStatus.textContent = text;
+      if (ok) voiceStatus.classList.remove("warn");
+      else voiceStatus.classList.add("warn");
     }
 
-    function speakUtterance(text, rate) {
-      return new Promise(resolve => {
-        if (!('speechSynthesis' in window)) { resolve(); return; }
+    function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+    function pickVoice(list) {
+      if (!list || !list.length) return null;
+      const prefs = ["zh-TW","zh-HK","zh-CN","zh"];
+      for (const p of prefs) {
+        const v = list.find(v => (v.lang || "").toLowerCase().startsWith(p.toLowerCase()));
+        if (v) return v;
+      }
+      return list[0];
+    }
+
+    function loadVoicesOnce() {
+      const v = speechSynthesis.getVoices();
+      if (v && v.length) {
+        cachedVoices = v;
+        selectedVoice = pickVoice(cachedVoices);
+      }
+    }
+
+    async function ensureVoices(maxTries=6, delay=250) {
+      loadVoicesOnce();
+      if (cachedVoices.length) return cachedVoices;
+      for (let i=0;i<maxTries;i++) {
+        await wait(delay);
+        const v = speechSynthesis.getVoices();
+        if (v && v.length) {
+          cachedVoices = v;
+          selectedVoice = pickVoice(cachedVoices);
+          return cachedVoices;
+        }
+      }
+      return cachedVoices;
+    }
+
+    async function warmupVoice({ silentUpdate=false } = {}) {
+      if (warmupRunning) return;
+      warmupRunning = true;
+      if (!("speechSynthesis" in window)) {
+        setVoiceStatus("此瀏覽器不支援語音。", false);
+        warmupRunning = false;
+        return;
+      }
+      await ensureVoices();
+      const u = new SpeechSynthesisUtterance("。");
+      u.lang = selectedVoice?.lang || "zh-TW";
+      if (selectedVoice) u.voice = selectedVoice;
+      u.rate = 1;
+      const done = new Promise(res => { u.onend = () => res(); u.onerror = () => res(); });
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+      await done;
+      voiceReady = true;
+      warmupRunning = false;
+      if (!silentUpdate) setVoiceStatus("語音已就緒，可播放。", true);
+    }
+
+    function getRate() { return parseFloat(rateSelect.value || "1"); }
+
+    async function speak(text) {
+      return new Promise(async resolve => {
+        if (!("speechSynthesis" in window)) { resolve(); return; }
+        if (!voiceReady) {
+          await warmupVoice({ silentUpdate: true });
+          if (!voiceReady) { resolve(); return; }
+          setVoiceStatus("語音已就緒，可播放。", true);
+        }
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'zh-TW';
-        u.rate = rate;
+        u.rate = getRate();
+        u.lang = selectedVoice?.lang || "zh-TW";
+        if (selectedVoice) u.voice = selectedVoice;
         u.onend = () => resolve();
         u.onerror = () => resolve();
-        window.speechSynthesis.speak(u);
+        speechSynthesis.speak(u);
       });
     }
 
-    async function speakChunk(text) {
-      if (!('speechSynthesis' in window)) return;
-      cancelAll = false;
-      window.speechSynthesis.cancel();
-      const rate = parseFloat(rateSelect.value || '1');
-      await speakUtterance(text, rate);
+    function splitByPunc(str) {
+      const clauses = [];
+      let buf = "";
+      for (const ch of str) {
+        buf += ch;
+        if (/[，、；：。！？]/.test(ch)) {
+          const t = buf.trim();
+          if (t) clauses.push(t);
+          buf = "";
+        }
+      }
+      if (buf.trim()) clauses.push(buf.trim());
+      return clauses;
     }
 
-    async function speakSentenceChunks(sentence) {
-      if (!('speechSynthesis' in window)) return;
-      cancelAll = false;
-      window.speechSynthesis.cancel();
-      const rate = parseFloat(rateSelect.value || '1');
-      const chunks = chunkText(sentence, 5);
-      for (const ch of chunks) {
-        if (cancelAll) break;
-        await speakUtterance(ch, rate);
-        await wait(160);
+    async function playSentenceFull(text) {
+      speechSynthesis.cancel();
+      await speak(text);
+    }
+
+    async function playSentenceClauses(text) {
+      speechSynthesis.cancel();
+      const clauses = splitByPunc(text);
+      for (const c of clauses) {
+        await speak(c);
+        await wait(120);
       }
     }
 
-    async function playAll() {
-      if (!('speechSynthesis' in window)) return;
-      cancelAll = false;
-      window.speechSynthesis.cancel();
-      for (const sentence of SENTENCES) {
-        if (cancelAll) break;
-        await speakSentenceChunks(sentence);
-        if (cancelAll) break;
-        await wait(650);
+    async function playClause(text) {
+      speechSynthesis.cancel();
+      await speak(text);
+    }
+
+    async function playAll(full = true) {
+      speechSynthesis.cancel();
+      if (!voiceReady) await warmupVoice({ silentUpdate: true });
+      for (const s of sentences) {
+        if (full) {
+          await speak(s);
+        } else {
+          const clauses = splitByPunc(s);
+          for (const c of clauses) {
+            await speak(c);
+            await wait(120);
+          }
+        }
+        await wait(260);
       }
     }
 
-    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+    // =============== 渲染 ===============
+    function renderSentences() {
+      sentencesWrap.innerHTML = "";
+      sentences.forEach((t, idx) => {
+        const clauses = splitByPunc(t);
 
-    function buildUI() {
-      listEl.innerHTML = '';
-      SENTENCES.forEach((sentence, idx) => {
-        const card = document.createElement('div');
-        card.className = 'card';
+        const card = document.createElement("div");
+        card.className = "sentence-card";
 
-        const header = document.createElement('div');
-        header.className = 'card-header';
+        const head = document.createElement("div");
+        head.className = "sentence-head";
 
-        const h3 = document.createElement('h3');
-        h3.textContent = `句子 ${idx + 1}`;
-        header.appendChild(h3);
+        const title = document.createElement("div");
+        title.className = "sentence-title";
+        title.textContent = `句子 ${idx + 1}`;
+        head.appendChild(title);
 
-        const wholeBtn = document.createElement('button');
-        wholeBtn.className = 'play';
-        wholeBtn.textContent = '🔊 整句分段播放';
-        wholeBtn.addEventListener('click', () => speakSentenceChunks(sentence));
-        header.appendChild(wholeBtn);
+        const btnRow = document.createElement("div");
+        btnRow.className = "btn-row";
 
-        card.appendChild(header);
+        const btnFull = document.createElement("button");
+        btnFull.className = "play";
+        btnFull.textContent = "🔊 整句播放";
+        btnFull.addEventListener("click", () => playSentenceFull(t));
+        btnRow.appendChild(btnFull);
 
-        const chunkBar = document.createElement('div');
-        chunkBar.className = 'chunk-bar';
+        const btnClauseSeq = document.createElement("button");
+        btnClauseSeq.textContent = "🔊 分句播放（標點，依序）";
+        btnClauseSeq.addEventListener("click", () => playSentenceClauses(t));
+        btnRow.appendChild(btnClauseSeq);
 
-        const chunks = chunkText(sentence, 5);
-        chunks.forEach((ch, i) => {
-          const btn = document.createElement('button');
-          btn.className = 'chunk-btn';
-          const start = i * 5 + 1;
-          const end = Math.min((i + 1) * 5, sentence.length);
-          btn.textContent = `第 ${i + 1} 段（${start}-${end}字）`;
-          btn.addEventListener('click', () => speakChunk(ch));
-          chunkBar.appendChild(btn);
+        head.appendChild(btnRow);
+        card.appendChild(head);
+
+        // 分句獨立按鈕（不顯示文字，避免洩題）
+        const clauseRow = document.createElement("div");
+        clauseRow.className = "clause-row";
+        clauses.forEach((c, i) => {
+          const cb = document.createElement("button");
+          cb.textContent = `🔊 分句 ${i + 1}`;
+          cb.title = "依標點切分的分句播放";
+          cb.addEventListener("click", () => playClause(c));
+          clauseRow.appendChild(cb);
+        });
+        card.appendChild(clauseRow);
+
+        const ta = document.createElement("textarea");
+        ta.placeholder = "請聽寫本句";
+        ta.dataset.answer = t;
+        card.appendChild(ta);
+
+        const ansBtn = document.createElement("button");
+        ansBtn.className = "ans-btn";
+        ansBtn.style.marginTop = "0.45rem";
+        ansBtn.textContent = "👀 顯示本句答案";
+        card.appendChild(ansBtn);
+
+        const ans = document.createElement("div");
+        ans.className = "answer";
+        ans.textContent = "答案：" + t;
+        card.appendChild(ans);
+
+        ansBtn.addEventListener("click", () => {
+          const shown = ans.style.display === "block";
+          if (shown) {
+            ans.style.display = "none";
+            ansBtn.textContent = "👀 顯示本句答案";
+          } else {
+            ans.style.display = "block";
+            ansBtn.textContent = "🙈 隱藏本句答案";
+          }
         });
 
-        card.appendChild(chunkBar);
-
-        const row = document.createElement('div');
-        row.className = 'input-row';
-
-        const ta = document.createElement('textarea');
-        ta.placeholder = '聽後默寫完整句子';
-        ta.dataset.answer = sentence;
-        row.appendChild(ta);
-
-        const status = document.createElement('span');
-        status.className = 'status';
-        row.appendChild(status);
-
-        card.appendChild(row);
-
-        const det = document.createElement('details');
-        const sum = document.createElement('summary');
-        sum.textContent = '顯示答案（僅教師/檢查）';
-        det.appendChild(sum);
-
-        const ans = document.createElement('div');
-        ans.className = 'ans-text';
-        ans.textContent = sentence;
-        det.appendChild(ans);
-
-        card.appendChild(det);
-
-        listEl.appendChild(card);
+        sentencesWrap.appendChild(card);
       });
     }
 
-    stopBtn.addEventListener('click', () => {
-      cancelAll = true;
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    });
+    // =============== 批改 / 重設 ===============
+    function normalize(str) { return (str || "").trim(); }
 
-    playAllBtn.addEventListener('click', () => {
-      cancelAll = false;
-      playAll();
-    });
-
-    checkBtn.addEventListener('click', () => {
+    function checkAnswers() {
       let allCorrect = true;
-      document.querySelectorAll('.card').forEach(card => {
-        const ta = card.querySelector('textarea');
-        const status = card.querySelector('.status');
-        const ans = normalize(ta.dataset.answer || '');
-        const val = normalize(ta.value || '');
-        if (val && val === ans) {
-          status.textContent = '✔ 正確';
-          status.className = 'status correct';
-        } else {
-          status.textContent = val ? '✘ 再試一次' : '✎ 請先作答';
-          status.className = 'status wrong';
-          allCorrect = false;
-        }
+      const cards = sentencesWrap.querySelectorAll(".sentence-card");
+      cards.forEach(card => {
+        const ta = card.querySelector("textarea");
+        const ans = ta.dataset.answer;
+        const val = normalize(ta.value);
+        const ok = val === normalize(ans);
+        ta.style.borderColor = ok ? "#16a34a" : "#dc2626";
+        ta.style.background = ok ? "#ecfdf3" : "#fef2f2";
+        allCorrect = allCorrect && ok;
       });
-      globalStatus.textContent = allCorrect ? '全部正確！' : '已批改，尚有錯誤。';
-    });
-
-    showBtn.addEventListener('click', () => {
-      document.querySelectorAll('.card').forEach(card => {
-        const ta = card.querySelector('textarea');
-        const status = card.querySelector('.status');
-        ta.value = ta.dataset.answer || '';
-        status.textContent = '✔ 已顯示答案';
-        status.className = 'status correct';
-      });
-      globalStatus.textContent = '已顯示答案。';
-    });
-
-    resetBtn.addEventListener('click', () => {
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      cancelAll = true;
-      document.querySelectorAll('.card').forEach(card => {
-        const ta = card.querySelector('textarea');
-        const status = card.querySelector('.status');
-        ta.value = '';
-        status.textContent = '';
-        status.className = 'status';
-      });
-      globalStatus.textContent = '尚未批改。';
-    });
-
-    function normalize(str) {
-      return (str || '')
-        .replace(/[\s\u3000]/g, '')
-        .replace(/[，。！？、：「」『』（）《》〈〉—…．,.;:!?'"\(\)﹐﹑﹒﹔﹕﹖﹗﹙﹚﹜﹝]/g, '');
+      checkStatus.textContent = allCorrect ? "全部正確！" : "已批改，尚有錯誤。";
     }
 
-    buildUI();
-    // iOS 需互動解鎖音訊
-    document.body.addEventListener('click', () => {}, { once: true });
+    function resetAll() {
+      speechSynthesis.cancel();
+      const cards = sentencesWrap.querySelectorAll(".sentence-card");
+      cards.forEach(card => {
+        const ta = card.querySelector("textarea");
+        const ansBox = card.querySelector(".answer");
+        const ansBtn = card.querySelector(".ans-btn");
+        ta.value = "";
+        ta.style.borderColor = "#cbd5e1";
+        ta.style.background = "#fff";
+        ansBox.style.display = "none";
+        if (ansBtn) ansBtn.textContent = "👀 顯示本句答案";
+      });
+      checkStatus.textContent = "尚未批改。";
+    }
+
+    // =============== 事件 ===============
+    voiceInitBtn.addEventListener("click", async () => {
+      speechSynthesis.cancel();
+      await warmupVoice({ silentUpdate: false });
+    });
+
+    playAllSentBtn.addEventListener("click", () => playAll(true));
+    playAllClausesBtn.addEventListener("click", () => playAll(false));
+    stopBtn.addEventListener("click", () => { if ("speechSynthesis" in window) speechSynthesis.cancel(); });
+
+    checkBtn.addEventListener("click", checkAnswers);
+    resetBtn.addEventListener("click", resetAll);
+
+    // iOS 需互動啟動音訊
+    document.body.addEventListener("click", () => {}, { once: true });
+
+    if ("speechSynthesis" in window) {
+      speechSynthesis.addEventListener("voiceschanged", () => {
+        cachedVoices = speechSynthesis.getVoices();
+        selectedVoice = pickVoice(cachedVoices);
+      });
+    }
+
+    // =============== 初始化 ===============
+    renderSentences();
+    fullText.textContent = sentences.join("\n");
   </script>
 </body>
 </html>
