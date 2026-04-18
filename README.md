@@ -8,6 +8,12 @@ LEE Kei Fung, Charles’ Github
 
 ---
 
+## MSP1 Learning
+- [MSP1 Learning Platform](./MSP1)
+
+## MSP4 Learning
+- [MSP4 Learning Platform](./MSP4)
+
 ## AMA · Applied Mathematics
 
 ### AMA3730 — Complex Variables
